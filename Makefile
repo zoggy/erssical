@@ -41,7 +41,7 @@ EXE_BYTE=$(EXE).byte
 
 all: byte opt
 byte: erssical.cma $(EXE_BYTE)
-opt: errsical.cmxa errsical.cmxs $(EXE)
+opt: erssical.cmxa erssical.cmxs $(EXE)
 
 CMOFILES= \
 	ers_types.cmo
@@ -58,10 +58,10 @@ erssical.cmxa: $(CMIFILES) $(CMXFILES)
 erssical.cmxa: $(CMIFILES) $(CMXFILES)
 	$(OCAMLOPT) -o $@ -a $(CMXFILES)
 
-$(EXE): errsical.cmxa ers_main.cmx
+$(EXE): erssical.cmxa ers_main.cmx
 	$(OCAMLOPT) -o $@ -package $(PACKAGES) -linkpkg $^
 
-$(EXE_BYTE): errsical.cma ers_main.cmo
+$(EXE_BYTE): erssical.cma ers_main.cmo
 	$(OCAMLC) -o $@ -package $(PACKAGES) -linkpkg $^
 
 .PHONY: doc depend
