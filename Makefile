@@ -26,7 +26,7 @@
 #
 VERSION=0.1
 
-PACKAGES=erssical
+PACKAGES=rss
 
 OF_FLAGS=-package $(PACKAGES)
 OCAMLFIND=ocamlfind
@@ -44,9 +44,7 @@ byte: erssical.cma $(EXE_BYTE)
 opt: errsical.cmxa errsical.cmxs $(EXE)
 
 CMOFILES= \
-	ers_types.cmo \
-	ers_io.cmo \
-	ers.cmo
+	ers_types.cmo
 
 CMXFILES=$(CMOFILES:.cmo=.cmx)
 CMIFILES=$(CMOFILES:.cmo=.cmi)
@@ -59,6 +57,12 @@ erssical.cmxa: $(CMIFILES) $(CMXFILES)
 
 erssical.cmxa: $(CMIFILES) $(CMXFILES)
 	$(OCAMLOPT) -o $@ -a $(CMXFILES)
+
+$(EXE): errsical.cmxa ers_main.cmx
+	$(OCAMLOPT) -o $@ -package $(PACKAGES) -linkpkg $^
+
+$(EXE_BYTE): errsical.cma ers_main.cmo
+	$(OCAMLC) -o $@ -package $(PACKAGES) -linkpkg $^
 
 .PHONY: doc depend
 
