@@ -44,7 +44,8 @@ byte: erssical.cma $(EXE_BYTE)
 opt: erssical.cmxa erssical.cmxs $(EXE)
 
 CMOFILES= \
-	ers_types.cmo
+	ers_types.cmo \
+	ers_io.cmo
 
 CMXFILES=$(CMOFILES:.cmo=.cmx)
 CMIFILES=$(CMOFILES:.cmo=.cmi)

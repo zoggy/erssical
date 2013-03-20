@@ -1,8 +1,17 @@
 
 (** *)
 
+let url_of_string s =
+  try Neturl.parse_url ~enable_fragment: true ~accept_8bits: true s
+  with Neturl.Malformed_URL ->
+    failwith (Printf.sprintf "Malformed URL %S" s)
+;;
+let string_of_url = Neturl.string_of_url;;
+
+let base_url = url_of_string "http://foo.com/event.html#"
+
 type event_level = Beginner | Confirmed | Expert
-type event_type = Conference | Seminar | Course | Workshop
+type event_type = Conference | Seminar | Course | Workshop | Dojo
 
 type location =
   { loc_href : Neturl.url option ;
@@ -19,7 +28,7 @@ type event = {
     ev_location : location option ;
     ev_start : Netdate.t option ;
     ev_end : Netdate.t option ;
-    ev_audience : string ;
+    ev_audience : string option ;
   }
 
 
@@ -41,3 +50,11 @@ type feed =
 
 type item = event Rss.item_t
 type channel = (unit, event) Rss.channel_t
+
+let event ?level ?typ ?(tech=[]) ?(scidom=[]) ?(speakers=[])
+  ?(organizers=[]) ?location ?start_date ?end_date ?audience () = {
+    ev_level = level ; ev_type = typ ; ev_tech = tech ;
+    ev_scidom = scidom ; ev_speakers = speakers ; ev_organizers = organizers ;
+    ev_location = location ; ev_start = start_date ; ev_end = end_date ;
+    ev_audience = audience ;
+  }
