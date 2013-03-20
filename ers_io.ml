@@ -153,6 +153,49 @@ let (opts : (unit, Ers_types.event) Rss.opts) = Rss.make_opts ~read_item_data ()
 
 let channel_of_file file = Rss.channel_t_of_file opts file
 
-let print_item_data ev = []
+let string_item_xmls = List.map (fun s -> E ((("","item"),[]), [D s]));;
 
+let xmls_of_level ev = []
+let xmls_of_type ev = []
+let xmls_of_tech ev =
+  match ev.ev_tech with
+    [] -> []
+  | l -> [ E ((tag_tech, []), string_item_xmls l) ]
 
+let xmls_of_scidom ev =
+  match ev.ev_scidom with
+    [] -> []
+  | l -> [ E ((tag_scidom, []), string_item_xmls l) ]
+
+let xmls_of_speakers ev =
+  match ev.ev_speakers with
+    [] -> []
+  | l -> [ E ((tag_speakers, []), string_item_xmls l) ]
+
+let xmls_of_organizers ev =
+  match ev.ev_organizers with
+    [] -> []
+  | l -> [ E ((tag_organizers, []), string_item_xmls l) ]
+
+let xmls_of_location ev = []
+let xmls_of_start ev = []
+let xmls_of_end ev = []
+let xmls_of_audience ev = []
+
+let printers =
+  [ xmls_of_level ;
+    xmls_of_type ;
+    xmls_of_tech ;
+    xmls_of_scidom ;
+    xmls_of_speakers ;
+    xmls_of_organizers ;
+    xmls_of_location ;
+    xmls_of_start ;
+    xmls_of_end ;
+    xmls_of_audience ;
+  ]
+
+let item_data_printer ev =
+  List.fold_right (fun f acc -> (f ev) @ acc) printers []
+
+let print_file file ch = Rss.print_file ~item_data_printer file ch
