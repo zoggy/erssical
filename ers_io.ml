@@ -200,3 +200,28 @@ let item_data_printer ev =
   List.fold_right (fun f acc -> (f ev) @ acc) printers []
 
 let print_file file ch = Rss.print_file ~item_data_printer file ch
+
+module CF = Config_file
+let url_wrappers =
+  { CF.to_raw = (fun s -> CF.Raw.String (Ers_types.string_of_url s)) ;
+    CF.of_raw =
+      (function
+           CF.Raw.String s -> (Ers_types.url_of_string s)
+       | _ -> raise (CF.Wrong_type (fun oc -> output_string oc "Expected a URL"))
+      ) ;
+  }
+
+let make_group () =
+  let group = new CF.group in
+  let sources = new CF.list_cp url_wrappers ~group ["sources"] [] "URLs of source feeds" in
+  (group, sources)
+;;
+
+let feed_of_file file =
+  let (g, sources) = make_group () in
+  g#read file;
+  { feed_sources = sources#get ;
+    feed_filter = Ers_types.filter () ;
+  }
+
+;;

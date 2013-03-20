@@ -42,6 +42,12 @@ type filter = {
     f_scidom : string constr ;
   }
 
+let empty_constr () = { c_with = [] ; c_witho = [] }
+
+let filter ?(level=empty_constr()) ?(tech=empty_constr())
+  ?(typ=empty_constr()) ?(scidom=empty_constr()) () =
+  { f_level = level ; f_tech = tech ; f_type = typ ; f_scidom = scidom }
+;;
 
 type feed =
   { feed_sources : Neturl.url list ; (** list of source RSS feeds *)
