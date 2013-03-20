@@ -79,8 +79,8 @@ webdoc: doc
 .depend depend:
 	$(OCAMLDEP) erss*.ml erss*.mli > .depend
 
-rsstest: rss.cmxa rsstest.ml
-	$(OCAMLOPT) -linkpkg -o $@ $(OCAML_COMPFLAGS) $^
+erstest: erssical.cmxa ers_test.ml
+	$(OCAMLOPT) -package $(PACKAGES) -linkpkg -o $@ $(OCAML_COMPFLAGS) $^
 
 
 # installation :

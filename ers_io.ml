@@ -138,7 +138,8 @@ let read_event_xml ev = function
   E ((tag, atts), xmls) ->
     begin
       try (List.assoc tag funs) ev atts xmls
-      with Not_found -> ev
+      with Not_found ->
+        ev
     end
 | D _ -> ev
 
