@@ -68,6 +68,24 @@ let strip_string s =
       |	Some last -> String.sub s first ((last-first)+1)
 (*/c==v=[String.strip_string]=1.0====*)
 
+let get_att ?(pref="") name atts =
+  try Some (List.assoc (pref,name) atts)
+  with
+    Not_found -> None
+;;
+
+let get_elt ?(pref="") name xmls =
+  let f = function
+    D _ -> false
+  | E ((tag,_),_) -> tag = (pref, name)
+  in
+  try
+    match List.find f xmls with
+      D _ -> assert false
+    | E ((_,atts), subs) -> Some (atts, subs)
+  with Not_found -> None
+;;
+
 let read_string_items =
   let f acc = function
     E ((("", "item"), _), [D s]) -> s :: acc
@@ -199,29 +217,60 @@ let printers =
 let item_data_printer ev =
   List.fold_right (fun f acc -> (f ev) @ acc) printers []
 
-let print_file file ch = Rss.print_file ~item_data_printer file ch
+let print_rss_file file ch = Rss.print_file ~item_data_printer file ch
 
-module CF = Config_file
-let url_wrappers =
-  { CF.to_raw = (fun s -> CF.Raw.String (Ers_types.string_of_url s)) ;
-    CF.of_raw =
-      (function
-           CF.Raw.String s -> (Ers_types.url_of_string s)
-       | _ -> raise (CF.Wrong_type (fun oc -> output_string oc "Expected a URL"))
-      ) ;
-  }
-
-let make_group () =
-  let group = new CF.group in
-  let sources = new CF.list_cp url_wrappers ~group ["sources"] [] "URLs of source feeds" in
-  (group, sources)
+let q_return_type_of_atts atts =
+  match get_att "type" atts with
+  | Some "text/calendar" -> Ical
+  | _ -> Rss
 ;;
 
-let feed_of_file file =
-  let (g, sources) = make_group () in
-  g#read file;
-  { feed_sources = sources#get ;
-    feed_filter = Ers_types.filter () ;
-  }
+let read_source acc xml =
+  match get_elt "source" [xml] with
+    None -> acc
+  | Some (atts, subs) ->
+      match get_att "href" atts with
+        Some s_url ->
+          let source = Url (Ers_types.url_of_string s_url) in
+          source :: acc
+      | None ->
+          acc
 
+let read_sources xmls =
+  match get_elt "sources" xmls with
+    None -> []
+  | Some (_, subs) ->
+      List.rev (List.fold_left read_source [] subs)
+;;
+
+let read_filter xmls = Ers_types.filter ()
+
+let query_of_xml xml =
+  match xml with
+    D _ -> failwith "Invalid XML: PCData"
+  | E ((_,atts), subs) ->
+      let typ = q_return_type_of_atts atts in
+      let sources = read_sources subs in
+      let filter = read_filter subs in
+      { q_type = typ ;
+        q_sources = sources ;
+        q_filter = filter ;
+      }
+;;
+
+let query_of_file file =
+  let ic =
+     try open_in file
+     with Sys_error s -> failwith s
+  in
+  try
+    let xml = Rss.xml_of_source (`Channel ic) in
+    query_of_xml xml
+  with
+    e -> close_in ic; raise e
+;;
+
+let query_of_string s =
+  let xml = Rss.xml_of_source (`String s) in
+  query_of_xml xml
 ;;

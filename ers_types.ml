@@ -49,13 +49,18 @@ let filter ?(level=empty_constr()) ?(tech=empty_constr())
   { f_level = level ; f_tech = tech ; f_type = typ ; f_scidom = scidom }
 ;;
 
-type feed =
-  { feed_sources : Neturl.url list ; (** list of source RSS feeds *)
-    feed_filter : filter ;
-  }
-
 type item = event Rss.item_t
 type channel = (unit, event) Rss.channel_t
+
+type query_return_type = Rss | Ical
+type source = Url of Neturl.url | Feed of channel
+
+type query =
+  { q_type : query_return_type ;
+    q_sources : source list ; (** list of source RSS feeds *)
+    q_filter : filter ;
+  }
+
 
 let event ?level ?typ ?(tech=[]) ?(scidom=[]) ?(speakers=[])
   ?(organizers=[]) ?location ?start_date ?end_date ?audience () = {

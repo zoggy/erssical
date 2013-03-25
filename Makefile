@@ -26,7 +26,7 @@
 #
 VERSION=0.1
 
-PACKAGES=rss,config-file
+PACKAGES=rss
 
 OF_FLAGS=-package $(PACKAGES)
 OCAMLFIND=ocamlfind
