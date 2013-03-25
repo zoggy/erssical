@@ -3,7 +3,7 @@
   <sources>
     <source href="http://zoggy.github.com/stog/index.rss"/>
     <source href="http://planet.ocamlcore.org/rss20.xml"/>
-    <source href="file:///home/guesdon/devel/irsscal/tests/example.rss"/>
+    <source href="https://raw.github.com/zoggy/erssical/master/tests/example.rss"/>
   </sources>
   <target>
     <title>Merged channel</title>

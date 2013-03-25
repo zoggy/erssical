@@ -23,6 +23,8 @@ let get_source_channels query =
 
 module UMap = Map.Make
   (struct type t = Neturl.url let compare = Ers_types.compare_url end)
+module SMap = Map.Make
+  (struct type t= string let compare = Pervasives.compare end)
 
 let merge_channels ?target channels =
   let f_item (nolink, map) item =
@@ -37,14 +39,23 @@ let merge_channels ?target channels =
             (nolink, UMap.add url item map)
   in
   let f_chan acc ch = List.fold_left f_item acc ch.ch_items in
-  let (nolink, map) = List.fold_left f_chan ([], UMap.empty)
-    ((match target with None -> [] | Some ch -> [ch]) @ channels)
+  let channels = (match target with None -> [] | Some ch -> [ch]) @ channels in
+  let (nolink, map) = List.fold_left f_chan ([], UMap.empty) channels in
+  let namespaces =
+    let f map (ns,url) =
+      try ignore (SMap.find ns map); map
+      with Not_found ->
+        SMap.add ns url map
+    in
+    let f_ch map ch = List.fold_left f map ch.ch_namespaces in
+    let map = List.fold_left f_ch SMap.empty channels in
+    SMap.fold (fun ns url acc -> (ns, url) :: acc) map []
   in
   let items = UMap.fold (fun _ item acc -> item :: acc) map nolink in
   let items = Rss.sort_items_by_date items in
   match target, channels with
     Some ch, _
-  | None, ch :: _ -> { ch with ch_items = items }
+  | None, ch :: _ -> { ch with ch_items = items ; ch_namespaces = namespaces }
   | None, [] -> failwith "No channel to merge"
 ;;
   
