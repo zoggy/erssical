@@ -2,6 +2,12 @@
 <query type="application/rss+xml">
   <sources>
     <source href="http://zoggy.github.com/stog/index.rss"/>
+    <source href="http://planet.ocamlcore.org/rss20.xml"/>
   </sources>
+  <target>
+    <title>Merged channel</title>
+    <link>file:///tmp/t.xml</link>
+    <description>Merged channel - test of ERSSICAL</description>
+  </target>
   <filter></filter>
 </query>

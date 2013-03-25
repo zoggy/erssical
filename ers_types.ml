@@ -8,6 +8,8 @@ let url_of_string s =
 ;;
 let string_of_url = Neturl.string_of_url;;
 
+let compare_url u1 u2 = String.compare (string_of_url u1) (string_of_url u2)
+
 let base_url = url_of_string "http://foo.com/event.html#"
 
 type event_level = Beginner | Confirmed | Expert
@@ -53,11 +55,12 @@ type item = event Rss.item_t
 type channel = (unit, event) Rss.channel_t
 
 type query_return_type = Rss | Ical
-type source = Url of Neturl.url | Feed of channel
+type source = Url of Neturl.url | Channel of channel
 
 type query =
   { q_type : query_return_type ;
     q_sources : source list ; (** list of source RSS feeds *)
+    q_target : channel option ;
     q_filter : filter ;
   }
 

@@ -218,7 +218,13 @@ let printers =
 let item_data_printer ev =
   List.fold_right (fun f acc -> (f ev) @ acc) printers []
 
-let print_rss_file file ch = Rss.print_file ~item_data_printer file ch
+let file_of_channel ch file = Rss.print_file ~item_data_printer file ch
+let string_of_channel ?indent ch =
+  let buf = Buffer.create 256 in
+  let fmt = Format.formatter_of_buffer buf in
+  Rss.print_channel ~item_data_printer ?indent fmt ch ;
+  Format.pp_print_flush fmt ();
+  Buffer.contents buf
 
 let q_return_type_of_atts atts =
   match get_att "type" atts with
@@ -235,7 +241,8 @@ let read_source acc xml =
           let source = Url (Ers_types.url_of_string s_url) in
           source :: acc
       | None ->
-          acc
+          let ch = fst (Rss.channel_t_of_xmls opts subs) in
+          (Channel ch) :: acc
 
 let read_sources xmls =
   match get_elt "sources" xmls with
@@ -243,6 +250,11 @@ let read_sources xmls =
   | Some (_, subs) ->
       List.rev (List.fold_left read_source [] subs)
 ;;
+
+let read_target xmls =
+  match get_elt "target" xmls with
+  | None -> None
+  | Some (_, subs) -> Some (fst (Rss.channel_t_of_xmls opts subs))
 
 let read_filter xmls = Ers_types.filter ()
 
@@ -252,9 +264,11 @@ let query_of_xml xml =
   | E ((_,atts), subs) ->
       let typ = q_return_type_of_atts atts in
       let sources = read_sources subs in
+      let target = read_target subs in
       let filter = read_filter subs in
       { q_type = typ ;
         q_sources = sources ;
+        q_target = target ;
         q_filter = filter ;
       }
 ;;
