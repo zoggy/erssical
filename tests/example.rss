@@ -22,8 +22,8 @@ event information.</description>
         <pubDate>Tue, 25 Mar 2013 14:00:00 GMT</pubDate>
         <foo:technologies><item>ocaml</item></foo:technologies>
         <foo:scientificDomains><item>programming</item><item>typing</item></foo:scientificDomains>
-        <foo:startDate>Wed, 24 Apr 2013 09:00:00 +0200</foo:startDate>
-        <foo:endDate>Thu, 25 Apr 2013 17:00:00 +0200</foo:endDate>
+        <foo:startDate>Wed, 24 Apr 2013 09:00:00 +0100</foo:startDate>
+        <foo:endDate>Thu, 25 Apr 2013 17:00:00 +0100</foo:endDate>
         <foo:location href="http://saclay.inria.fr">INRIA Saclay</foo:location>
       </item>
 
