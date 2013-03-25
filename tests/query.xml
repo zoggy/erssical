@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<query type="application/rss+xml">
+  <sources>
+    <source href="http://zoggy.github.com/stog/index.rss"/>
+  </sources>
+  <filter></filter>
+</query>
