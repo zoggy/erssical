@@ -1,0 +1,5 @@
+- add error handling in Ers_curl
+- http server
+- read and apply filters
+- return ical or rss depending on q_type
+- add .mli files and library
