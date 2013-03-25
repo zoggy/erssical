@@ -114,7 +114,22 @@ let read_organizers ev atts xmls =
   let f l = { ev with ev_organizers = ev.ev_organizers @ l } in
   read_string_items f xmls
 
-let read_location ev atts xmls = ev
+let read_location ev atts xmls =
+  let url =
+    match get_att "href" atts with
+      None -> None
+    | Some s -> Some (Ers_types.url_of_string s)
+  in
+  let name_pcdata = List.fold_right
+   (fun xml acc ->
+       match xml with
+         D s -> s :: acc
+       | _ -> acc
+    )
+    xmls []
+  in
+  let name = String.concat " " name_pcdata in
+  { ev with ev_location = Some { loc_href = url ; loc_name = name } }
 
 let read_date_pcdata = function
   [D s] ->
