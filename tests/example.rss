@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<rss version="2.0" xmlns:foo="http://foo.com/event.html#">
+   <channel>
+      <title>Example of event-RSS</title>
+      <link>http://zoggy.github.com/erssical/</link>
+      <description>Example of event-RSS, with some items and additional
+event information.</description>
+      <language>en-us</language>
+      <pubDate>Tue, 25 Mar 2013 14:00:00 GMT</pubDate>
+      <lastBuildDate>Tue, 25 Mar 2013 14:00:00 GMT</lastBuildDate>
+      <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+      <generator>Chamo</generator>
+      <managingEditor>foo@example.com</managingEditor>
+      <webMaster>webmaster@example.com</webMaster>
+
+      <item>
+        <title>Formation OCaml</title>
+        <link>http://form-ocaml.forge.ocamlcore.org/</link>
+        <description>An introduction to OCaml.
+        Imperative and functional programming.
+        </description>
+        <pubDate>Tue, 25 Mar 2013 14:00:00 GMT</pubDate>
+        <foo:technologies><item>ocaml</item></foo:technologies>
+        <foo:scientificDomains><item>programming</item><item>typing</item></foo:scientificDomains>
+        <foo:startDate>Wed, 24 Apr 2013 09:00:00 GMT</foo:startDate>
+        <foo:endDate>Thu, 25 Apr 2013 17:00:00 GMT</foo:endDate>
+        <foo:location href="http://saclay.inria.fr">INRIA Saclay</foo:location>
+      </item>
+
+      <item>
+        <title>Présentation de Stog</title>
+        <link>http://reseau-loops.github.com//2013_04_23_presentation_stog.html</link>
+        <description>Stog est un générateur de sites web statiques. Ses caractéristiques principales sont:
+- pas de nouvelle syntaxe, le contenu des pages est écrit en X(HT)ML,
+- vérification des liens internes, y compris vers des éléments des pages,
+- gestion de sites multilingues,
+- gestion de code LaTeX pour une insertion via du SVG,
+- insertion et évaluation de code OCaml,
+- gestion de tables des matières,
+- génération de fils RSS,
+- possibilité d'ajouter ses propres tags et règles de réécriture.</description>
+        <pubDate>Tue, 25 Mar 2013 15:00:00 GMT</pubDate>
+        <foo:technologies><item>stog</item><item>HTML</item><item>ocaml</item></foo:technologies>
+        <foo:scientificDomains><item>web</item><item>blogging</item></foo:scientificDomains>
+        <foo:startDate>Tue, 23 Apr 2013 14:00:00 GMT</foo:startDate>
+        <foo:endDate>Tue, 23 Apr 2013 16:00:00 GMT</foo:endDate>
+        <foo:location href="http://saclay.inria.fr">INRIA Saclay</foo:location>
+      </item>
+   </channel>
+</rss>
