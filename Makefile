@@ -26,7 +26,7 @@
 #
 VERSION=0.1
 
-PACKAGES=rss
+PACKAGES=rss,curl
 
 OF_FLAGS=-package $(PACKAGES)
 OCAMLFIND=ocamlfind
@@ -45,7 +45,9 @@ opt: erssical.cmxa erssical.cmxs $(EXE)
 
 CMOFILES= \
 	ers_types.cmo \
-	ers_io.cmo
+	ers_curl.cmo \
+	ers_io.cmo \
+	ers_do.cmo
 
 CMXFILES=$(CMOFILES:.cmo=.cmx)
 CMIFILES=$(CMOFILES:.cmo=.cmi)

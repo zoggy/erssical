@@ -171,6 +171,7 @@ let read_item_data xmls =
 let (opts : (unit, Ers_types.event) Rss.opts) = Rss.make_opts ~read_item_data ();;
 
 let channel_of_file file = Rss.channel_t_of_file opts file
+let channel_of_string str = Rss.channel_t_of_string opts str
 
 let string_item_xmls = List.map (fun s -> E ((("","item"),[]), [D s]));;
 
