@@ -65,8 +65,6 @@ let merge_channels ?target channels =
   | None, [] -> failwith "No channel to merge"
 ;;
 
-let apply_filter f ch = ch;;
-
 let execute ?rtype query =
   let ret_typ = match rtype with None -> query.q_type | Some t -> t in
   let target_errors = ref [] in
@@ -89,7 +87,7 @@ let execute ?rtype query =
         Some target
     in
     let channel = merge_channels ?target channels in
-    let channel = apply_filter query.q_filter channel in
+    let channel = Ers_filter.filter query.q_filter channel in
     match ret_typ with
     | Debug -> Res_debug (String.concat "\n" ("Ok" :: !target_errors @ !source_errors))
     | Rss -> Res_channel channel

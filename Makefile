@@ -48,6 +48,7 @@ CMOFILES= \
 	ers_curl.cmo \
 	ers_io.cmo \
 	ers_ical.cmo \
+	ers_filter.cmo \
 	ers_do.cmo
 
 CMXFILES=$(CMOFILES:.cmo=.cmx)
