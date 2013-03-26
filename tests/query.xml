@@ -10,5 +10,7 @@
     <link>file:///tmp/t.xml</link>
     <description>Merged channel - test of ERSSICAL</description>
   </target>
-  <filter></filter>
+  <filter>
+    <technologies><item>ocaml</item></technologies>
+  </filter>
 </query>

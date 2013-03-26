@@ -12,6 +12,9 @@ let compare_url u1 u2 = String.compare (string_of_url u1) (string_of_url u2)
 
 let base_url = url_of_string "http://foo.com/event.html#"
 
+module SMap = Map.Make
+  (struct type t= string let compare = Pervasives.compare end)
+
 type event_level = Beginner | Confirmed | Expert
 type event_type = Conference | Seminar | Course | Workshop | Dojo
 
@@ -32,27 +35,27 @@ type event = {
     ev_end : Netdate.t option ;
     ev_audience : string option ;
   }
-
-
-type 'a constr = { c_with : 'a list ; c_witho : 'a list }
-
-
-type filter = {
-    f_level : event_level constr ;
-    f_tech : string constr ;
-    f_type : event_type constr ;
-    f_scidom : string constr ;
-  }
-
-let empty_constr () = { c_with = [] ; c_witho = [] }
-
-let filter ?(level=empty_constr()) ?(tech=empty_constr())
-  ?(typ=empty_constr()) ?(scidom=empty_constr()) () =
-  { f_level = level ; f_tech = tech ; f_type = typ ; f_scidom = scidom }
 ;;
 
 type item = event Rss.item_t
 type channel = (unit, event) Rss.channel_t
+
+module ItemSet = Set.Make
+  (struct
+     type t = item
+     let compare = Rss.compare_item ~comp_data: Pervasives.compare
+   end)
+
+type 'a constr = { c_with : 'a list ; c_witho : 'a list };;
+
+type contains_connector = Conn_or | Conn_and
+type filter =
+| Not of filter
+| Or of filter list
+| And of filter list
+| Contains of (string * contains_connector * Str.regexp list)
+
+type comp_filter = ItemSet.t -> ItemSet.t
 
 type source = Url of Neturl.url | Channel of channel
 
@@ -67,7 +70,7 @@ type query =
   { q_type : query_return_type ;
     q_sources : source list ; (** list of source RSS feeds *)
     q_target : source option ;
-    q_filter : filter ;
+    q_filter : filter option ;
   }
 
 

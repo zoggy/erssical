@@ -8,16 +8,33 @@ let tag_ =
   fun s -> (url, s)
 
 let tag_level = tag_"level"
-let tag_type = tag_"type"
-let tag_tech = tag_"technologies"
-let tag_scidom = tag_"scientificDomains"
-let tag_speakers = tag_"speakers"
-let tag_organizers = tag_"organizers"
+
+let tag_type_short = "type"
+let tag_type = tag_ tag_type_short
+
+let tag_tech_short = "technologies"
+let tag_tech = tag_ tag_tech_short
+
+let tag_scidom_short = "scientificDomains"
+let tag_scidom = tag_ tag_scidom_short
+
+let tag_speakers_short = "speakers"
+let tag_speakers = tag_ tag_speakers_short
+
+let tag_organizers_short = "organizers"
+let tag_organizers = tag_ tag_organizers_short
+
 let tag_location = tag_"location"
-let tag_start = tag_"startDate"
-let tag_end = tag_"endDate"
+
+let tag_start_short = "startDate"
+let tag_start = tag_ tag_start_short
+
+let tag_end_short = "endDate"
+let tag_end = tag_ tag_end_short
+
 let tag_audience = tag_"audience"
 
+(** {2 Reading} *)
 
 (*c==v=[String.split_string]=1.1====*)
 let split_string ?(keep_empty=false) s chars =
@@ -182,11 +199,132 @@ let read_item_data xmls =
   Some ev
 ;;
 
+let q_return_type_of_atts atts =
+  match get_att "type" atts with
+  | Some "text/calendar" -> Ical
+  | _ -> Rss
+;;
 
 let (opts : (unit, Ers_types.event) Rss.opts) = Rss.make_opts ~read_item_data ();;
 
 let channel_of_file file = Rss.channel_t_of_file opts file
 let channel_of_string str = Rss.channel_t_of_string opts str
+
+let read_source ?(tag="source") xmls =
+  match get_elt tag xmls with
+    None -> None
+  | Some (atts, subs) ->
+      match get_att "href" atts with
+        Some s_url ->
+          let source = Url (Ers_types.url_of_string s_url) in
+          Some source
+      | None ->
+          let ch = fst (Rss.channel_t_of_xmls opts subs) in
+          Some (Channel ch)
+
+let read_sources xmls =
+  match get_elt "sources" xmls with
+    None -> []
+  | Some (_, subs) ->
+      let f acc xml =
+        match read_source [xml] with
+          None -> acc
+        | Some s -> s :: acc
+      in
+      List.rev (List.fold_left f [] subs)
+;;
+
+let read_target xmls = read_source ~tag: "target" xmls
+
+let tags_contains =
+  [
+    tag_type_short ; tag_tech_short ; tag_scidom_short ;
+    tag_speakers_short ; tag_organizers_short ;
+  ]
+
+(*
+let tag_start_short = "startDate"
+let tag_start = tag_ tag_start_short
+
+let tag_end_short = "endDate"
+let tag_end = tag_ tag_end_short
+*)
+
+let read_re_items =
+  let f acc = function
+    E ((("", "item"), atts), [D s]) ->
+      let re = 
+        match get_att "regexp" atts with
+          Some "true" -> Str.regexp s
+        | _ -> Str.regexp_string s
+      in
+      re :: acc
+  | _ -> acc
+  in
+  fun cont xmls ->
+    cont (List.rev (List.fold_left f [] xmls))
+;;
+
+let rec read_filter acc = function
+| D _ -> acc
+| E ((("","and"), _), subs) -> (And (read_filters subs)) :: acc
+| E ((("","or"), _), subs) -> (Or (read_filters subs)) :: acc
+| E ((("","not"), _), subs) -> (Not (And (read_filters subs))) :: acc
+| E (((_, tag), atts), subs) when List.mem tag tags_contains ->
+    let connector =
+      match get_att "connector" atts with
+      | None | Some "and" -> Conn_and
+      | Some "or" -> Conn_or
+      | Some s -> failwith (Printf.sprintf "Invalid filter connector %S" s)
+    in
+    let items = read_re_items (fun x -> x) subs in
+    (Contains (tag, connector, items)) :: acc
+| E (((ns,tag), _), _) ->
+    failwith
+      (Printf.sprintf "Invalid filter node \"%s%s\""
+       (match ns with "" -> "" | s -> s^":") tag
+      )
+
+and read_filters xmls = List.fold_left read_filter [] xmls
+
+let read_filter_opt xmls =
+  match get_elt "filter" xmls with
+    None -> None
+  | Some (_,subs) -> Some (Ers_types.And (read_filters subs))
+
+let query_of_xml xml =
+  match xml with
+    D _ -> failwith "Invalid XML: PCData"
+  | E ((_,atts), subs) ->
+      let typ = q_return_type_of_atts atts in
+      let sources = read_sources subs in
+      let target = read_target subs in
+      let filter = read_filter_opt subs in
+      { q_type = typ ;
+        q_sources = sources ;
+        q_target = target ;
+        q_filter = filter ;
+      }
+;;
+
+let query_of_file file =
+  let ic =
+     try open_in file
+     with Sys_error s -> failwith s
+  in
+  try
+    let xml = Rss.xml_of_source (`Channel ic) in
+    query_of_xml xml
+  with
+    e -> close_in ic; raise e
+;;
+
+let query_of_string s =
+  let xml = Rss.xml_of_source (`String s) in
+  query_of_xml xml
+;;
+
+(** {2 Writing} *)
 
 let string_item_xmls = List.map (fun s -> E ((("","item"),[]), [D s]));;
 
@@ -241,68 +379,3 @@ let string_of_channel ?indent ch =
   Format.pp_print_flush fmt ();
   Buffer.contents buf
 
-let q_return_type_of_atts atts =
-  match get_att "type" atts with
-  | Some "text/calendar" -> Ical
-  | _ -> Rss
-;;
-
-let read_source ?(tag="source") xmls =
-  match get_elt tag xmls with
-    None -> None
-  | Some (atts, subs) ->
-      match get_att "href" atts with
-        Some s_url ->
-          let source = Url (Ers_types.url_of_string s_url) in
-          Some source
-      | None ->
-          let ch = fst (Rss.channel_t_of_xmls opts subs) in
-          Some (Channel ch)
-
-let read_sources xmls =
-  match get_elt "sources" xmls with
-    None -> []
-  | Some (_, subs) ->
-      let f acc xml =
-        match read_source [xml] with
-          None -> acc
-        | Some s -> s :: acc
-      in
-      List.rev (List.fold_left f [] subs)
-;;
-
-let read_target xmls = read_source ~tag: "target" xmls
-
-let read_filter xmls = Ers_types.filter ()
-
-let query_of_xml xml =
-  match xml with
-    D _ -> failwith "Invalid XML: PCData"
-  | E ((_,atts), subs) ->
-      let typ = q_return_type_of_atts atts in
-      let sources = read_sources subs in
-      let target = read_target subs in
-      let filter = read_filter subs in
-      { q_type = typ ;
-        q_sources = sources ;
-        q_target = target ;
-        q_filter = filter ;
-      }
-;;
-
-let query_of_file file =
-  let ic =
-     try open_in file
-     with Sys_error s -> failwith s
-  in
-  try
-    let xml = Rss.xml_of_source (`Channel ic) in
-    query_of_xml xml
-  with
-    e -> close_in ic; raise e
-;;
-
-let query_of_string s =
-  let xml = Rss.xml_of_source (`String s) in
-  query_of_xml xml
-;;

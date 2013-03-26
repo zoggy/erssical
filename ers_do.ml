@@ -29,8 +29,7 @@ let get_target_channel query =
 
 module UMap = Map.Make
   (struct type t = Neturl.url let compare = Ers_types.compare_url end)
-module SMap = Map.Make
-  (struct type t= string let compare = Pervasives.compare end)
+module SMap = Ers_types.SMap
 
 let merge_channels ?target channels =
   let f_item (nolink, map) item =
@@ -87,7 +86,11 @@ let execute ?rtype query =
         Some target
     in
     let channel = merge_channels ?target channels in
-    let channel = Ers_filter.filter query.q_filter channel in
+    let channel =
+      match query.q_filter with
+        None -> channel
+      | Some f -> Ers_filter.filter f channel
+    in
     match ret_typ with
     | Debug -> Res_debug (String.concat "\n" ("Ok" :: !target_errors @ !source_errors))
     | Rss -> Res_channel channel
