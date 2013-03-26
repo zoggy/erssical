@@ -54,6 +54,8 @@ type filter =
 | Or of filter list
 | And of filter list
 | Contains of (string * contains_connector * Str.regexp list)
+| StartDate of Netdate.t option * Netdate.t option
+| EndDate of Netdate.t option * Netdate.t option
 
 type comp_filter = ItemSet.t -> ItemSet.t
 

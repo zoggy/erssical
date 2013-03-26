@@ -39,6 +39,67 @@ let compile_contain_filter field re =
   let pred = compile_contain_pred field re in
   fun set -> S.filter pred set
 
+let is_before d1 d2 =
+  match d1, d2 with
+    None, None -> true
+  | Some _, None ->
+      (* a date and no "before constraint" => ok *)
+      true
+  | None, Some _ ->
+      (* no date and a "before constraint" => ok *)
+      true
+  | Some d, Some const ->
+      Pervasives.compare (Netdate.since_epoch d) (Netdate.since_epoch const) < 0
+;;
+
+let is_after d1 d2 =
+  match d1, d2 with
+    None, None -> true
+  | Some _, None ->
+      (* a date and no "after constraint" => ok *)
+      true
+  | None, Some _ ->
+      (* no date and a "after constraint" => ok *)
+      true
+  | Some d, Some const ->
+      Pervasives.compare (Netdate.since_epoch d) (Netdate.since_epoch const) >= 0
+;;
+
+let compile_date_pred f after before =
+  fun item ->
+    let date = f item in
+    is_after date after && is_before date before
+;;
+
+
+let compile_date_filter f after before =
+  match after, before with
+    None, None ->
+      (fun set -> set)
+  | _ ->
+      let pred = compile_date_pred f after before in
+      (fun set -> S.filter pred set)
+;;
+
+let compile_start_date_filter =
+  let f item =
+    match item.Rss.item_data with
+      None -> item.Rss.item_pubdate
+    | Some ev -> ev.ev_start
+  in
+  compile_date_filter f
+;;
+
+
+let compile_end_date_filter =
+  let f item =
+    match item.Rss.item_data with
+      None -> None
+    | Some ev -> ev.ev_end
+  in
+  compile_date_filter f
+;;
+
 let rec compile_filter = function
   Not f ->
     let f = compile_filter f in
@@ -51,6 +112,8 @@ let rec compile_filter = function
     let l = List.map compile_filter l in
     let f_and set f = S.inter set (f set) in
     (fun set -> List.fold_left f_and set l)
+| StartDate (after, before) -> compile_start_date_filter after before
+| EndDate (after, before) -> compile_end_date_filter after before
 | Contains (field, connector, values) ->
     let filters = List.map (compile_contain_filter field) values in
     match connector with

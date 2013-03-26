@@ -11,6 +11,8 @@
     <description>Merged channel - test of ERSSICAL</description>
   </target>
   <filter>
-    <technologies><item>ocaml</item></technologies>
+    <technologies><item regexp="true">.*</item></technologies>
+    <startDate before="25 Apr 2013 07:00:00 +0100"/>
+    <endDate after="20 Mar 2013 07:00:00 +0100"/>
   </filter>
 </query>

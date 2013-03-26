@@ -253,7 +253,7 @@ let tag_end = tag_ tag_end_short
 let read_re_items =
   let f acc = function
     E ((("", "item"), atts), [D s]) ->
-      let re = 
+      let re =
         match get_att "regexp" atts with
           Some "true" -> Str.regexp s
         | _ -> Str.regexp_string s
@@ -264,6 +264,19 @@ let read_re_items =
   fun cont xmls ->
     cont (List.rev (List.fold_left f [] xmls))
 ;;
+
+let get_date_bound att atts =
+  match get_att att atts with
+    None -> None
+  | Some s ->
+      try Some (Netdate.parse s)
+      with _ -> None
+;;
+
+let get_date_bounds atts =
+  let before = get_date_bound "before" atts in
+  let after = get_date_bound "after" atts in
+  (after, before)
 
 let rec read_filter acc = function
 | D _ -> acc
@@ -279,6 +292,12 @@ let rec read_filter acc = function
     in
     let items = read_re_items (fun x -> x) subs in
     (Contains (tag, connector, items)) :: acc
+| E (((_,tag), atts), _) when tag = tag_start_short ->
+    let (after, before) = get_date_bounds atts in
+    (StartDate (after, before)) :: acc
+| E (((_,tag), atts), _) when tag = tag_end_short ->
+    let (after, before) = get_date_bounds atts in
+    (EndDate (after, before)) :: acc
 | E (((ns,tag), _), _) ->
     failwith
       (Printf.sprintf "Invalid filter node \"%s%s\""
