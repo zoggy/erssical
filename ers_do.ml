@@ -9,12 +9,12 @@ let set_item_source src item =
   | _ -> item
 
 let get_source = function
-| Channel ch -> ch
+| Channel ch -> (ch, [])
 | Url url ->
     let contents = Ers_curl.get url in
-    let ch = fst (Ers_io.channel_of_string contents) in
+    let (ch, errors) = Ers_io.channel_of_string contents in
     let src = { Rss.src_url = url ; src_name = ch.Rss.ch_title } in
-    { ch with Rss.ch_items = List.map (set_item_source src) ch.Rss.ch_items }
+    ({ ch with Rss.ch_items = List.map (set_item_source src) ch.Rss.ch_items }, errors)
 
 
 let get_source_channels query =
@@ -64,4 +64,42 @@ let merge_channels ?target channels =
   | None, ch :: _ -> { ch with ch_items = items ; ch_namespaces = namespaces }
   | None, [] -> failwith "No channel to merge"
 ;;
-  
+
+let apply_filter f ch = ch;;
+
+let execute ?rtype query =
+  let ret_typ = match rtype with None -> query.q_type | Some t -> t in
+  let target_errors = ref [] in
+  let source_errors = ref [] in
+  try
+    let channels = get_source_channels query in
+    let (channels, errors) = List.fold_left
+      (fun (acc_ch, acc_errors) (ch, errors) ->
+         (ch :: acc_ch, (List.rev errors) @ acc_errors))
+        ([], []) channels
+    in
+    let channels = List.rev channels in
+    source_errors := List.rev errors ;
+    let target = get_target_channel query in
+    let target =
+      match target with
+        None -> None
+      | Some (target, errors) ->
+        target_errors := errors ;
+        Some target
+    in
+    let channel = merge_channels ?target channels in
+    let channel = apply_filter query.q_filter channel in
+    match ret_typ with
+    | Debug -> Res_debug (String.concat "\n" ("Ok" :: !target_errors @ !source_errors))
+    | Rss -> Res_channel channel
+    | Ical -> Res_ical (Ers_ical.ical_of_channel channel)
+  with
+    e when ret_typ = Debug ->
+      begin
+        match e with
+          Sys_error s | Failure s ->
+            Res_debug (String.concat "\n" (("Error: "^s) :: !target_errors @ !source_errors))
+        | _ -> Res_debug (Printexc.to_string e)
+      end
+;;

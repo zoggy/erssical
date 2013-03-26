@@ -54,8 +54,14 @@ let filter ?(level=empty_constr()) ?(tech=empty_constr())
 type item = event Rss.item_t
 type channel = (unit, event) Rss.channel_t
 
-type query_return_type = Rss | Ical
 type source = Url of Neturl.url | Channel of channel
+
+type query_return_type = Rss | Ical | Debug
+
+type query_result =
+  | Res_channel of channel
+  | Res_ical of string
+  | Res_debug of string
 
 type query =
   { q_type : query_return_type ;
