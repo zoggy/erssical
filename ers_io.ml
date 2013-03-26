@@ -242,14 +242,6 @@ let tags_contains =
     tag_speakers_short ; tag_organizers_short ;
   ]
 
-(*
-let tag_start_short = "startDate"
-let tag_start = tag_ tag_start_short
-
-let tag_end_short = "endDate"
-let tag_end = tag_ tag_end_short
-*)
-
 let read_re_items =
   let f acc = function
     E ((("", "item"), atts), [D s]) ->
