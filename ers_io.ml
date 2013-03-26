@@ -247,29 +247,31 @@ let q_return_type_of_atts atts =
   | _ -> Rss
 ;;
 
-let read_source acc xml =
-  match get_elt "source" [xml] with
-    None -> acc
+let read_source ?(tag="source") xmls =
+  match get_elt tag xmls with
+    None -> None
   | Some (atts, subs) ->
       match get_att "href" atts with
         Some s_url ->
           let source = Url (Ers_types.url_of_string s_url) in
-          source :: acc
+          Some source
       | None ->
           let ch = fst (Rss.channel_t_of_xmls opts subs) in
-          (Channel ch) :: acc
+          Some (Channel ch)
 
 let read_sources xmls =
   match get_elt "sources" xmls with
     None -> []
   | Some (_, subs) ->
-      List.rev (List.fold_left read_source [] subs)
+      let f acc xml =
+        match read_source [xml] with
+          None -> acc
+        | Some s -> s :: acc
+      in
+      List.rev (List.fold_left f [] subs)
 ;;
 
-let read_target xmls =
-  match get_elt "target" xmls with
-  | None -> None
-  | Some (_, subs) -> Some (fst (Rss.channel_t_of_xmls opts subs))
+let read_target xmls = read_source ~tag: "target" xmls
 
 let read_filter xmls = Ers_types.filter ()
 

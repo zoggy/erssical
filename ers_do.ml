@@ -21,6 +21,12 @@ let get_source_channels query =
   List.map get_source query.q_sources
 ;;
 
+let get_target_channel query =
+  match query.q_target with
+    None -> None
+  | Some source -> Some (get_source source)
+;;
+
 module UMap = Map.Make
   (struct type t = Neturl.url let compare = Ers_types.compare_url end)
 module SMap = Map.Make

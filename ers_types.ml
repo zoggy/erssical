@@ -60,7 +60,7 @@ type source = Url of Neturl.url | Channel of channel
 type query =
   { q_type : query_return_type ;
     q_sources : source list ; (** list of source RSS feeds *)
-    q_target : channel option ;
+    q_target : source option ;
     q_filter : filter ;
   }
 
