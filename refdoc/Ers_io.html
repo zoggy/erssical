@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Ers_curl.html">
+<link rel="next" href="Ers_ical.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Ers_types" rel="Chapter" href="Ers_types.html">
+<link title="Ers_curl" rel="Chapter" href="Ers_curl.html">
+<link title="Ers_io" rel="Chapter" href="Ers_io.html">
+<link title="Ers_ical" rel="Chapter" href="Ers_ical.html">
+<link title="Ers_filter" rel="Chapter" href="Ers_filter.html">
+<link title="Ers_do" rel="Chapter" href="Ers_do.html"><link title="Tags used in XML event information" rel="Section" href="#2_TagsusedinXMLeventinformation">
+<link title="Utilities" rel="Section" href="#2_Utilities">
+<link title="Reading channels and queries from XML" rel="Section" href="#2_ReadingchannelsandqueriesfromXML">
+<link title="Writing channels and queries to XML" rel="Section" href="#2_WritingchannelsandqueriestoXML">
+<title>Erssical library reference : Ers_io</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Ers_curl.html" title="Ers_curl">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Ers_ical.html" title="Ers_ical">Next</a>
+</div>
+<h1>Module <a href="type_Ers_io.html">Ers_io</a></h1>
+<pre><span class="keyword">module</span> Ers_io: <code class="code">sig</code> <a href="Ers_io.html">..</a> <code class="code">end</code></pre><div class="info">
+Reading and writing channels and queries.<br>
+</div>
+<hr width="100%">
+<br>
+<h2 id="2_TagsusedinXMLeventinformation">Tags used in XML event information</h2>
+  <code class="code">tag_short</code> is the short name, without namespace, for example <code class="code">"technologies"</code>.
+  <code class="code">tag</code> is the name with the prefix, which is the <a href="Ers_types.html#VALbase_url"><code class="code">Ers_types.base_url</code></a>.<br>
+<pre><span id="VALtag_level"><span class="keyword">val</span> tag_level</span> : <code class="type">string * string</code></pre><pre><span id="VALtag_type_short"><span class="keyword">val</span> tag_type_short</span> : <code class="type">string</code></pre><pre><span id="VALtag_type"><span class="keyword">val</span> tag_type</span> : <code class="type">string * string</code></pre><pre><span id="VALtag_tech_short"><span class="keyword">val</span> tag_tech_short</span> : <code class="type">string</code></pre><pre><span id="VALtag_tech"><span class="keyword">val</span> tag_tech</span> : <code class="type">string * string</code></pre><pre><span id="VALtag_scidom_short"><span class="keyword">val</span> tag_scidom_short</span> : <code class="type">string</code></pre><pre><span id="VALtag_scidom"><span class="keyword">val</span> tag_scidom</span> : <code class="type">string * string</code></pre><pre><span id="VALtag_speakers_short"><span class="keyword">val</span> tag_speakers_short</span> : <code class="type">string</code></pre><pre><span id="VALtag_speakers"><span class="keyword">val</span> tag_speakers</span> : <code class="type">string * string</code></pre><pre><span id="VALtag_organizers_short"><span class="keyword">val</span> tag_organizers_short</span> : <code class="type">string</code></pre><pre><span id="VALtag_organizers"><span class="keyword">val</span> tag_organizers</span> : <code class="type">string * string</code></pre><pre><span id="VALtag_location"><span class="keyword">val</span> tag_location</span> : <code class="type">string * string</code></pre><pre><span id="VALtag_start_short"><span class="keyword">val</span> tag_start_short</span> : <code class="type">string</code></pre><pre><span id="VALtag_start"><span class="keyword">val</span> tag_start</span> : <code class="type">string * string</code></pre><pre><span id="VALtag_end_short"><span class="keyword">val</span> tag_end_short</span> : <code class="type">string</code></pre><pre><span id="VALtag_end"><span class="keyword">val</span> tag_end</span> : <code class="type">string * string</code></pre><pre><span id="VALtag_audience"><span class="keyword">val</span> tag_audience</span> : <code class="type">string * string</code></pre><br>
+<h2 id="2_Utilities">Utilities</h2><br>
+<pre><span id="VALsplit_string"><span class="keyword">val</span> split_string</span> : <code class="type">?keep_empty:bool -> string -> char list -> string list</code></pre><pre><span id="VALstrip_string"><span class="keyword">val</span> strip_string</span> : <code class="type">string -> string</code></pre><pre><span id="VALget_att"><span class="keyword">val</span> get_att</span> : <code class="type">?pref:string -> 'a -> ((string * 'a) * 'b) list -> 'b option</code></pre><pre><span id="VALget_elt"><span class="keyword">val</span> get_elt</span> : <code class="type">?pref:string -><br>       string -> Rss.xmltree list -> (Xmlm.attribute list * Rss.xmltree list) option</code></pre><br>
+<h2 id="2_ReadingchannelsandqueriesfromXML">Reading channels and queries from XML</h2>
+<p>
+
+ The functions raise <code class="code">Failure</code> in case of error.<br>
+<pre><span id="VALmime_type_ical"><span class="keyword">val</span> mime_type_ical</span> : <code class="type">string</code></pre><pre><span id="VALmime_type_rss"><span class="keyword">val</span> mime_type_rss</span> : <code class="type">string</code></pre><pre><span id="VALopts"><span class="keyword">val</span> opts</span> : <code class="type">(unit, <a href="Ers_types.html#TYPEevent">Ers_types.event</a>) Rss.opts</code></pre><pre><span id="VALchannel_of_file"><span class="keyword">val</span> channel_of_file</span> : <code class="type">string -> (unit, <a href="Ers_types.html#TYPEevent">Ers_types.event</a>) Rss.channel_t * string list</code></pre><pre><span id="VALchannel_of_string"><span class="keyword">val</span> channel_of_string</span> : <code class="type">string -> (unit, <a href="Ers_types.html#TYPEevent">Ers_types.event</a>) Rss.channel_t * string list</code></pre><pre><span id="VALquery_of_xml"><span class="keyword">val</span> query_of_xml</span> : <code class="type">Rss.xmltree -> <a href="Ers_types.html#TYPEquery">Ers_types.query</a></code></pre><pre><span id="VALquery_of_file"><span class="keyword">val</span> query_of_file</span> : <code class="type">string -> <a href="Ers_types.html#TYPEquery">Ers_types.query</a></code></pre><pre><span id="VALquery_of_string"><span class="keyword">val</span> query_of_string</span> : <code class="type">string -> <a href="Ers_types.html#TYPEquery">Ers_types.query</a></code></pre><br>
+<h2 id="2_WritingchannelsandqueriestoXML">Writing channels and queries to XML</h2><br>
+<pre><span id="VALfile_of_channel"><span class="keyword">val</span> file_of_channel</span> : <code class="type">('a, <a href="Ers_types.html#TYPEevent">Ers_types.event</a>) Rss.channel_t -> string -> unit</code></pre><pre><span id="VALstring_of_channel"><span class="keyword">val</span> string_of_channel</span> : <code class="type">?indent:int -> ('a, <a href="Ers_types.html#TYPEevent">Ers_types.event</a>) Rss.channel_t -> string</code></pre></body></html>

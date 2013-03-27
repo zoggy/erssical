@@ -1,0 +1,417 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="next" href="Ers_curl.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Ers_types" rel="Chapter" href="Ers_types.html">
+<link title="Ers_curl" rel="Chapter" href="Ers_curl.html">
+<link title="Ers_io" rel="Chapter" href="Ers_io.html">
+<link title="Ers_ical" rel="Chapter" href="Ers_ical.html">
+<link title="Ers_filter" rel="Chapter" href="Ers_filter.html">
+<link title="Ers_do" rel="Chapter" href="Ers_do.html"><link title="Using URLs" rel="Section" href="#2_UsingURLs">
+<link title="Events" rel="Section" href="#2_Events">
+<link title="Items and channels" rel="Section" href="#2_Itemsandchannels">
+<link title="Filters" rel="Section" href="#2_Filters">
+<link title="Queries" rel="Section" href="#2_Queries">
+<title>Erssical library reference : Ers_types</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Ers_curl.html" title="Ers_curl">Next</a>
+</div>
+<h1>Module <a href="type_Ers_types.html">Ers_types</a></h1>
+<pre><span class="keyword">module</span> Ers_types: <code class="code">sig</code> <a href="Ers_types.html">..</a> <code class="code">end</code></pre><div class="info">
+Representation of Event RSS channels and queries.<br>
+</div>
+<hr width="100%">
+<pre><span class="keyword">module</span> <a href="Ers_types.SMap.html">SMap</a>: <code class="type">Map.S</code><code class="type">  with type key = string</code></pre><br>
+<h2 id="2_UsingURLs">Using URLs</h2><br>
+<pre><span id="VALurl_of_string"><span class="keyword">val</span> url_of_string</span> : <code class="type">string -> Neturl.url</code></pre><div class="info">
+<b>Raises</b> <code>Failure</code> in case of parse error.<br>
+</div>
+<pre><span id="VALstring_of_url"><span class="keyword">val</span> string_of_url</span> : <code class="type">Neturl.url -> string</code></pre><pre><span id="VALcompare_url"><span class="keyword">val</span> compare_url</span> : <code class="type">Neturl.url -> Neturl.url -> int</code></pre><pre><span id="VALbase_url"><span class="keyword">val</span> base_url</span> : <code class="type">Neturl.url</code></pre><div class="info">
+The base URL used for namespace of event fields in RSS channels.<br>
+</div>
+<br>
+<h2 id="2_Events">Events</h2>
+<p>
+
+An event is represented by additional information in nodes under the <code class="code">&lt;item&gt;</code>
+ XML nodes. These additional nodes are prefixed by a namespace (to be valid
+ RSS extension). This namespace must be associated to the <a href="Ers_types.html#VALbase_url"><code class="code">Ers_types.base_url</code></a> above.<br>
+<pre><code><span id="TYPEevent_level"><span class="keyword">type</span> <code class="type"></code>event_level</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent_level.Beginner"><span class="constructor">Beginner</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent_level.Confirmed"><span class="constructor">Confirmed</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent_level.Expert"><span class="constructor">Expert</span></span></code></td>
+
+</tr></table>
+
+
+<pre><code><span id="TYPEevent_type"><span class="keyword">type</span> <code class="type"></code>event_type</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent_type.Conference"><span class="constructor">Conference</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent_type.Seminar"><span class="constructor">Seminar</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent_type.Course"><span class="constructor">Course</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent_type.Workshop"><span class="constructor">Workshop</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent_type.Dojo"><span class="constructor">Dojo</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent_type.Other_type"><span class="constructor">Other_type</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr></table>
+
+
+<pre><code><span id="TYPElocation"><span class="keyword">type</span> <code class="type"></code>location</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTlocation.loc_href">loc_href</span>&nbsp;:<code class="type">Neturl.url option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTlocation.loc_name">loc_name</span>&nbsp;:<code class="type">string</code>;</code></td>
+
+</tr></table>
+}
+
+
+<pre><code><span id="TYPEevent"><span class="keyword">type</span> <code class="type"></code>event</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent.ev_level">ev_level</span>&nbsp;:<code class="type"><a href="Ers_types.html#TYPEevent_level">event_level</a> option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent.ev_type">ev_type</span>&nbsp;:<code class="type"><a href="Ers_types.html#TYPEevent_type">event_type</a> option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent.ev_tech">ev_tech</span>&nbsp;:<code class="type">string list</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent.ev_scidom">ev_scidom</span>&nbsp;:<code class="type">string list</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent.ev_speakers">ev_speakers</span>&nbsp;:<code class="type">string list</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent.ev_organizers">ev_organizers</span>&nbsp;:<code class="type">string list</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent.ev_location">ev_location</span>&nbsp;:<code class="type"><a href="Ers_types.html#TYPElocation">location</a> option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent.ev_start">ev_start</span>&nbsp;:<code class="type">Netdate.t option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent.ev_end">ev_end</span>&nbsp;:<code class="type">Netdate.t option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTevent.ev_audience">ev_audience</span>&nbsp;:<code class="type">string option</code>;</code></td>
+
+</tr></table>
+}
+
+
+<pre><span id="VALevent"><span class="keyword">val</span> event</span> : <code class="type">?level:<a href="Ers_types.html#TYPEevent_level">event_level</a> -><br>       ?typ:<a href="Ers_types.html#TYPEevent_type">event_type</a> -><br>       ?tech:string list -><br>       ?scidom:string list -><br>       ?speakers:string list -><br>       ?organizers:string list -><br>       ?location:<a href="Ers_types.html#TYPElocation">location</a> -><br>       ?start_date:Netdate.t -><br>       ?end_date:Netdate.t -> ?audience:string -> unit -> <a href="Ers_types.html#TYPEevent">event</a></code></pre><br>
+<h2 id="2_Itemsandchannels">Items and channels</h2><br>
+<pre><span id="TYPEitem"><span class="keyword">type</span> <code class="type"></code>item</span> = <code class="type"><a href="Ers_types.html#TYPEevent">event</a> Rss.item_t</code> </pre>
+
+<pre><span id="TYPEchannel"><span class="keyword">type</span> <code class="type"></code>channel</span> = <code class="type">(unit, <a href="Ers_types.html#TYPEevent">event</a>) Rss.channel_t</code> </pre>
+
+<pre><span class="keyword">module</span> <a href="Ers_types.ItemSet.html">ItemSet</a>: <code class="type">Set.S</code><code class="type">  with type elt = item</code></pre><br>
+<h2 id="2_Filters">Filters</h2>
+<p>
+
+Filters allow to keep only some items of an Event RSS channel.<br>
+<pre><code><span id="TYPEcontains_connector"><span class="keyword">type</span> <code class="type"></code>contains_connector</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcontains_connector.Conn_or"><span class="constructor">Conn_or</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcontains_connector.Conn_and"><span class="constructor">Conn_and</span></span></code></td>
+
+</tr></table>
+
+
+<pre><code><span id="TYPEfilter"><span class="keyword">type</span> <code class="type"></code>filter</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTfilter.Not"><span class="constructor">Not</span></span> <span class="keyword">of</span> <code class="type"><a href="Ers_types.html#TYPEfilter">filter</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTfilter.Or"><span class="constructor">Or</span></span> <span class="keyword">of</span> <code class="type"><a href="Ers_types.html#TYPEfilter">filter</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTfilter.And"><span class="constructor">And</span></span> <span class="keyword">of</span> <code class="type"><a href="Ers_types.html#TYPEfilter">filter</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTfilter.Contains"><span class="constructor">Contains</span></span> <span class="keyword">of</span> <code class="type">(string * <a href="Ers_types.html#TYPEcontains_connector">contains_connector</a> * Str.regexp list)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTfilter.StartDate"><span class="constructor">StartDate</span></span> <span class="keyword">of</span> <code class="type">Netdate.t option * Netdate.t option</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >(after (inclusive), before (exclusive))</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTfilter.EndDate"><span class="constructor">EndDate</span></span> <span class="keyword">of</span> <code class="type">Netdate.t option * Netdate.t option</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >(after (inclusive), before (exclusive))</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+
+
+<br>
+<h2 id="2_Queries">Queries</h2>
+<p>
+
+A query is composed of source RSS channels, an optional target RSS channel and
+an optional filter.
+The sources and the optional target will merged, then the filter will be
+be applied on the merge result to keep only selected items.
+The target channel is used as base channel: all its information (title,
+link, description, ...) is kept (except items which are processed as described
+above).
+If no target channel is given, then the first source is used as base channel.
+If no source and no target is given, this is considered as an error.
+<p>
+
+The structure to compute is indicated by the "type" attribute of the
+"&lt;query&gt;" top node of the query XML document. "type" can be:<ul>
+<li><code class="code">"application/rss+xml"</code> to indicate that computing the query will return
+  a new Event RSS containing (eventually filtered) items,</li>
+<li><code class="code">"text/calendar"</code> to indicate that the merged channel must be converted to
+  the Ical format.</li>
+</ul>
+<br>
+<pre><code><span id="TYPEsource"><span class="keyword">type</span> <code class="type"></code>source</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTsource.Url"><span class="constructor">Url</span></span> <span class="keyword">of</span> <code class="type">Neturl.url</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTsource.Channel"><span class="constructor">Channel</span></span> <span class="keyword">of</span> <code class="type"><a href="Ers_types.html#TYPEchannel">channel</a></code></code></td>
+
+</tr></table>
+
+<div class="info">
+A source can be a channel given directly in a <code class="code">&lt;source&gt;</code> node, or
+  it can be a URL, given in the "href" attribute of the <code class="code">&lt;source&gt;</code> node.
+  In the latter case, the channel will be fetched
+  from this URL (using Curl library).<br>
+</div>
+
+<pre><code><span id="TYPEquery_return_type"><span class="keyword">type</span> <code class="type"></code>query_return_type</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery_return_type.Rss"><span class="constructor">Rss</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery_return_type.Ical"><span class="constructor">Ical</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery_return_type.Debug"><span class="constructor">Debug</span></span></code></td>
+
+</tr></table>
+
+<div class="info">
+A query can be asked to return a new channel, a calendar or debug
+  information, i.e. text information, for example errors encountered while
+  parsing source and target channels.<br>
+</div>
+
+<pre><code><span id="TYPEquery_result"><span class="keyword">type</span> <code class="type"></code>query_result</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery_result.Res_channel"><span class="constructor">Res_channel</span></span> <span class="keyword">of</span> <code class="type"><a href="Ers_types.html#TYPEchannel">channel</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery_result.Res_ical"><span class="constructor">Res_ical</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery_result.Res_debug"><span class="constructor">Res_debug</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr></table>
+
+<div class="info">
+This is the result computed from a query. A calendar is just the
+  string in the Ical format.<br>
+</div>
+
+<pre><code><span id="TYPEquery"><span class="keyword">type</span> <code class="type"></code>query</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery.q_type">q_type</span>&nbsp;:<code class="type"><a href="Ers_types.html#TYPEquery_return_type">query_return_type</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery.q_sources">q_sources</span>&nbsp;:<code class="type"><a href="Ers_types.html#TYPEsource">source</a> list</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery.q_target">q_target</span>&nbsp;:<code class="type"><a href="Ers_types.html#TYPEsource">source</a> option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery.q_filter">q_filter</span>&nbsp;:<code class="type"><a href="Ers_types.html#TYPEfilter">filter</a> option</code>;</code></td>
+
+</tr></table>
+}
+
+
+</body></html>

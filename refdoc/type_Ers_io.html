@@ -1,0 +1,54 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Ers_types" rel="Chapter" href="Ers_types.html">
+<link title="Ers_curl" rel="Chapter" href="Ers_curl.html">
+<link title="Ers_io" rel="Chapter" href="Ers_io.html">
+<link title="Ers_ical" rel="Chapter" href="Ers_ical.html">
+<link title="Ers_filter" rel="Chapter" href="Ers_filter.html">
+<link title="Ers_do" rel="Chapter" href="Ers_do.html"><title>Erssical library reference : Ers_io</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_level&nbsp;:&nbsp;string&nbsp;*&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_type_short&nbsp;:&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_type&nbsp;:&nbsp;string&nbsp;*&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_tech_short&nbsp;:&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_tech&nbsp;:&nbsp;string&nbsp;*&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_scidom_short&nbsp;:&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_scidom&nbsp;:&nbsp;string&nbsp;*&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_speakers_short&nbsp;:&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_speakers&nbsp;:&nbsp;string&nbsp;*&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_organizers_short&nbsp;:&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_organizers&nbsp;:&nbsp;string&nbsp;*&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_location&nbsp;:&nbsp;string&nbsp;*&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_start_short&nbsp;:&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_start&nbsp;:&nbsp;string&nbsp;*&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_end_short&nbsp;:&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_end&nbsp;:&nbsp;string&nbsp;*&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;tag_audience&nbsp;:&nbsp;string&nbsp;*&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;split_string&nbsp;:&nbsp;?keep_empty:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;char&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;strip_string&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_att&nbsp;:&nbsp;?pref:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;((string&nbsp;*&nbsp;<span class="keywordsign">'</span>a)&nbsp;*&nbsp;<span class="keywordsign">'</span>b)&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>b&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_elt&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?pref:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Rss</span>.xmltree&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">Xmlm</span>.attribute&nbsp;list&nbsp;*&nbsp;<span class="constructor">Rss</span>.xmltree&nbsp;list)&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mime_type_ical&nbsp;:&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mime_type_rss&nbsp;:&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;opts&nbsp;:&nbsp;(unit,&nbsp;<span class="constructor">Ers_types</span>.event)&nbsp;<span class="constructor">Rss</span>.opts<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;channel_of_file&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(unit,&nbsp;<span class="constructor">Ers_types</span>.event)&nbsp;<span class="constructor">Rss</span>.channel_t&nbsp;*&nbsp;string&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;channel_of_string&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(unit,&nbsp;<span class="constructor">Ers_types</span>.event)&nbsp;<span class="constructor">Rss</span>.channel_t&nbsp;*&nbsp;string&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;query_of_xml&nbsp;:&nbsp;<span class="constructor">Rss</span>.xmltree&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ers_types</span>.query<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;query_of_file&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ers_types</span>.query<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;query_of_string&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ers_types</span>.query<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;file_of_channel&nbsp;:&nbsp;(<span class="keywordsign">'</span>a,&nbsp;<span class="constructor">Ers_types</span>.event)&nbsp;<span class="constructor">Rss</span>.channel_t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;string_of_channel&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?indent:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="keywordsign">'</span>a,&nbsp;<span class="constructor">Ers_types</span>.event)&nbsp;<span class="constructor">Rss</span>.channel_t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+<span class="keyword">end</span></code></body></html>
