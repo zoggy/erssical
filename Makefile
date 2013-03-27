@@ -83,7 +83,7 @@ $(HTTPSERVER_BYTE): erssical.cma ers_http.cmo
 
 doc: all
 	mkdir -p html
-	$(OCAMLDOC) -d html -html rss.mli
+	$(OCAMLDOC) -d html -html ers.mli
 
 webdoc: doc
 	mkdir -p ../erssical-gh-pages/refdoc
