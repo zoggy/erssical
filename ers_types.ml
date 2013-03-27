@@ -16,7 +16,7 @@ module SMap = Map.Make
   (struct type t= string let compare = Pervasives.compare end)
 
 type event_level = Beginner | Confirmed | Expert
-type event_type = Conference | Seminar | Course | Workshop | Dojo
+type event_type = Conference | Seminar | Course | Workshop | Dojo | Other_type of string
 
 type location =
   { loc_href : Neturl.url option ;
@@ -45,8 +45,6 @@ module ItemSet = Set.Make
      type t = item
      let compare = Rss.compare_item ~comp_data: Pervasives.compare
    end)
-
-type 'a constr = { c_with : 'a list ; c_witho : 'a list };;
 
 type contains_connector = Conn_or | Conn_and
 type filter =
