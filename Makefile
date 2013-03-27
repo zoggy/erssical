@@ -25,6 +25,7 @@
 
 #
 VERSION=0.1
+  # do not forget to change in META file too
 
 PACKAGES=rss,str,curl
 HTTPPACKAGES=nethttpd
