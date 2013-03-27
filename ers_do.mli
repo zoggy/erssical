@@ -1,4 +1,4 @@
-(** Operaitons on channels and queries. *)
+(** Operations on channels and queries. *)
 
 (** Return the list of channels from the queries, fetching channels from
   URLs if needed.
@@ -9,7 +9,7 @@
 val get_source_channels :
   Ers_types.query -> (Ers_types.channel * string list) list
 
-(** Same as {!get_source_channel} but return the optional target of the query. *)
+(** Same as {!get_source_channels} but return the optional target of the query. *)
 val get_target_channel :
   Ers_types.query -> (Ers_types.channel * string list) option
 

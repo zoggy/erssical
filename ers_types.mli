@@ -65,14 +65,14 @@ type filter =
   | Or of filter list
   | And of filter list
   | Contains of (string * contains_connector * Str.regexp list)
-  | StartDate of Netdate.t option * Netdate.t option (** after, before *)
-  | EndDate of Netdate.t option * Netdate.t option (** after, before *)
+  | StartDate of Netdate.t option * Netdate.t option (** (after (inclusive), before (exclusive)) *)
+  | EndDate of Netdate.t option * Netdate.t option (** (after (inclusive), before (exclusive)) *)
 
 (** {2 Queries}
 
 A query is composed of source RSS channels, an optional target RSS channel and
 an optional filter.
-The sources and the optional target will merged, then the filter will
+The sources and the optional target will merged, then the filter will be
 be applied on the merge result to keep only selected items.
 The target channel is used as base channel: all its information (title,
 link, description, ...) is kept (except items which are processed as described
@@ -82,16 +82,16 @@ If no source and no target is given, this is considered as an error.
 
 The structure to compute is indicated by the "type" attribute of the
 "<query>" top node of the query XML document. "type" can be:
-- "application/rss+xml" to indicate that computing the query will return
+- ["application/rss+xml"] to indicate that computing the query will return
   a new Event RSS containing (eventually filtered) items,
-- "text/calendar" to indicate that the merged channel must be converted to
+- ["text/calendar"] to indicate that the merged channel must be converted to
   the Ical format.
 *)
 
 (** A source can be a channel given directly in a [<source>] node, or
-  it can a URL, given in the "href" attribute of the [<source>] node.
-  In the latter case, the channel will be fetch (using Curl library)
-  from this URL.
+  it can be a URL, given in the "href" attribute of the [<source>] node.
+  In the latter case, the channel will be fetched
+  from this URL (using Curl library).
 *)
 type source = Url of Neturl.url | Channel of channel
 
