@@ -27,8 +27,9 @@
 VERSION=0.1
 
 PACKAGES=rss,str,curl
+HTTPPACKAGES=nethttpd
 
-OF_FLAGS=-package $(PACKAGES)
+OF_FLAGS=-package $(PACKAGES),$(HTTPPACKAGES)
 OCAMLFIND=ocamlfind
 OCAML_COMPFLAGS= -annot
 OCAMLC=$(OCAMLFIND) ocamlc $(OF_FLAGS) $(OCAML_COMPFLAGS)
@@ -39,9 +40,12 @@ OCAMLDEP=ocamldep
 EXE=erssical
 EXE_BYTE=$(EXE).byte
 
+HTTPSERVER=erssical-httpd
+HTTPSERVER_BYTE=$(HTTPSERVER).byte
+
 all: byte opt
-byte: erssical.cma $(EXE_BYTE)
-opt: erssical.cmxa erssical.cmxs $(EXE)
+byte: erssical.cma $(EXE_BYTE) $(HTTPSERVER_BYTE)
+opt: erssical.cmxa erssical.cmxs $(EXE) $(HTTPSERVER)
 
 CMOFILES= \
 	ers_types.cmo \
@@ -68,6 +72,12 @@ $(EXE): erssical.cmxa ers_main.cmx
 
 $(EXE_BYTE): erssical.cma ers_main.cmo
 	$(OCAMLC) -o $@ -package $(PACKAGES) -linkpkg $^
+
+$(HTTPSERVER): erssical.cmxa ers_http.cmx
+	$(OCAMLOPT) -o $@ -package $(PACKAGES),$(HTTPPACKAGES) -linkpkg $^
+
+$(HTTPSERVER_BYTE): erssical.cma ers_http.cmo
+	$(OCAMLC) -o $@ -package $(PACKAGES),$(HTTPPACKAGES) -linkpkg $^
 
 .PHONY: doc depend
 
@@ -106,6 +116,8 @@ archive:
 clean:
 	-$(RM) *.cm* *.a *.annot *.o
 	-$(RM) -r html
+	-$(RM) $(EXE) $(EXE_BYTE)
+	-$(RM) $(HTTPSERVER) $(HTTPSERVER_BYTE)
 
 # headers :
 ###########
