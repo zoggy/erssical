@@ -4,25 +4,49 @@
   {{:https://godirepo.camlcity.org/wwwsvn/trunk/code/?root=lib-ocamlnet2}OCamlnet distribution}
   and adapted to Erssical. *)
 
-let generate (cgi : Netcgi.cgi_activation) =
-  (* A Netcgi-based content provider *)
-  cgi#set_header
-    ~cache:`No_cache
-    ~content_type:"text/html; charset=\"iso-8859-1\""
-    ();
-  let data =
-    "<html>\n" ^
-    "  <head><title>Easy Engine</title></head>\n" ^
-    "  <body>\n" ^
-    "    <a href='foo'>GET something</a><br>\n" ^
-    "    <form method=POST encoding='form-data'>\n" ^
-    "      <input type=hidden name=sample value='sample'>\n" ^
-    "      <input type=submit value='POST something'>\n" ^
-    "    </form>\n" ^
-    "  </body>\n" ^
-    "</html>" in
-  cgi#output#output_string data;
-  cgi#output#commit_work ();
+let handle_http_query (cgi : Netcgi.cgi_activation) =
+  try
+    let query =
+      match cgi#argument_value "query-url" with
+        "" ->
+          begin
+            match cgi#argument_value "query" with
+              "" -> failwith "Missing query or query-url"
+            | s -> Ers_io.query_of_string s
+          end
+      | url_s ->
+        let url = Ers_types.url_of_string url_s in
+        let query_s = Ers_curl.get url in
+        Ers_io.query_of_string query_s
+    in
+    let rtype =
+      match cgi#argument_value "rtype" with
+      | "" -> None
+      | "ical" -> Some Ers_types.Ical
+      | s when s = Ers_io.mime_type_ical -> Some Ers_types.Ical
+      | "debug" -> Some Ers_types.Debug
+      | _ -> Some Ers_types.Rss
+    in
+    let (ctype, res) =
+      match Ers_do.execute ?rtype query with
+        Ers_types.Res_ical s -> (Ers_io.mime_type_ical, s)
+      | Ers_types.Res_channel ch -> (Ers_io.mime_type_rss, Ers_io.string_of_channel ch)
+      | Ers_types.Res_debug s -> ("text", s)
+    in
+    cgi#set_header
+      ~cache:`No_cache
+      ~content_type:(ctype ^ "; charset=\"UTF-8\"")
+      ();
+    cgi#output#output_string res;
+    cgi#output#commit_work ()
+  with Failure msg ->
+      (* A Netcgi-based content provider *)
+      cgi#set_header
+        ~cache:`No_cache
+        ~content_type:"text; charset=\"UTF-8\""
+        ();
+      cgi#output#output_string msg;
+      cgi#output#commit_work ()
 ;;
 
 let on_request notification =
@@ -49,7 +73,7 @@ let on_request notification =
          env#input_channel
          (fun _ _ _ -> `Automatic)
      in
-     generate cgi;
+     handle_http_query cgi;
     with
      e ->
        print_endline ("Uncaught exception: " ^ (Printexc.to_string e))

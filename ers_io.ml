@@ -199,9 +199,12 @@ let read_item_data xmls =
   Some ev
 ;;
 
+let mime_type_ical = "text/calendar"
+let mime_type_rss = "application/rss+xml"
+
 let q_return_type_of_atts atts =
   match get_att "type" atts with
-  | Some "text/calendar" -> Ical
+  | Some s when s = mime_type_ical -> Ical
   | _ -> Rss
 ;;
 
@@ -331,7 +334,7 @@ let query_of_file file =
 ;;
 
 let query_of_string s =
-  let xml = Rss.xml_of_source (`String s) in
+  let xml = Rss.xml_of_source (`String (0, s)) in
   query_of_xml xml
 ;;
 
