@@ -5665,6 +5665,16 @@ div.img-float-right {
   float: right ;
   margin-left: 1em ;
 }
+span.icode {
+  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-size: 13pt;
+  color: #333333;
+  background-color: #eeeef2;
+  padding: 0;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
 .author-photo {
   max-height: 120px;
 }
