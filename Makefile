@@ -36,6 +36,8 @@ OCAMLC=$(OCAMLFIND) ocamlc $(OF_FLAGS) $(OCAML_COMPFLAGS)
 OCAMLOPT=$(OCAMLFIND) ocamlopt $(OF_FLAGS) $(OCAML_COMFLAGS)
 OCAMLDOC=$(OCAMLFIND) ocamldoc $(OF_FLAGS)
 OCAMLDEP=ocamldep
+BINDIR=$(shell dirname `which ocamlc`)
+CP=cp -f
 
 EXE=erssical
 EXE_BYTE=$(EXE).byte
@@ -60,9 +62,6 @@ CMIFILES=$(CMOFILES:.cmo=.cmi)
 
 erssical.cma: $(CMIFILES) $(CMOFILES)
 	$(OCAMLC) -o $@ -a $(CMOFILES)
-
-erssical.cmxa: $(CMIFILES) $(CMXFILES)
-	$(OCAMLOPT) -o $@ -a $(CMXFILES)
 
 erssical.cmxa: $(CMIFILES) $(CMXFILES)
 	$(OCAMLOPT) -o $@ -a $(CMXFILES)
@@ -99,12 +98,25 @@ erstest: erssical.cmxa ers_test.ml
 
 # installation :
 ################
-install:
+install: install-lib install-bin
+
+install-lib:
 	$(OCAMLFIND) install erssical META LICENSE ers*.mli \
 	$(wildcard erssical.cmi erssical.cma erssical.cmxa erssical.a erssical.cmxs erssical.mli erssical.cmx)
 
-uninstall:
+install-bin:
+	for i in $(EXE) $(EXE_BYTE) $(HTTPSERVER) $(HTTPSERVER_BYTE); do \
+		if test -f $$i; then $(CP) $$i $(BINDIR)/; fi; \
+	done
+
+uninstall: uninstall-lib uninstall-bin
+
+uninstall-lib:
 	ocamlfind remove erssical
+
+uninstall-bin:
+	for i in $(EXE) $(EXE_BYTE) $(HTTPSERVER) $(HTTPSERVER_BYTE); do \
+		rm -f $(BINDIR)/$$i ; done
 
 # archive :
 ###########
