@@ -85,10 +85,8 @@ doc: all
 	mkdir -p html
 	$(OCAMLDOC) -t "Erssical library reference" -d html -html $(CMOFILES:.cmo=.mli)
 
-webdoc: doc
-	mkdir -p ../erssical-gh-pages/refdoc
-	cp html/* ../erssical-gh-pages/refdoc/
-	cp web/index.html web/style.css ../erssical-gh-pages/
+webdoc:
+	cd web && make
 
 .depend depend:
 	$(OCAMLDEP) erss*.ml erss*.mli > .depend
