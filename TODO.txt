@@ -1,3 +1,3 @@
-- add http server
-- add .mli files and library
 - add command line tool
+- install target
+- web site

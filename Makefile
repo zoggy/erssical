@@ -100,7 +100,7 @@ erstest: erssical.cmxa ers_test.ml
 # installation :
 ################
 install:
-	$(OCAMLFIND) install erssical META LICENSE \
+	$(OCAMLFIND) install erssical META LICENSE ers*.mli \
 	$(wildcard erssical.cmi erssical.cma erssical.cmxa erssical.a erssical.cmxs erssical.mli erssical.cmx)
 
 uninstall:

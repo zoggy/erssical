@@ -1,6 +1,6 @@
 version = "0.1"
 description = "Merging and converting RSS feeds to ical"
-requires = "rss"
+requires = "rss,curl,str"
 archive(byte) = "erssical.cma"
 archive(native) = "erssical.cmxa"
 archive(native,plugin) = "erssical.cmxs"
