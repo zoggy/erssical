@@ -11,3 +11,4 @@ erstest
 *.cmx
 *.cmxs
 *.cmxa
+.chamo*
