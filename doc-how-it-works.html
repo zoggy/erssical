@@ -84,18 +84,18 @@ information are given on <a href="http://zoggy.github.io/erssical/doc-event.html
 When given a query, Erssical performs the following operations:
 </p>
 <ol>
-<li>Fetch the source RSS channels given with a URL (
-  as source channels can also be embedded in the query);
+<li>Fetch the source RSS channels given with a URL
+  (as source channels can also be embedded in the query);
   each fetched channel can have default event information specified;
   in this case, the event information of each item of the channel is
   merged with the default information. For example, default keywords
   are added to all items of a channel.
 </li>
 <li>Merge the items of all source channels into a new channel. Description
-  (title, descrption, image, ...) of this new channel is the same as the first
+  (title, description, image, ...) of this new channel is the same as the first
   source channel, except if a target channel was specified in the query.
 </li>
-<li>If a filter was given, only the items of this new channel matching
+<li>If a filter was specified, only the items of this new channel matching
   the filter are kept.
 </li>
 <li>Depending of the output format specified, output the resulting RSS channel
