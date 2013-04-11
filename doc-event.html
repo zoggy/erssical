@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Erssical : Events</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="http://zoggy.github.io/erssical/style.css"/>
+<rssfeed/>
+</head><body>
+<div id="page">
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container">
+
+  <div class="nav-collapse">
+  <ul class="nav">
+    <li class="&lt;navbar-home/&gt;"><a href="http://zoggy.github.io/erssical">Erssical</a></li>
+    <li class="&lt;navbar-download/&gt;"><a href="http://zoggy.github.io/erssical/download.html">Download</a></li>
+    <li class="active"><a href="http://zoggy.github.io/erssical/doc.html">Documentation</a></li>
+    <li class="&lt;navbar-blog/&gt;"><a href="http://zoggy.github.io/erssical/blog.html">Blog</a></li>
+    <li class="&lt;navbar-about/&gt;"><a href="http://zoggy.github.io/erssical/about.html">?</a></li>
+  </ul>
+  </div>
+  <div class="nav pull-right">
+
+  </div>
+</div>
+</div>
+</div>
+
+<div id="header">
+
+<div class="page-title">Events</div>
+</div>
+<span/>
+
+
+<div class="section"><div class="section-title" id="ns">Namespace</div>
+<p>
+To add event information associated to RSS items, first you have to
+declare a namespace, as additional XML nodes in RSS documents must
+be prefixed by a namespace.
+</p>
+<p>In your RSS document, just declare the namespace, for example <code>ev</code>:</p>
+<pre class="code-xml"><span class="hl kwa">&lt;rss</span> <span class="hl kwb">version</span>=<span class="hl str">&quot;2.0&quot;</span>
+  xmlns:<span class="hl kwb">ev</span>=<span class="hl str">&quot;http://zoggy.github.io/erssical/doc-event.html#&quot;</span><span class="hl kwa">&gt;</span>
+   ...
+<span class="hl kwa">&lt;/rss&gt;</span></pre>
+</div>
+
+<div class="section"><div class="section-title" id="elements">Elements</div>
+<p>
+The following elements can be added under the <span class="icode"><span class="hl kwa">&lt;item&gt;</span>..<span class="hl kwa">&lt;/item&gt;</span></span> node.
+</p>
+
+<div class="subsection"><div class="subsection-title" id="audience">&lt;ev:audience&gt;</div>
+
+<p>Who can attend to this event, specified as free text. Example:</p>
+<pre class="code-xml"><span class="hl kwa">&lt;ev:audience&gt;</span>Software developers and researchers<span class="hl kwa">&lt;/ev:audience&gt;</span></pre>
+
+</div>
+
+
+
+<div class="subsection"><div class="subsection-title" id="endDate">&lt;ev:endDate&gt;</div>
+
+<p>When the event ends, in <span class="ext-a"><a href="http://asg.web.cmu.edu/rfc/rfc822.html#sec-5">RFC#822</a></span> format.
+Example:</p>
+<pre class="code-xml"><span class="hl kwa">&lt;ev:endDate&gt;</span>Thu, <span class="hl num">25</span> Apr <span class="hl num">2013 17</span>:<span class="hl num">00</span>:<span class="hl num">00</span> +<span class="hl num">0100</span><span class="hl kwa">&lt;/ev:endDate&gt;</span></pre>
+
+</div>
+
+
+
+<div class="subsection"><div class="subsection-title" id="keywords">&lt;ev:keywords&gt;</div>
+
+<p>Keywords, listed in <span class="icode"><span class="hl kwa">&lt;item&gt;</span>..<span class="hl kwa">&lt;/item&gt;</span></span> subnodes. Example:</p>
+<pre class="code-xml"><span class="hl kwa">&lt;ev:keywords&gt;</span>
+  <span class="hl kwa">&lt;item&gt;</span>ocaml<span class="hl kwa">&lt;/item&gt;</span>
+  <span class="hl kwa">&lt;item&gt;</span>web<span class="hl kwa">&lt;/item&gt;</span>
+  <span class="hl kwa">&lt;item&gt;</span>api<span class="hl kwa">&lt;/item&gt;</span>
+<span class="hl kwa">&lt;/ev:keywords&gt;</span></pre>
+
+</div>
+
+
+
+<div class="subsection"><div class="subsection-title" id="level">&lt;ev:level&gt;</div>
+
+<p>
+The expected level of the public. Not fully specified yet.
+</p>
+
+</div>
+
+
+
+<div class="subsection"><div class="subsection-title" id="location">&lt;ev:location&gt;</div>
+
+<p>Where the event takes place. This is free text. Example:</p>
+<pre class="code-xml"><span class="hl kwa">&lt;ev:location&gt;&lt;a</span> <span class="hl kwb">href</span>=<span class="hl str">&quot;http://www.inria.fr/centre/saclay&quot;</span><span class="hl kwa">&gt;</span>INRIA Paris-Île-de-France<span class="hl kwa">&lt;/a&gt;&lt;/ev:location&gt;</span></pre>
+
+</div>
+
+
+
+<div class="subsection"><div class="subsection-title" id="organizers">&lt;ev:organizers&gt;</div>
+
+<p>
+Who is organizing the event, each organizer being indicated as free text
+in a <span class="icode"><span class="hl kwa">&lt;item&gt;</span>..<span class="hl kwa">&lt;/item&gt;</span></span> subnodes.
+</p>
+
+</div>
+
+
+
+<div class="subsection"><div class="subsection-title" id="speakers">&lt;ev:speakers&gt;</div>
+
+<p>
+Who will speak or animate the event, each person being indicated as free text
+in a <span class="icode"><span class="hl kwa">&lt;item&gt;</span>..<span class="hl kwa">&lt;/item&gt;</span></span> subnodes.
+Example:
+<pre class="code-xml"><span class="hl kwa">&lt;ev:speakers&gt;</span>
+  <span class="hl kwa">&lt;item&gt;</span>Santa Claus <span class="hl kwd">&amp;lt;</span>santa-claus@rovaniemi.fi<span class="hl kwd">&amp;gt;</span><span class="hl kwa">&lt;/item&gt;</span>
+  <span class="hl kwa">&lt;item&gt;</span>Pinocchio <span class="hl kwd">&amp;lt;</span>pinoccio@coloddi.foo<span class="hl kwd">&amp;gt;</span><span class="hl kwa">&lt;/item&gt;</span>
+<span class="hl kwa">&lt;/ev:speakers&gt;</span></pre>
+</p>
+
+</div>
+
+
+
+<div class="subsection"><div class="subsection-title" id="startDate">&lt;ev:startDate&gt;</div>
+
+<p>When the event begins, in <span class="ext-a"><a href="http://asg.web.cmu.edu/rfc/rfc822.html#sec-5">RFC#822</a></span> format.
+Example:</p>
+<pre class="code-xml"><span class="hl kwa">&lt;ev:startDate&gt;</span>Wed, <span class="hl num">24</span> Apr <span class="hl num">2013 09</span>:<span class="hl num">00</span>:<span class="hl num">00</span> +<span class="hl num">0100</span><span class="hl kwa">&lt;/ev:startDate&gt;</span></pre>
+<p>Note that if no <span class="icode"><span class="hl kwa">&lt;startDate&gt;</span></span> is specified, the date of the item is used.
+This field allows to separate the date of the announce, in the RSS item, from the date
+of the event.</p>
+
+</div>
+
+
+
+
+<div class="subsection"><div class="subsection-title" id="type">&lt;ev:type&gt;</div>
+
+<p>The type of event. The content is not yet fully specified. Example:</p>
+<pre class="code-xml"><span class="hl kwa">&lt;ev:type&gt;</span>conference<span class="hl kwa">&lt;/ev:type&gt;</span></pre>
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+<footer id="bottombar">
+</footer>
+<script type="text/javascript" src="http://zoggy.github.io/erssical/jquery.js">_</script>
+<script type="text/javascript" src="http://zoggy.github.io/erssical/bootstrap-collapse.js">_</script>
+
+</body>
+</html>

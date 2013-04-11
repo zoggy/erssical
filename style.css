@@ -5591,11 +5591,14 @@ p {
   line-height: 1.5em;
   margin-bottom: 1.5em;
 }
+ul {
+  margin-bottom: 1.5em;
+}
 .subsection {
   margin-bottom: 1.5em;
 }
 .subsection-title {
-  font-size: 1.424em;
+  font-size: 1.266em;
   margin-bottom: 0.9363295880149812em;
   line-height: 0.9363295880149812em;
 }
@@ -5603,7 +5606,7 @@ p {
   margin-bottom: 1.5em;
 }
 .subsubsection-title {
-  font-size: 1.266em;
+  font-size: 1.125em;
   margin-bottom: 0.9363295880149812em;
   line-height: 0.9363295880149812em;
 }
@@ -5616,8 +5619,8 @@ p {
   margin-bottom: 1.5em;
 }
 .elt-item-title {
-  font-size: 1.266em;
-  line-height: 1.1848341232227488em;
+  font-size: 1.125em;
+  line-height: 1.3333333333333333em;
   margin-bottom: 0;
 }
 .elt-item .date {
@@ -5682,4 +5685,58 @@ span.icode {
   div.navbar {
     display: none;
   }
+}
+pre.hl {
+  color: #ffffff;
+  background-color: #005c70;
+  font-size: 10pt;
+  font-family: 'Courier New';
+}
+.hl.num {
+  color: #e01a70;
+}
+.hl.esc {
+  color: #ca4ae2;
+}
+.hl.str {
+  color: #ca4ae2;
+}
+.hl.dstr {
+  color: #ca4ae2;
+}
+.hl.slc {
+  color: #24c714;
+}
+.hl.com {
+  color: #24c714;
+}
+.hl.dir {
+  color: #1480b0;
+}
+.hl.opt {
+  color: #4d4d4d;
+}
+.hl.sym {
+  color: #f84800;
+}
+.hl.lin {
+  color: #7817b7;
+}
+.hl.kwa {
+  color: #1c45d6;
+}
+.hl.kwb {
+  color: #ed0f54;
+}
+.hl.kwc {
+  color: #26abe8;
+}
+.hl.kwd {
+  color: #1c45d6;
+}
+.hl.top {
+  color: #4d4d4d;
+}
+.hl.std {
+  color: black;
 }

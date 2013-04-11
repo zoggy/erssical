@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Erssical : How it works</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="http://zoggy.github.io/erssical/style.css"/>
+<rssfeed/>
+</head><body>
+<div id="page">
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container">
+
+  <div class="nav-collapse">
+  <ul class="nav">
+    <li class="&lt;navbar-home/&gt;"><a href="http://zoggy.github.io/erssical">Erssical</a></li>
+    <li class="&lt;navbar-download/&gt;"><a href="http://zoggy.github.io/erssical/download.html">Download</a></li>
+    <li class="active"><a href="http://zoggy.github.io/erssical/doc.html">Documentation</a></li>
+    <li class="&lt;navbar-blog/&gt;"><a href="http://zoggy.github.io/erssical/blog.html">Blog</a></li>
+    <li class="&lt;navbar-about/&gt;"><a href="http://zoggy.github.io/erssical/about.html">?</a></li>
+  </ul>
+  </div>
+  <div class="nav pull-right">
+
+  </div>
+</div>
+</div>
+</div>
+
+<div id="header">
+
+<div class="page-title">How it works</div>
+</div>
+<span/>
+
+
+<p>
+Erssical reads queries and outputs an Event RSS channel or calendar data in Ical format.
+</p>
+
+<ul class="toc"><li class="toc-section"><a href="#eventrss">Event RSS Channels ?</a></li><li class="toc-section"><a href="#queries">Queries</a></li><li class="toc-section"><a href="#exec">Executing queries</a></li><li class="toc-section"><a href="#run">Command line tool or server</a></li></ul>
+<div class="section"><div class="section-title" id="eventrss">Event RSS Channels ?</div>
+<p>
+The <span class="ext-a"><a href="http://cyber.law.harvard.edu/rss/rss.html/">RSS 2.0 specification</a></span>
+allows adding information in RSS feeds, in a simple way: just add XML nodes with a
+namespace.
+</p>
+<p>
+This extension possibility is used in Erssical to handle additional information relative
+to events, initially to share software developer events. This additional information
+consists in:
+</p>
+<ul>
+<li>the intended audience (a string),</li>
+<li>the type of event (conference, course, ...),</li>
+<li>some keywords (a list of strings),</li>
+<li>the speakers (a list of strings),</li>
+<li>the organizers (a list of strings),</li>
+<li>the start date and hour,</li>
+<li>the end date and hour,</li>
+<li>the &quot;level&quot; of the audience (beginner, confirmed, expert, ...).</li>
+</ul>
+<p>All fields are optional. The details of the XML representation of this
+information is given on <a href="http://zoggy.github.io/erssical/doc-event.html">Events</a>.
+</p>
+
+</div>
+
+<div class="section"><div class="section-title" id="queries">Queries</div>
+<p>A query is composed of:</p>
+<ul>
+<li>a mime-type specifying what to output,</li>
+<li>a list of source RSS channels,</li>
+<li>an optional target channel,</li>
+<li>an optional filter.</li>
+</ul>
+<p>A query is described in XML. An example of query is available
+<span class="ext-a"><a href="https://raw.github.com/zoggy/erssical/master/tests/query.xml">here</a></span>.
+</p>
+<p>The details of the XML representation of a query is given on <a href="http://zoggy.github.io/erssical/doc-query.html">Queries</a>.</p>
+</div>
+
+<div class="section"><div class="section-title" id="exec">Executing queries</div>
+<p>
+When given a query, Erssical performs the following operations:
+</p>
+<ol>
+<li>Fetch the source RSS channels given with a URL (
+  as source channels can also be embedded in the query);
+  each fetched channel can have default event information specified;
+  in this case, the event information of each item of the channel is
+  merged with the default information. For example, default keywords
+  are added to all items of a channel.
+</li>
+<li>Merge the items of all source channels into a new channel. Description
+  (title, descrption, image, ...) of this new channel is the same as the first
+  source channel, except if a target channel was specified in the query.
+</li>
+<li>If a filter was given, only the items of this new channel matching
+  the filter are kept.
+</li>
+<li>Depending of the output format specified, output the resulting RSS channel
+  or the calendar data in Ical format.
+</li>
+</ol>
+</div>
+
+<div class="section"><div class="section-title" id="run">Command line tool or server</div>
+<p>
+Erssical comes with a command line tool, <code>erssical</code>, and
+a HTTP server, <code>erssical-http</code>.
+</p>
+<p>
+The command line tool will typically be used when generating static contents
+for your web site, while the HTTP server will be useful to dynamically
+merge information to embed in a web page. See
+<a href="http://zoggy.github.io/erssical/doc-erssical.html">Erssical command line tool</a> and <a href="http://zoggy.github.io/erssical/doc-erssical-http.html">Erssical HTTP server</a> for more
+information.
+</p>
+</div>
+
+
+
+
+</div>
+
+<footer id="bottombar">
+</footer>
+<script type="text/javascript" src="http://zoggy.github.io/erssical/jquery.js">_</script>
+<script type="text/javascript" src="http://zoggy.github.io/erssical/bootstrap-collapse.js">_</script>
+
+</body>
+</html>

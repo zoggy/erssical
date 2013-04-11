@@ -151,14 +151,7 @@ An event is represented by additional information in nodes under the <code class
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTevent.ev_tech">ev_tech</span>&nbsp;:<code class="type">string list</code>;</code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTevent.ev_scidom">ev_scidom</span>&nbsp;:<code class="type">string list</code>;</code></td>
+<code><span id="TYPEELTevent.ev_keywords">ev_keywords</span>&nbsp;:<code class="type">string list</code>;</code></td>
 
 </tr>
 <tr>
@@ -206,7 +199,7 @@ An event is represented by additional information in nodes under the <code class
 }
 
 
-<pre><span id="VALevent"><span class="keyword">val</span> event</span> : <code class="type">?level:<a href="Ers_types.html#TYPEevent_level">event_level</a> -><br>       ?typ:<a href="Ers_types.html#TYPEevent_type">event_type</a> -><br>       ?tech:string list -><br>       ?scidom:string list -><br>       ?speakers:string list -><br>       ?organizers:string list -><br>       ?location:<a href="Ers_types.html#TYPElocation">location</a> -><br>       ?start_date:Netdate.t -><br>       ?end_date:Netdate.t -> ?audience:string -> unit -> <a href="Ers_types.html#TYPEevent">event</a></code></pre><br>
+<pre><span id="VALevent"><span class="keyword">val</span> event</span> : <code class="type">?level:<a href="Ers_types.html#TYPEevent_level">event_level</a> -><br>       ?typ:<a href="Ers_types.html#TYPEevent_type">event_type</a> -><br>       ?keywords:string list -><br>       ?speakers:string list -><br>       ?organizers:string list -><br>       ?location:<a href="Ers_types.html#TYPElocation">location</a> -><br>       ?start_date:Netdate.t -><br>       ?end_date:Netdate.t -> ?audience:string -> unit -> <a href="Ers_types.html#TYPEevent">event</a></code></pre><br>
 <h2 id="2_Itemsandchannels">Items and channels</h2><br>
 <pre><span id="TYPEitem"><span class="keyword">type</span> <code class="type"></code>item</span> = <code class="type"><a href="Ers_types.html#TYPEevent">event</a> Rss.item_t</code> </pre>
 
@@ -287,9 +280,20 @@ A query is composed of source RSS channels, an optional target RSS channel and
 an optional filter.
 The sources and the optional target will merged, then the filter will be
 be applied on the merge result to keep only selected items.
+<p>
+
+If the source if indicated with a url, additional event information
+can be specified for this source. In this case, this
+information is used to complete the event information of each item of
+the source channel. A typical example is to add default keywords for all
+items of a source channel.
+<p>
+
 The target channel is used as base channel: all its information (title,
 link, description, ...) is kept (except items which are processed as described
 above).
+<p>
+
 If no target channel is given, then the first source is used as base channel.
 If no source and no target is given, this is considered as an error.
 <p>
@@ -307,7 +311,7 @@ The structure to compute is indicated by the "type" attribute of the
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTsource.Url"><span class="constructor">Url</span></span> <span class="keyword">of</span> <code class="type">Neturl.url</code></code></td>
+<code><span id="TYPEELTsource.Url"><span class="constructor">Url</span></span> <span class="keyword">of</span> <code class="type">Neturl.url * <a href="Ers_types.html#TYPEevent">event</a></code></code></td>
 
 </tr>
 <tr>
@@ -395,7 +399,7 @@ This is the result computed from a query. A calendar is just the
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
 <code><span id="TYPEELTquery.q_sources">q_sources</span>&nbsp;:<code class="type"><a href="Ers_types.html#TYPEsource">source</a> list</code>;</code></td>
-
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >list of source RSS feeds</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
 </tr>
 <tr>
 <td align="left" valign="top" >

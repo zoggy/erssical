@@ -1,0 +1,257 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Erssical : Queries</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="http://zoggy.github.io/erssical/style.css"/>
+<rssfeed/>
+</head><body>
+<div id="page">
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container">
+
+  <div class="nav-collapse">
+  <ul class="nav">
+    <li class="&lt;navbar-home/&gt;"><a href="http://zoggy.github.io/erssical">Erssical</a></li>
+    <li class="&lt;navbar-download/&gt;"><a href="http://zoggy.github.io/erssical/download.html">Download</a></li>
+    <li class="active"><a href="http://zoggy.github.io/erssical/doc.html">Documentation</a></li>
+    <li class="&lt;navbar-blog/&gt;"><a href="http://zoggy.github.io/erssical/blog.html">Blog</a></li>
+    <li class="&lt;navbar-about/&gt;"><a href="http://zoggy.github.io/erssical/about.html">?</a></li>
+  </ul>
+  </div>
+  <div class="nav pull-right">
+
+  </div>
+</div>
+</div>
+</div>
+
+<div id="header">
+
+<div class="page-title">Queries</div>
+</div>
+<span/>
+
+
+<p>
+A query is described in an XML document of the following form ↴
+</p>
+
+<div class="row">
+<div class="span5"><ul class="toc"><li class="toc-section"><a href="#query">&lt;query&gt;</a></li><li class="toc-section"><a href="#sources">&lt;sources&gt;</a><ul class="toc"><li class="toc-subsection"><a href="#sourceurl">Referenced source</a></li><li class="toc-subsection"><a href="#sourceembed">Embedded source</a></li></ul></li><li class="toc-section"><a href="#target">&lt;target&gt;</a></li><li class="toc-section"><a href="#filter">&lt;filter&gt;</a><ul class="toc"><li class="toc-subsection"><a href="#keywords">&lt;keywords&gt;</a></li><li class="toc-subsection"><a href="#organizers">&lt;organizers&gt;</a></li><li class="toc-subsection"><a href="#speakers">&lt;speakers&gt;</a></li><li class="toc-subsection"><a href="#startdate">&lt;startDate&gt;/&lt;endDate&gt;</a></li><li class="toc-subsection"><a href="#or">&lt;or&gt;</a></li><li class="toc-subsection"><a href="#and">&lt;and&gt;</a></li><li class="toc-subsection"><a href="#not">&lt;not&gt;</a></li></ul></li></ul></div>
+<div class="span6"><pre class="code-xml"><span class="hl kwa">&lt;?xml</span> <span class="hl kwb">version</span>=<span class="hl str">&quot;1.0&quot;</span><span class="hl kwa">?&gt;</span>
+<span class="hl kwa">&lt;query&gt;</span>
+  <span class="hl kwa">&lt;sources&gt;</span> ... <span class="hl kwa">&lt;/sources&gt;</span>
+  <span class="hl kwa">&lt;target&gt;</span> ... <span class="hl kwa">&lt;/target&gt;</span>
+  <span class="hl kwa">&lt;filter&gt;</span> ...  <span class="hl kwa">&lt;/filter&gt;</span>
+<span class="hl kwa">&lt;/query&gt;</span></pre>
+</div>
+</div>
+<div class="section"><div class="section-title" id="query">&lt;query&gt;</div>
+<p>This is the top element of the query. The optional attribute <code>type</code>
+can be used to specify the type of document returned as result of the query.
+The following types are handled:
+</p>
+<ul>
+<li><code>application/rss+xml</code>: the query will return a new RSS document,</li>
+<li><code>text/calendar</code>: the query will return calendar data in Ical format.</li>
+</ul>
+<p>For any other value or if this attribute is not present, the type <code>application/rss+xml</code>
+is assumed.
+</p>
+<p>The <code>&lt;query&gt;</code> element can contain
+<code><a href="http://zoggy.github.io/erssical/doc-query.html#sources">&lt;sources&gt;</a></code>,
+<code><a href="http://zoggy.github.io/erssical/doc-query.html#target">&lt;target&gt;</a></code> and
+<code><a href="http://zoggy.github.io/erssical/doc-query.html#filter">&lt;filter&gt;</a></code> elements.
+</p>
+</div>
+
+<div class="section"><div class="section-title" id="sources">&lt;sources&gt;</div>
+<p>
+This element contains the various source RSS channels, each one is defined
+by a <code>&lt;source&gt;</code> sub-element. A source RSS channel
+can be embedded or referenced by its URL.
+</p>
+<div class="subsection"><div class="subsection-title" id="sourceurl">Referenced source</div>
+<p>Most of the time, a source is referenced by a URL given in the <code>href</code> attribute.
+For example:
+</p>
+<pre class="code-xml"><span class="hl kwa">&lt;source</span> <span class="hl kwb">href</span>=<span class="hl str">&quot;http://zoggy.github.io/stog/index.rss&quot;</span><span class="hl kwa">/&gt;</span></pre>
+<p>
+For referenced sources, it is possible to give default event information, which will
+be merged with the event information of the items when the channel is fetched. To do so,
+just add <a href="http://zoggy.github.io/erssical/doc-event.html#elements">event elements </a> in the <code>&lt;source&gt;</code>
+element. The prefix of these elements can be omitted when placed here. For example,
+the following code defines a new referenced source, and all its items will
+be added the &quot;ocaml&quot; keyword when the source is fetched:
+</p>
+<pre class="code-xml"><span class="hl kwa">&lt;source</span> <span class="hl kwb">href</span>=<span class="hl str">&quot;http://planet.ocamlcore.org/rss20.xml&quot;</span><span class="hl kwa">&gt;</span>
+  <span class="hl kwa">&lt;keywords&gt;&lt;item&gt;</span>ocaml<span class="hl kwa">&lt;/item&gt;&lt;/keywords&gt;</span>
+<span class="hl kwa">&lt;/source&gt;</span></pre>
+</div>
+
+<div class="subsection"><div class="subsection-title" id="sourceembed">Embedded source</div>
+<p>
+A whole RSS channel can be embedded in a <code>&lt;source&gt;</code> element, when
+no <code>href</code> attribute is present.
+To do so, just put
+<span class="ext-a"><a href="http://www.rss-specification.com/rss-2.0-specification.htm#requiredChannelElements">channel elements</a></span>
+in the <code>&lt;source&gt;</code> element, for example:
+</p>
+<pre class="code-xml"><span class="hl kwa">&lt;source&gt;</span>
+  <span class="hl kwa">&lt;title&gt;</span>My favorite RSS channel<span class="hl kwa">&lt;/title&gt;</span>
+  <span class="hl kwa">&lt;link&gt;</span>http://my.favorite-channel.mine<span class="hl kwa">&lt;/link&gt;</span>
+  <span class="hl kwa">&lt;description&gt;</span>bla bla bla<span class="hl kwa">&lt;/description&gt;</span>
+  <span class="hl kwa">&lt;item&gt;</span> ... <span class="hl kwa">&lt;/item&gt;</span>
+  <span class="hl kwa">&lt;item&gt;</span> ... <span class="hl kwa">&lt;/item&gt;</span>
+<span class="hl kwa">&lt;/source&gt;</span></pre>
+</div>
+</div>
+
+<div class="section"><div class="section-title" id="target">&lt;target&gt;</div>
+<p>An optional <code>&lt;target&gt;</code> element can be used to specify
+information for the final RSS channel. Most of the time, the channel information
+will be embedded in the <code>&lt;target&gt;</code> element, in the same way as for source channel,
+but the target channel can also be referenced by a URL like a referenced source.
+</p>
+<p>Example of embedded target:</p>
+<pre class="code-xml"><span class="hl kwa">&lt;target&gt;</span>
+  <span class="hl kwa">&lt;title&gt;</span>Merged channel<span class="hl kwa">&lt;/title&gt;</span>
+  <span class="hl kwa">&lt;link&gt;</span>http://mysite.net/foo.rss<span class="hl kwa">&lt;/link&gt;</span>
+  <span class="hl kwa">&lt;description&gt;</span>Merged channel from various sources<span class="hl kwa">&lt;/description&gt;</span>
+  ...
+<span class="hl kwa">&lt;/target&gt;</span></pre>
+<p>
+When no target channel is provided, the channel information of the
+first source channel is used to build the new channel.
+</p>
+</div>
+
+<div class="section"><div class="section-title" id="filter">&lt;filter&gt;</div>
+<p>
+The <code>&lt;filter&gt;</code> element is used to keep only items matching some criteria.
+A filter is composed of basic filters and filter combinators.
+</p>
+<p>
+It is not possible yet to filter on all event information, as some event information
+is not yet fully specified (type, level, ...).
+</p>
+
+<div class="subsection"><div class="subsection-title" id="keywords">&lt;keywords&gt;</div>
+<p>
+The <code>&lt;keywords&gt;</code> element filters RSS items containing some keywords. Each
+keyword is specified in an <code>&lt;item&gt;</code> element. In an <code>&lt;item&gt;</code>
+element, the attribute <code>regexp=&quot;true&quot;</code> means that the string contained in the element must
+be handled as a regular expression to match RSS item keywords.
+</p>
+<p>More than one <code>&lt;item&gt;</code> element can be present under a
+<code>&lt;keywords&gt;</code> element. By default, the RSS item must match
+<strong>all</strong> the specified <code>&lt;item&gt;</code> criteria. If the <code>&lt;keywords&gt;</code>
+element has attribute <code>connector=&quot;or&quot;</code>, then the RSS item must match
+<strong>at least one</strong> of the <code>&lt;item&gt;</code> criteria.
+</p>
+<p>For example, the following filter will keep only RSS items having keywords matching
+the string &quot;api&quot; or the regular expression &quot;o?caml&quot;:
+</p>
+<pre class="code-xml"><span class="hl kwa">&lt;filter&gt;</span>
+  <span class="hl kwa">&lt;keywords</span> <span class="hl kwb">connector</span>=<span class="hl str">&quot;or&quot;</span><span class="hl kwa">&gt;</span>
+    <span class="hl kwa">&lt;item&gt;</span>api<span class="hl kwa">&lt;/item&gt;</span>
+    <span class="hl kwa">&lt;item</span> <span class="hl kwb">regexp</span>=<span class="hl str">&quot;true&quot;</span><span class="hl kwa">&gt;</span>o?caml<span class="hl kwa">&lt;/item&gt;</span>
+  <span class="hl kwa">&lt;/keywords&gt;</span>
+<span class="hl kwa">&lt;/filter&gt;</span></pre>
+</div>
+
+<div class="subsection"><div class="subsection-title" id="organizers">&lt;organizers&gt;</div>
+<p>This filter works the same way as <a href="http://zoggy.github.io/erssical/doc-query.html#keywords">&lt;keywords&gt;</a> but for the
+&quot;organizers&quot; information of the RSS items.
+</p>
+</div>
+
+<div class="subsection"><div class="subsection-title" id="speakers">&lt;speakers&gt;</div>
+<p>This filter works the same way as <a href="http://zoggy.github.io/erssical/doc-query.html#keywords">&lt;keywords&gt;</a> but for the
+&quot;speakers&quot; information of the RSS items.
+</p>
+</div>
+
+<div class="subsection"><div class="subsection-title" id="startdate">&lt;startDate&gt;/&lt;endDate&gt;</div>
+<p>
+The <code>&lt;startDate&gt;</code> element is used to filter RSS items according to
+their start date, or their date if no start date is specified. Two attributes,
+<code>after</code> and <code>before</code>, can be used as date and time constraints.
+</p>
+<p>
+For example, the following filter will keep only RSS items whose (start) date is
+between the 1<sup>st</sup> of May 2013 at 12h:00 and the 31<sup>st</sup> of the same month
+at 16:00:
+</p>
+<pre class="code-xml"><span class="hl kwa">&lt;filter&gt;</span>
+  <span class="hl kwa">&lt;startDate</span>
+    <span class="hl kwb">after</span>=<span class="hl str">&quot;1 May 2013 12:00:00 +0100&quot;</span>
+    <span class="hl kwb">before</span>=<span class="hl str">&quot;31 May 2013 16:00:00 +0100&quot;</span><span class="hl kwa">/&gt;</span>
+<span class="hl kwa">&lt;/filter&gt;</span></pre>
+<p>Of course, one can specify only the attribute <code>after</code> or <code>before</code>.</p>
+<p>The <code>&lt;endDate&gt;</code> element is used to filter on the RSS item end date, if present.
+If a RSS item has no such date, then the RSS item is considered as matching the criteria.
+</p>
+</div>
+
+<div class="subsection"><div class="subsection-title" id="or">&lt;or&gt;</div>
+<p>
+The <code>&lt;or&gt;</code> element contains other filters. A RSS item matches this filter
+if it matches at least one of the filters defined in the <code>&lt;or&gt;</code> element.
+For example, the following filter will keep only RSS items matching the <code>&lt;keywords&gt;</code>
+filter or the <code>&lt;startDate&gt;</code> filter:
+</p>
+<pre class="code-xml"><span class="hl kwa">&lt;filter&gt;</span>
+  <span class="hl kwa">&lt;or&gt;</span>
+    <span class="hl kwa">&lt;keywords&gt;&lt;item&gt;</span>api<span class="hl kwa">&lt;/item&gt;&lt;/keywords&gt;</span>
+    <span class="hl kwa">&lt;startDate</span> <span class="hl kwb">after</span>=<span class="hl str">&quot;1 May 2012 12:00:00 +0100&quot;</span><span class="hl kwa">/&gt;</span>
+  <span class="hl kwa">&lt;/or&gt;</span>
+<span class="hl kwa">&lt;/filter&gt;</span></pre>
+</div>
+
+<div class="subsection"><div class="subsection-title" id="and">&lt;and&gt;</div>
+<p>The <code>&lt;and&gt;</code> element is like the <a href="http://zoggy.github.io/erssical/doc-query.html#or">&lt;or&gt;</a> filter but RSS items
+must match all the sub-filters to be kept.
+</p>
+</div>
+
+<div class="subsection"><div class="subsection-title" id="not">&lt;not&gt;</div>
+<p>The <code>&lt;not&gt;</code> element also contains sub-filters. A RSS item will
+be kept if it does not match at least one sub-filter: The intersection of
+RSS items matching the sub-filters is computed, then only the complement of this intersection
+is kept.
+For example, the following filter will keep only RSS items which don't have the &quot;api&quot;
+keyword and start after the 1<sup>st</sup> of May 2012 at 12:00:
+</p>
+<pre class="code-xml"><span class="hl kwa">&lt;filter&gt;</span>
+  <span class="hl kwa">&lt;not&gt;</span>
+    <span class="hl kwa">&lt;keywords&gt;&lt;item&gt;</span>api<span class="hl kwa">&lt;/item&gt;&lt;/keywords&gt;</span>
+    <span class="hl kwa">&lt;startDate</span> <span class="hl kwb">after</span>=<span class="hl str">&quot;1 May 2012 12:00:00 +0100&quot;</span><span class="hl kwa">/&gt;</span>
+  <span class="hl kwa">&lt;/not&gt;</span>
+<span class="hl kwa">&lt;/filter&gt;</span></pre>
+<p>This is equivalent to the following filter:</p>
+<pre class="code-xml"><span class="hl kwa">&lt;filter&gt;</span>
+  <span class="hl kwa">&lt;not&gt;</span>
+    <span class="hl kwa">&lt;and&gt;</span>
+      <span class="hl kwa">&lt;keywords&gt;&lt;item&gt;</span>api<span class="hl kwa">&lt;/item&gt;&lt;/keywords&gt;</span>
+      <span class="hl kwa">&lt;startDate</span> <span class="hl kwb">after</span>=<span class="hl str">&quot;1 May 2012 12:00:00 +0100&quot;</span><span class="hl kwa">/&gt;</span>
+    <span class="hl kwa">&lt;/and&gt;</span>
+  <span class="hl kwa">&lt;/not&gt;</span>
+<span class="hl kwa">&lt;/filter&gt;</span></pre>
+</div>
+
+</div>
+
+
+
+
+</div>
+
+<footer id="bottombar">
+</footer>
+<script type="text/javascript" src="http://zoggy.github.io/erssical/jquery.js">_</script>
+<script type="text/javascript" src="http://zoggy.github.io/erssical/bootstrap-collapse.js">_</script>
+
+</body>
+</html>
