@@ -15,7 +15,7 @@ site: style.css
 	$(STOG) $(STOG_OPTIONS) .
 	$(CP) style.css $(DEST_DIR)/style.css
 	mkdir -p $(DEST_DIR)/refdoc
-	(cd .. && make doc) && cp -r ../html/* $(DEST_DIR)/refdoc/
+	(cd .. && make depdoc) && cp -r ../html/* $(DEST_DIR)/refdoc/
 
 test:
 	$(MAKE) BASE_URL_OPTION="--site-url file://$(DEST_DIR)" site

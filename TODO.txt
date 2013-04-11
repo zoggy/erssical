@@ -1,2 +1,4 @@
-- add command line tool
-- web site
+- web site: add doc
+
+http server:
+- use a cache + ttl info from rss feeds

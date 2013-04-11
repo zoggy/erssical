@@ -35,7 +35,7 @@ OCAMLFIND=ocamlfind
 OCAML_COMPFLAGS= -annot
 OCAMLC=$(OCAMLFIND) ocamlc $(OF_FLAGS) $(OCAML_COMPFLAGS)
 OCAMLOPT=$(OCAMLFIND) ocamlopt $(OF_FLAGS) $(OCAML_COMFLAGS)
-OCAMLDOC=$(OCAMLFIND) ocamldoc $(OF_FLAGS)
+OCAMLDOC=OCAMLFIND_COMMANDS="ocamldoc=ocamldoc.opt" $(OCAMLFIND) ocamldoc -predicates native $(OF_FLAGS) -v
 OCAMLDEP=ocamldep
 BINDIR=$(shell dirname `which ocamlc`)
 CP=cp -f
@@ -84,6 +84,11 @@ $(HTTPSERVER_BYTE): erssical.cma ers_http.cmo
 doc: all
 	mkdir -p html
 	$(OCAMLDOC) -t "Erssical library reference" -d html -html $(CMOFILES:.cmo=.mli)
+
+depdoc: all
+	mkdir -p html
+	$(OCAMLDOC) -t "Erssical library reference" -d html \
+	-intro ocamldoc_index.text -g odoc_depgraph.cmxs $(CMOFILES:.cmo=.mli) $(CMOFILES:.cmo=.ml)
 
 webdoc:
 	cd web && make
