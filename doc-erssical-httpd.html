@@ -40,6 +40,27 @@ return a new RSS channel or Ical data.
 </p>
 <p class="alert alert-info">This page is not finished yet.</p>
 
+<div class="section"><div class="section-title" id="launching">Launching the server</div>
+<p><strong>Synopsis:</strong></p>
+<pre class="code-sh">erssical<span class="hl opt">-</span>httpd <span class="hl opt">[</span>options<span class="hl opt">]</span></pre>
+
+<p>Options are:</p>
+<pre class="code-ocaml"><div class="ocaml-toplevel"></div><div class="ocaml-toplevel"></div><div class="ocaml-toplevel"></div><div class="ocaml-toplevel">  -p &lt;n&gt;    Listen to port number &lt;n&gt;; default is 8915
+  -h &lt;name&gt; reply to connections on host &lt;name&gt;; default is to
+      reply to any query; (&quot;localhost&quot; can be used as &lt;name&gt;)
+  -q &lt;n&gt;    Set maximum number of pending connections; default is 20
+  -help     Display this list of options
+  --help    Display this list of options
+</div><div class="ocaml-toplevel"></div></pre>
+</div>
+
+<div class="section"><div class="section-title" id="curl">Command line querying the server</div>
+<pre class="code-sh">curl <span class="hl opt">--</span>data<span class="hl opt">-</span>urlencode query@tests<span class="hl opt">/</span>query.xml localhost<span class="hl opt">:</span><span class="hl num">8915</span></pre>
+
+<pre class="code-sh">curl <span class="hl opt">-</span>d rtype<span class="hl opt">=</span><span class="hl str">&quot;text/calendar&quot;</span> \
+  <span class="hl opt">--</span>data<span class="hl opt">-</span>urlencode query@tests<span class="hl opt">/</span>query.xml localhost<span class="hl opt">:</span><span class="hl num">8915</span></pre>
+</div>
+
 
 
 
