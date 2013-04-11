@@ -98,7 +98,7 @@ first source channel is used to build the new channel.
 <section id="filter" title="&amp;lt;filter&amp;gt;">
 <p>
 The <code>&lt;filter&gt;</code> element is used to keep only items matching some criteria.
-A filter is composed of base filters and filter combinators.
+A filter is composed of basic filters and filter combinators.
 </p>
 <p>
 It is not possible yet to filter on all event information, as some event information
@@ -108,15 +108,15 @@ is not yet fully specified (type, level, ...).
 <subsection id="keywords" title="&amp;lt;keywords&amp;gt;">
 <p>
 The <code>&lt;keywords&gt;</code> element filters RSS items containing some keywords. Each
-keywords is given in a <code>&lt;item&gt;</code> element. In an <code>&lt;item&gt;</code>
-element, <code>regexp="true"</code> means that the string contained in the element must
+keyword is specified in an <code>&lt;item&gt;</code> element. In an <code>&lt;item&gt;</code>
+element, the attribute <code>regexp="true"</code> means that the string contained in the element must
 be handled as a regular expression to match RSS item keywords.
 </p>
 <p>More than one <code>&lt;item&gt;</code> element can be present under a
 <code>&lt;keywords&gt;</code> element. By default, the RSS item must match
-all the specified <code>&lt;item&gt;</code> criteria. If the <code>&lt;keywords&gt;</code>
+<strong>all</strong> the specified <code>&lt;item&gt;</code> criteria. If the <code>&lt;keywords&gt;</code>
 element has attribute <code>connector="or"</code>, then the RSS item must match
-at least on the of <code>&lt;item&gt;</code> criteria.
+<strong>at least one</strong> of the <code>&lt;item&gt;</code> criteria.
 </p>
 <p>For example, the following filter will keep only RSS items having keywords matching
 the string "api" or the regular expression "o?caml":
@@ -145,7 +145,7 @@ the string "api" or the regular expression "o?caml":
 <p>
 The <code>&lt;startDate&gt;</code> element is used to filter RSS items according to
 their start date, or their date if no start date is specified. Two attributes,
-<code>after</code> and <code>before</code> can be used as date and time constraint.
+<code>after</code> and <code>before</code>, can be used as date and time constraints.
 </p>
 <p>
 For example, the following filter will keep only RSS items whose (start) date is
@@ -168,7 +168,7 @@ If a RSS item has no such date, then the RSS item is considered as matching the 
 The <code>&lt;or&gt;</code> element contains other filters. A RSS item matches this filter
 if it matches at least one of the filters defined in the <code>&lt;or&gt;</code> element.
 For example, the following filter will keep only RSS items matching the <code>&lt;keywords&gt;</code>
-filter and the <code>&lt;startDate&gt;</code> filter:
+filter or the <code>&lt;startDate&gt;</code> filter:
 </p>
 <hxml><![CDATA[<filter>
   <or>
