@@ -414,6 +414,11 @@ let file_of_channel ch file = Rss.print_file ~item_data_printer file ch
 let string_of_channel ?indent ch =
   let buf = Buffer.create 256 in
   let fmt = Format.formatter_of_buffer buf in
+  let ch =
+    let url = Ers_types.string_of_url Ers_types.base_url in
+    try ignore(List.find (fun (_,s) -> s = url) ch.Rss.ch_namespaces); ch
+    with Not_found -> { ch with Rss.ch_namespaces = ("ev", url) :: ch.ch_namespaces }
+  in
   Rss.print_channel ~item_data_printer ?indent fmt ch ;
   Format.pp_print_flush fmt ();
   Buffer.contents buf
