@@ -97,9 +97,17 @@ A query is composed of source RSS channels, an optional target RSS channel and
 an optional filter.
 The sources and the optional target will merged, then the filter will be
 be applied on the merge result to keep only selected items.
+
+If the source if indicated with a url, additional event information
+can be specified for this source. In this case, this
+information is used to complete the event information of each item of
+the source channel. A typical example is to add default keywords for all
+items of a source channel.
+
 The target channel is used as base channel: all its information (title,
 link, description, ...) is kept (except items which are processed as described
 above).
+
 If no target channel is given, then the first source is used as base channel.
 If no source and no target is given, this is considered as an error.
 
@@ -116,7 +124,7 @@ The structure to compute is indicated by the "type" attribute of the
   In the latter case, the channel will be fetched
   from this URL (using Curl library).
 *)
-type source = Url of Neturl.url | Channel of channel
+type source = Url of Neturl.url * event | Channel of channel
 
 (** A query can be asked to return a new channel, a calendar or debug
   information, i.e. text information, for example errors encountered while

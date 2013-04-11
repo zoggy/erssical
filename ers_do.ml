@@ -28,18 +28,76 @@
 open Rss;;
 open Ers_types;;
 
+(*c==v=[List.list_diff]=1.0====*)
+let list_diff ?(pred=(=)) l1 l2 =
+  List.fold_right
+    (fun el acc ->
+       if not (List.exists (pred el) l2) then
+         el :: acc
+       else
+         acc
+    )
+    l1 []
+(*/c==v=[List.list_diff]=1.0====*)
+
+let merge_string_list l1 l2 = l1 @ (list_diff l2 l1);;
+
+let merge_event_info item ev =
+  match item.item_data with
+    None -> { item with item_data = Some ev }
+  | Some evi ->
+      let ev_level =
+        match evi.ev_level, ev.ev_level with
+          Some l, _ -> Some l
+        | None, x -> x
+      in
+      let ev_type =
+        match evi.ev_type, ev.ev_type with
+          Some t, _ -> Some t
+        | None, x -> x
+      in
+      let ev_keywords = merge_string_list evi.ev_keywords ev.ev_keywords in
+      let ev_speakers = merge_string_list evi.ev_speakers ev.ev_speakers in
+      let ev_organizers = merge_string_list evi.ev_organizers ev.ev_organizers in
+      let ev_location =
+        match evi.ev_location, ev.ev_location with
+          Some l, _ -> Some l
+        | None, x -> x
+      in
+      let ev_audience =
+        match evi.ev_audience, ev.ev_audience with
+          Some a, _ -> Some a
+        | None, x -> x
+      in
+      (* specify all fields to get a compilation error when we add fields in the future *)
+      let ev =
+        { ev_level ; ev_type ; ev_keywords ; ev_speakers ; ev_organizers ;
+          ev_location ; ev_audience ; ev_start = evi.ev_start ; ev_end = evi.ev_end ;
+        }
+      in
+      { item with item_data = Some ev }
+;;
+
 let set_item_source src item =
   match item.Rss.item_source with
     None -> { item with Rss.item_source = Some src }
   | _ -> item
 
-let get_source = function
+let get_source ?(add_event_info=true) = function
 | Channel ch -> (ch, [])
-| Url url ->
+| Url (url, ev) ->
     let contents = Ers_curl.get url in
     let (ch, errors) = Ers_io.channel_of_string contents in
     let src = { Rss.src_url = url ; src_name = ch.Rss.ch_title } in
-    ({ ch with Rss.ch_items = List.map (set_item_source src) ch.Rss.ch_items }, errors)
+    let f_item item =
+      let item = set_item_source src item in
+      if add_event_info then
+        merge_event_info item ev
+      else
+        item
+    in
+    let items = List.map f_item ch.Rss.ch_items in
+    ({ ch with Rss.ch_items = items }, errors)
 
 
 let get_source_channels query =
@@ -49,7 +107,7 @@ let get_source_channels query =
 let get_target_channel query =
   match query.q_target with
     None -> None
-  | Some source -> Some (get_source source)
+  | Some source -> Some (get_source ~add_event_info: false source)
 ;;
 
 module UMap = Map.Make

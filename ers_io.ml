@@ -230,14 +230,28 @@ let (opts : (unit, Ers_types.event) Rss.opts) = Rss.make_opts ~read_item_data ()
 let channel_of_file file = Rss.channel_t_of_file opts file
 let channel_of_string str = Rss.channel_t_of_string opts str
 
+let read_default_event_info xmls =
+  (* add prefix is not present, so that we can re-use the read_item_data function *)
+  let add_ns = function
+    Rss.E ((("",s),atts),subs) ->
+      Rss.E ((tag_ s, atts), subs)
+  | xml -> xml
+  in
+  let xmls = List.map add_ns xmls in
+  match read_item_data xmls with
+    None -> assert false
+  | Some ev -> ev
+;;
+
 let read_source ?(tag="source") xmls =
   match get_elt tag xmls with
     None -> None
   | Some (atts, subs) ->
       match get_att "href" atts with
         Some s_url ->
-          let source = Url (Ers_types.url_of_string s_url) in
-          Some source
+          let url = Ers_types.url_of_string s_url in
+          let def_event = read_default_event_info subs in
+          Some (Url (url, def_event))
       | None ->
           let ch = fst (Rss.channel_t_of_xmls opts subs) in
           Some (Channel ch)

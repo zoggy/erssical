@@ -80,7 +80,7 @@ type filter =
 
 type comp_filter = ItemSet.t -> ItemSet.t
 
-type source = Url of Neturl.url | Channel of channel
+type source = Url of Neturl.url * event | Channel of channel
 
 type query_return_type = Rss | Ical | Debug
 
