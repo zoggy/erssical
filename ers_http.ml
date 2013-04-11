@@ -202,6 +202,7 @@ let main () =
       "<n> Set maximum number of pending connections; default is "^ (string_of_int !pending) ;
     ]
   in
+  let options = Arg.align options in
   Arg.parse options (fun _ -> ())
      (Printf.sprintf "Usage: %s [options]\nwhere options are:" Sys.argv.(0));
   Netsys_signal.init();

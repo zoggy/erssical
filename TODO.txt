@@ -2,3 +2,5 @@
 
 http server:
 - use a cache + ttl info from rss feeds
+- fetch only http and https urls
+- do not fetch urls on same host

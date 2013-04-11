@@ -39,7 +39,7 @@ let string_of_file name =
   Buffer.contents buf
 (*/c==v=[File.string_of_file]=1.0====*)
 let tmp_file = Filename.temp_file "erssicalweb" ".txt";;
-match Sys.command ("../erssical --help 2>&1 | tail -n +2 > "^(Filename.quote tmp_file)) with
+match Sys.command ("../erssical --help 2>&1 | tail -n +3 > "^(Filename.quote tmp_file)) with
   0 -> ()
 | n -> failwith "Error";;
 print_string (string_of_file tmp_file);;

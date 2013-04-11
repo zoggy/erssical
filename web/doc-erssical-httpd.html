@@ -1,0 +1,37 @@
+<page title="Erssical HTTP server"
+navbar-doc="active"
+>
+<p>
+Queries can be sent to the Erssical HTTP server, which will
+take care of fetching RSS channels, merging and filtering items and finally
+return a new RSS channel or Ical data.
+</p>
+<p class="alert alert-info">This page is not finished yet.</p>
+
+<section id="launching" title="Launching the server">
+<p><strong>Synopsis:</strong></p>
+<command-line>erssical-httpd [options]</command-line>
+
+<p>Options are:</p>
+<ocaml-eval show-code="false" show-stdout="true"><![CDATA[
+let tmp_file = Filename.temp_file "erssicalweb" ".txt";;
+match Sys.command ("../erssical-httpd --help 2>&1 | tail -n +3 > "^(Filename.quote tmp_file)) with
+  0 -> ()
+| n -> failwith "Error";;
+print_string (string_of_file tmp_file);;
+flush stdout;;
+try Sys.remove tmp_file with _ -> ();;]]></ocaml-eval>
+</section>
+
+<section id="curl" title="Command line querying the server">
+<command-line>
+curl --data-urlencode query@tests/query.xml localhost:8915
+</command-line>
+
+<command-line>
+curl -d rtype="text/calendar" \
+  --data-urlencode query@tests/query.xml localhost:8915
+</command-line>
+</section>
+
+</page>
