@@ -50,8 +50,7 @@ type location =
 type event = {
     ev_level : event_level option ;
     ev_type : event_type option ;
-    ev_tech : string list ;
-    ev_scidom : string list ;
+    ev_keywords : string list ;
     ev_speakers : string list ;
     ev_organizers : string list ;
     ev_location : location option ;
@@ -98,10 +97,10 @@ type query =
   }
 
 
-let event ?level ?typ ?(tech=[]) ?(scidom=[]) ?(speakers=[])
+let event ?level ?typ ?(keywords=[]) ?(speakers=[])
   ?(organizers=[]) ?location ?start_date ?end_date ?audience () = {
-    ev_level = level ; ev_type = typ ; ev_tech = tech ;
-    ev_scidom = scidom ; ev_speakers = speakers ; ev_organizers = organizers ;
+    ev_level = level ; ev_type = typ ; ev_keywords = keywords ;
+    ev_speakers = speakers ; ev_organizers = organizers ;
     ev_location = location ; ev_start = start_date ; ev_end = end_date ;
     ev_audience = audience ;
   }

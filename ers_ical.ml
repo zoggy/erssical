@@ -65,8 +65,7 @@ let print_description_opt buf = function
 ;;
 
 let print_categories buf ev =
-   let cats = ev.ev_tech @ ev.ev_scidom in
-   let cats = List.map escape_text cats in
+   let cats = List.map escape_text ev.ev_keywords in
    Buffer.add_string buf ("CATEGORIES:" ^ (String.concat "," cats) ^ "\n")
 ;;
 

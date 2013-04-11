@@ -52,8 +52,7 @@ type location = { loc_href : Neturl.url option; loc_name : string; }
 type event = {
   ev_level : event_level option;
   ev_type : event_type option;
-  ev_tech : string list;
-  ev_scidom : string list;
+  ev_keywords : string list;
   ev_speakers : string list;
   ev_organizers : string list;
   ev_location : location option;
@@ -65,8 +64,7 @@ type event = {
 val event :
   ?level:event_level ->
   ?typ:event_type ->
-  ?tech:string list ->
-  ?scidom:string list ->
+  ?keywords:string list ->
   ?speakers:string list ->
   ?organizers:string list ->
   ?location:location ->

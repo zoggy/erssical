@@ -37,11 +37,8 @@ let tag_level = tag_"level"
 let tag_type_short = "type"
 let tag_type = tag_ tag_type_short
 
-let tag_tech_short = "technologies"
-let tag_tech = tag_ tag_tech_short
-
-let tag_scidom_short = "scientificDomains"
-let tag_scidom = tag_ tag_scidom_short
+let tag_keywords_short = "keywords"
+let tag_keywords = tag_ tag_keywords_short
 
 let tag_speakers_short = "speakers"
 let tag_speakers = tag_ tag_speakers_short
@@ -140,12 +137,8 @@ let read_string_items =
 let read_level ev atts xmls = ev
 let read_type ev atts xmls = ev
 
-let read_tech ev atts xmls =
-  let f l = { ev with ev_tech = ev.ev_tech @ l } in
-  read_string_items f xmls
-
-let read_scidom ev atts xmls =
-  let f l = { ev with ev_scidom = ev.ev_scidom @ l } in
+let read_keywords ev atts xmls =
+  let f l = { ev with ev_keywords = ev.ev_keywords @ l } in
   read_string_items f xmls
 
 let read_speakers ev atts xmls =
@@ -199,8 +192,7 @@ let read_audience ev atts xmls = ev
 let funs = [
     tag_level, read_level ;
     tag_type, read_type ;
-    tag_tech, read_tech ;
-    tag_scidom, read_scidom ;
+    tag_keywords, read_keywords ;
     tag_speakers, read_speakers ;
     tag_organizers, read_organizers ;
     tag_location, read_location ;
@@ -266,7 +258,7 @@ let read_target xmls = read_source ~tag: "target" xmls
 
 let tags_contains =
   [
-    tag_type_short ; tag_tech_short ; tag_scidom_short ;
+    tag_type_short ; tag_keywords_short ;
     tag_speakers_short ; tag_organizers_short ;
   ]
 
@@ -369,15 +361,10 @@ let string_item_xmls = List.map (fun s -> E ((("","item"),[]), [D s]));;
 
 let xmls_of_level ev = []
 let xmls_of_type ev = []
-let xmls_of_tech ev =
-  match ev.ev_tech with
+let xmls_of_keywords ev =
+  match ev.ev_keywords with
     [] -> []
-  | l -> [ E ((tag_tech, []), string_item_xmls l) ]
-
-let xmls_of_scidom ev =
-  match ev.ev_scidom with
-    [] -> []
-  | l -> [ E ((tag_scidom, []), string_item_xmls l) ]
+  | l -> [ E ((tag_keywords, []), string_item_xmls l) ]
 
 let xmls_of_speakers ev =
   match ev.ev_speakers with
@@ -397,8 +384,7 @@ let xmls_of_audience ev = []
 let printers =
   [ xmls_of_level ;
     xmls_of_type ;
-    xmls_of_tech ;
-    xmls_of_scidom ;
+    xmls_of_keywords ;
     xmls_of_speakers ;
     xmls_of_organizers ;
     xmls_of_location ;

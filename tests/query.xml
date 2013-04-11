@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <query type="application/rss+xml">
   <sources>
-    <source href="http://zoggy.github.com/stog/index.rss"/>
+    <source href="http://zoggy.github.io/stog/index.rss"/>
     <source href="http://planet.ocamlcore.org/rss20.xml"/>
     <source href="https://raw.github.com/zoggy/erssical/master/tests/example.rss"/>
   </sources>
@@ -11,7 +11,7 @@
     <description>Merged channel - test of ERSSICAL</description>
   </target>
   <filter>
-    <technologies><item regexp="true">.*</item></technologies>
+    <keywords><item regexp="true">.*</item></keywords>
     <startDate before="24 Apr 2013 07:00:00 +0100"/>
     <endDate after="20 Mar 2013 07:00:00 +0100"/>
   </filter>

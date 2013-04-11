@@ -35,15 +35,13 @@ let pred_string re =
   List.exists pred
 ;;
 
-let pred_tech re = let pred = pred_string re in fun ev -> pred ev.ev_tech;;
-let pred_scidom re = let pred = pred_string re in fun ev -> pred ev.ev_scidom;;
+let pred_keywords re = let pred = pred_string re in fun ev -> pred ev.ev_keywords;;
 let pred_speakers re = let pred = pred_string re in fun ev -> pred ev.ev_speakers;;
 let pred_organizers re = let pred = pred_string re in fun ev -> pred ev.ev_organizers;;
 
 let preds_contains =
   [
-    Ers_io.tag_tech_short, pred_tech ;
-    Ers_io.tag_scidom_short, pred_scidom ;
+    Ers_io.tag_keywords_short, pred_keywords ;
     Ers_io.tag_speakers_short, pred_speakers ;
     Ers_io.tag_organizers_short, pred_organizers ;
   ]

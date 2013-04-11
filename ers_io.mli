@@ -35,11 +35,8 @@ val tag_level : string * string
 val tag_type_short : string
 val tag_type : string * string
 
-val tag_tech_short : string
-val tag_tech : string * string
-
-val tag_scidom_short : string
-val tag_scidom : string * string
+val tag_keywords_short : string
+val tag_keywords : string * string
 
 val tag_speakers_short : string
 val tag_speakers : string * string
