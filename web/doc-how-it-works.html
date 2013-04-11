@@ -1,0 +1,88 @@
+<page title="How it works"
+>
+<p>
+Erssical reads queries and outputs an Event RSS channel or calendar data in Ical format.
+</p>
+<prepare-toc>
+<toc/>
+<section id="eventrss" title="Event RSS Channels ?">
+<p>
+The <ext-a href="http://cyber.law.harvard.edu/rss/rss.html/">RSS 2.0 specification</ext-a>
+allows adding information in RSS feeds, in a simple way: just add XML nodes with a
+namespace.
+</p>
+<p>
+This extension possibility is used in Erssical to handle additional information relative
+to events, initially to share software developer events. This additional information
+consists in:
+</p>
+<ul>
+<li>the intended audience (a string),</li>
+<li>the type of event (conference, course, ...),</li>
+<li>some keywords (a list of strings),</li>
+<li>the speakers (a list of strings),</li>
+<li>the organizers (a list of strings),</li>
+<li>the start date and hour,</li>
+<li>the end date and hour,</li>
+<li>the "level" of the audience (beginner, confirmed, expert, ...).</li>
+</ul>
+<p>All fields are optional. The details of the XML representation of this
+information is given on <page href="doc-event"/>.
+</p>
+
+</section>
+
+<section id="queries" title="Queries">
+<p>A query is composed of:</p>
+<ul>
+<li>a mime-type specifying what to output,</li>
+<li>a list of source RSS channels,</li>
+<li>an optional target channel,</li>
+<li>an optional filter.</li>
+</ul>
+<p>A query is described in XML. An example of query is available
+<ext-a href="https://raw.github.com/zoggy/erssical/master/tests/query.xml">here</ext-a>.
+</p>
+<p>The details of the XML representation of a query is given on <page href="doc-query"/>.</p>
+</section>
+
+<section id="exec" title="Executing queries">
+<p>
+When given a query, Erssical performs the following operations:
+</p>
+<ol>
+<li>Fetch the source RSS channels given with a URL (
+  as source channels can also be embedded in the query);
+  each fetched channel can have default event information specified;
+  in this case, the event information of each item of the channel is
+  merged with the default information. For example, default keywords
+  are added to all items of a channel.
+</li>
+<li>Merge the items of all source channels into a new channel. Description
+  (title, descrption, image, ...) of this new channel is the same as the first
+  source channel, except if a target channel was specified in the query.
+</li>
+<li>If a filter was given, only the items of this new channel matching
+  the filter are kept.
+</li>
+<li>Depending of the output format specified, output the resulting RSS channel
+  or the calendar data in Ical format.
+</li>
+</ol>
+</section>
+
+<section id="run" title="Command line tool or server">
+<p>
+Erssical comes with a command line tool, <code>erssical</code>, and
+a HTTP server, <code>erssical-http</code>.
+</p>
+<p>
+The command line tool will typically be used when generating static contents
+for your web site, while the HTTP server will be useful to dynamically
+merge information to embed in a web page. See
+<page href="doc-erssical"/> and <page href="doc-erssical-http"/> for more
+information.
+</p>
+</section>
+</prepare-toc>
+</page>

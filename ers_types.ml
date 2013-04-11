@@ -34,7 +34,7 @@ let string_of_url = Neturl.string_of_url;;
 
 let compare_url u1 u2 = String.compare (string_of_url u1) (string_of_url u2)
 
-let base_url = url_of_string "http://foo.com/event.html#"
+let base_url = url_of_string "http://zoggy.github.io/erssical/doc-event.html#"
 
 module SMap = Map.Make
   (struct type t= string let compare = Pervasives.compare end)

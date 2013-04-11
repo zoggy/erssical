@@ -1,0 +1,38 @@
+<page title="Events"
+with-contents="true"
+>
+<eltdesc name="">
+<subsection id="&lt;name/&gt;" title="&amp;lt;ev:&lt;name/&gt;&amp;gt;">
+<contents/>
+</subsection>
+</eltdesc>
+<contents>
+<section id="ns" title="Namespace">
+<p>
+To add event information associated to RSS items, first you have to
+declare a namespace, as additional XML nodes in RSS documents must
+be prefixed by a namespace.
+</p>
+<p>In your RSS document, just declare the namespace, for example <code>ev</code>:</p>
+<hxml><![CDATA[<rss version="2.0"
+  xmlns:ev="http://zoggy.github.io/erssical/doc-event.html#">
+   ...
+</rss>]]></hxml>
+</section>
+
+<section id="elements" title="Elements">
+<p>
+The following elements can be added under the <ixml><item>..</item></ixml> node.
+</p>
+<eltdesc name="audience">
+<p>Who can attend to this event, specified as free text. Example:</p>
+<hxml><![CDATA[<ev:audience>Software developers and researchers</ev:audience>]]></hxml>
+</eltdesc>
+<eltdesc name="level">
+<p>
+The expected level of the public. Not fully specified yet.
+</p>
+</eltdesc>
+</section>
+</contents>
+</page>

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<rss version="2.0" xmlns:foo="http://foo.com/event.html#">
+<rss version="2.0" xmlns:ev="http://zoggy.github.io/erssical/doc-event.html#">
    <channel>
       <title>Example of event-RSS</title>
       <link>http://zoggy.github.io/erssical/</link>
@@ -10,7 +10,7 @@ event information.</description>
       <lastBuildDate>Tue, 25 Mar 2013 14:00:00 GMT</lastBuildDate>
       <docs>http://blogs.law.harvard.edu/tech/rss</docs>
       <generator>Chamo</generator>
-      <managingEditor>foo@example.com</managingEditor>
+      <managingEditor>ev@example.com</managingEditor>
       <webMaster>webmaster@example.com</webMaster>
 
       <item>
@@ -20,10 +20,10 @@ event information.</description>
         Imperative and functional programming.
         </description>
         <pubDate>Tue, 25 Mar 2013 14:00:00 GMT</pubDate>
-        <foo:keywords><item>ocaml</item><item>programming</item><item>typing</item></foo:keywords>
-        <foo:startDate>Wed, 24 Apr 2013 09:00:00 +0100</foo:startDate>
-        <foo:endDate>Thu, 25 Apr 2013 17:00:00 +0100</foo:endDate>
-        <foo:location href="http://saclay.inria.fr">INRIA Saclay</foo:location>
+        <ev:keywords><item>ocaml</item><item>programming</item><item>typing</item></ev:keywords>
+        <ev:startDate>Wed, 24 Apr 2013 09:00:00 +0100</ev:startDate>
+        <ev:endDate>Thu, 25 Apr 2013 17:00:00 +0100</ev:endDate>
+        <ev:location href="http://saclay.inria.fr">INRIA Saclay</ev:location>
       </item>
 
       <item>
@@ -39,16 +39,16 @@ event information.</description>
 - génération de fils RSS,
 - possibilité d'ajouter ses propres tags et règles de réécriture.</description>
         <pubDate>Tue, 25 Mar 2013 15:00:00 GMT</pubDate>
-        <foo:keywords>
+        <ev:keywords>
            <item>stog</item>
            <item>HTML</item>
            <item>ocaml</item>
            <item>web</item>
            <item>blogging</item>
-        </foo:keywords>
-        <foo:startDate>Tue, 23 Apr 2013 14:00:00 GMT</foo:startDate>
-        <foo:endDate>Tue, 23 Apr 2013 16:00:00 GMT</foo:endDate>
-        <foo:location href="http://saclay.inria.fr">INRIA Saclay</foo:location>
+        </ev:keywords>
+        <ev:startDate>Tue, 23 Apr 2013 14:00:00 GMT</ev:startDate>
+        <ev:endDate>Tue, 23 Apr 2013 16:00:00 GMT</ev:endDate>
+        <ev:location href="http://saclay.inria.fr">INRIA Saclay</ev:location>
       </item>
    </channel>
 </rss>
