@@ -1,4 +1,5 @@
 <page title="Events"
+navbar-doc="active"
 with-contents="true"
 >
 <eltdesc name="">
@@ -28,11 +29,67 @@ The following elements can be added under the <ixml><item>..</item></ixml> node.
 <p>Who can attend to this event, specified as free text. Example:</p>
 <hxml><![CDATA[<ev:audience>Software developers and researchers</ev:audience>]]></hxml>
 </eltdesc>
+
+<eltdesc name="endDate">
+<p>When the event ends, in <ext-a href="http://asg.web.cmu.edu/rfc/rfc822.html#sec-5">RFC#822</ext-a> format.
+Example:</p>
+<hxml><![CDATA[<ev:endDate>Thu, 25 Apr 2013 17:00:00 +0100</ev:endDate>]]></hxml>
+</eltdesc>
+
+<eltdesc name="keywords">
+<p>Keywords, listed in <ixml><item>..</item></ixml> subnodes. Example:</p>
+<hxml><![CDATA[<ev:keywords>
+  <item>ocaml</item>
+  <item>web</item>
+  <item>api</item>
+</ev:keywords>]]></hxml>
+</eltdesc>
+
 <eltdesc name="level">
 <p>
 The expected level of the public. Not fully specified yet.
 </p>
 </eltdesc>
+
+<eltdesc name="location">
+<p>Where the event takes place. This is free text. Example:</p>
+<hxml><![CDATA[<ev:location><a href="http://www.inria.fr/centre/saclay">INRIA Paris-Île-de-France</a></ev:location>]]></hxml>
+</eltdesc>
+
+<eltdesc name="organizers">
+<p>
+Who is organizing the event, each organizer being indicated as free text
+in a <ixml><item>..</item></ixml> subnodes.
+</p>
+</eltdesc>
+
+<eltdesc name="speakers">
+<p>
+Who will speak or animate the event, each person being indicated as free text
+in a <ixml><item>..</item></ixml> subnodes.
+Example:
+<hxml><![CDATA[<ev:speakers>
+  <item>Santa Claus &lt;santa-claus@rovaniemi.fi&gt;</item>
+  <item>Pinocchio &lt;pinoccio@coloddi.foo&gt;</item>
+</ev:speakers>]]></hxml>
+</p>
+</eltdesc>
+
+<eltdesc name="startDate">
+<p>When the event begins, in <ext-a href="http://asg.web.cmu.edu/rfc/rfc822.html#sec-5">RFC#822</ext-a> format.
+Example:</p>
+<hxml><![CDATA[<ev:startDate>Wed, 24 Apr 2013 09:00:00 +0100</ev:startDate>]]></hxml>
+<p>Note that if no <ixml>&lt;startDate&gt;</ixml> is specified, the date of the item is used.
+This field allows to separate the date of the announce, in the RSS item, from the date
+of the event.</p>
+</eltdesc>
+
+
+<eltdesc name="type">
+<p>The type of event. The content is not yet fully specified. Example:</p>
+<hxml><![CDATA[<ev:type>conference</ev:type>]]></hxml>
+</eltdesc>
+
 </section>
 </contents>
 </page>
