@@ -46,6 +46,7 @@ let usage = Printf.sprintf "%s [options] <url|file>" Sys.argv.(0)
 
 let main () =
   let args = ref [] in
+  let options = Arg.align options in
   Arg.parse options (fun s -> args := s :: !args) usage;
   match List.rev !args with
     [] | _ :: _ :: _ -> failwith usage
