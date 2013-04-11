@@ -47,7 +47,7 @@ For example:
 <hxml><![CDATA[<source href="http://zoggy.github.io/stog/index.rss"/>]]></hxml>
 <p>
 For referenced sources, it is possible to give default event information, which will
-be merged to event information of the items when the channel is fetched. To do so,
+be merged with the event information of the items when the channel is fetched. To do so,
 just add <page href="doc-event#elements">event elements </page> in the <code>&lt;source&gt;</code>
 element. The prefix of these elements can be omitted when placed here. For example,
 the following code defines a new referenced source, and all its items will
@@ -60,7 +60,7 @@ be added the "ocaml" keyword when the source is fetched:
 
 <subsection id="sourceembed" title="Embedded source">
 <p>
-A whole CSS channel can be embedded in a <code>&lt;source&gt;</code> element, when
+A whole RSS channel can be embedded in a <code>&lt;source&gt;</code> element, when
 no <code>href</code> attribute is present.
 To do so, just put
 <ext-a href="http://www.rss-specification.com/rss-2.0-specification.htm#requiredChannelElements">channel elements</ext-a>
@@ -89,6 +89,10 @@ but the target channel can also be referenced by a URL like a referenced source.
   <description>Merged channel from various sources</description>
   ...
 </target>]]></hxml>
+<p>
+When no target channel is provided, the channel information of the
+first source channel is used to build the new channel.
+</p>
 </section>
 
 <section id="filter" title="&amp;lt;filter&amp;gt;">
