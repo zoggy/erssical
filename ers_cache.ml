@@ -91,7 +91,7 @@ let get_from_cache dir md5 =
       | Some n -> n
     in
     let curdate = Unix.time () in
-    if curdate > filedate +. (float ttl) then
+    if curdate > filedate +. ((float ttl) *. 60.) then
       None
     else
       Some file_contents

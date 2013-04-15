@@ -29,7 +29,7 @@
   {{:https://godirepo.camlcity.org/wwwsvn/trunk/code/?root=lib-ocamlnet2}OCamlnet distribution}
   and adapted to Erssical. *)
 
-let handle_http_query (cgi : Netcgi.cgi_activation) =
+let handle_http_query ?cache (cgi : Netcgi.cgi_activation) =
   try
     let query =
       match cgi#argument_value "query-url" with
@@ -53,7 +53,7 @@ let handle_http_query (cgi : Netcgi.cgi_activation) =
       | _ -> Some Ers_types.Rss
     in
     let (ctype, res) =
-      match Ers_do.execute ?rtype query with
+      match Ers_do.execute ?cache ?rtype query with
         Ers_types.Res_ical s -> (Ers_io.mime_type_ical, s)
       | Ers_types.Res_channel ch -> (Ers_io.mime_type_rss, Ers_io.string_of_channel ch)
       | Ers_types.Res_debug s -> ("text", s)
@@ -74,7 +74,7 @@ let handle_http_query (cgi : Netcgi.cgi_activation) =
       cgi#output#commit_work ()
 ;;
 
-let on_request notification =
+let on_request ?cache notification =
   (* This function is called when the full HTTP request has been received. For
    * simplicity, we create a [std_activation] to serve the request.
    *
@@ -98,7 +98,7 @@ let on_request notification =
          env#input_channel
          (fun _ _ _ -> `Automatic)
      in
-     handle_http_query cgi;
+     handle_http_query ?cache cgi;
     with
      e ->
        print_endline ("Uncaught exception: " ^ (Printexc.to_string e))
@@ -106,7 +106,7 @@ let on_request notification =
   notification#schedule_finish ()
 ;;
 
-let on_request_header (notification : Nethttpd_engine.http_request_header_notification) =
+let on_request_header ?cache (notification : Nethttpd_engine.http_request_header_notification) =
   (* After receiving the HTTP header: We always decide to accept the HTTP body, if any
    * is following. We do not set up special processing of this body, it is just
    * buffered until complete. Then [on_request] will be called.
@@ -116,20 +116,22 @@ let on_request_header (notification : Nethttpd_engine.http_request_header_notifi
    * calling [notification # environment # input_ch_async # request_notification].)
    *)
   print_endline "Received HTTP header";
+  let on_request = on_request ?cache in
   notification#schedule_accept_body ~on_request ()
 ;;
 
-let serve_connection ues fd =
+let serve_connection ?cache ues fd =
   (* Creates the http engine for the connection [fd]. When a HTTP header is received
    * the function [on_request_header] is called.
    *)
   let config = Nethttpd_engine.default_http_engine_config in
   Unix.set_nonblock fd;
   let _http_engine =
+    let on_request_header = on_request_header ?cache in
     new Nethttpd_engine.http_engine ~on_request_header () config fd ues in
   ()
 ;;
-let rec accept ues srv_sock_acc =
+let rec accept ?cache ues srv_sock_acc =
   (* This function accepts the next connection using the [acc_engine]. After the
    * connection has been accepted, it is served by [serve_connection], and the
    * next connection will be waited for (recursive call of [accept]). Because
@@ -141,8 +143,8 @@ let rec accept ues srv_sock_acc =
     ~is_done:(fun (fd, fd_spec) ->
        if srv_sock_acc#multiple_connections then
          (
-          serve_connection ues fd;
-          accept ues srv_sock_acc
+          serve_connection ?cache ues fd;
+          accept ?cache ues srv_sock_acc
          )
        else
          srv_sock_acc#shut_down ()
@@ -151,7 +153,7 @@ let rec accept ues srv_sock_acc =
     acc_engine
 ;;
 
-let start_server ?(host=Unix.inet_addr_any) ~pending ~port =
+let start_server ?cache ?(host=Unix.inet_addr_any) ~pending ~port =
   (* We set up [lstn_engine] whose only purpose is to create a server socket listening
    * on the specified port. When the socket is set up, [accept] is called.
    *)
@@ -167,7 +169,7 @@ let start_server ?(host=Unix.inet_addr_any) ~pending ~port =
     Uq_engines.listener
       (`Socket(`Sock_inet(Unix.SOCK_STREAM, host, port), opts)) ues
   in
-  Uq_engines.when_state ~is_done:(accept ues) lstn_engine;
+  Uq_engines.when_state ~is_done:(accept ?cache ues) lstn_engine;
   (* Start the main event loop. *)
   Unixqueue.run ues
 ;;
@@ -189,6 +191,7 @@ let main () =
   let port = ref 8915 in
   let host = ref None in
   let pending = ref 20 in
+  let cache_dir = ref None in
   let options =
     [
       "-p", Arg.Set_int port,
@@ -200,11 +203,23 @@ let main () =
 
       "-q", Arg.Set_int pending,
       "<n> Set maximum number of pending connections; default is "^ (string_of_int !pending) ;
+
+      "--cache", Arg.String (fun s -> cache_dir := Some s),
+      "<dir> cache fetched RSS channels in <dir>" ;
+
+      "--default-ttl", Arg.Set_int Ers_cache.default_ttl,
+      "<n> when using cache, set default time to live to <n> minutes; default is "^
+        (string_of_int !Ers_cache.default_ttl);
     ]
   in
   let options = Arg.align options in
   Arg.parse options (fun _ -> ())
      (Printf.sprintf "Usage: %s [options]\nwhere options are:" Sys.argv.(0));
+  let cache =
+    match !cache_dir with
+      None -> None
+    | Some dir -> Some (Ers_cache.mk_cache dir)
+  in
   Netsys_signal.init();
   let host =
     match !host with
@@ -212,7 +227,7 @@ let main () =
     | Some "localhost" -> Some Unix.inet_addr_loopback
     | Some h -> Some (inet_addr_of_name h)
   in
-  start_server ?host ~pending: !pending ~port: !port
+  start_server ?cache ?host ~pending: !pending ~port: !port
 ;;
 
 try main ()
