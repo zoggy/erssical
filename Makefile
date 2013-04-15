@@ -57,6 +57,8 @@ CMOFILES= \
 	ers_ical.cmo \
 	ers_filter.cmo \
 	ers_cache.cmo \
+	ers_auth.cmo \
+	ers_log.cmo \
 	ers_do.cmo
 
 CMXFILES=$(CMOFILES:.cmo=.cmx)
