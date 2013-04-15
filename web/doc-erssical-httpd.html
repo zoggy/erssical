@@ -13,14 +13,7 @@ return a new RSS channel or Ical data.
 <command-line>erssical-httpd [options]</command-line>
 
 <p>Options are:</p>
-<ocaml-eval show-code="false" show-stdout="true"><![CDATA[
-let tmp_file = Filename.temp_file "erssicalweb" ".txt";;
-match Sys.command ("../erssical-httpd --help 2>&1 | tail -n +3 > "^(Filename.quote tmp_file)) with
-  0 -> ()
-| n -> failwith "Error";;
-print_string (string_of_file tmp_file);;
-flush stdout;;
-try Sys.remove tmp_file with _ -> ();;]]></ocaml-eval>
+<div class="options"><hcode defer_="1" ><include file="./options_httpd.txt" raw="true"/></hcode></div>
 </section>
 
 <section id="curl" title="Command line querying the server">

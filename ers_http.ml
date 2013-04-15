@@ -224,17 +224,16 @@ let main () =
       "<n> Listen to port number <n>; default is "^(string_of_int !port) ;
 
       "-h", Arg.String (fun s -> host := Some s),
-      "<name> reply to connections on host <name>; default is to
-      reply to any query; (\"localhost\" can be used as <name>)" ;
+      "<name> Reply to connections on host <name>; default is to reply\n\t\tto any query; (\"localhost\" can be used as <name>)" ;
 
       "-q", Arg.Set_int pending,
       "<n> Set maximum number of pending connections; default is "^ (string_of_int !pending) ;
 
       "--cache", Arg.String (fun s -> cache_dir := Some s),
-      "<dir> cache fetched RSS channels in <dir>" ;
+      "<dir> Cache fetched RSS channels in <dir>" ;
 
-      "--default-ttl", Arg.Set_int Ers_cache.default_ttl,
-      "<n> when using cache, set default time to live to <n> minutes; default is "^
+      "--ttl", Arg.Set_int Ers_cache.default_ttl,
+      "<n> When using cache, set default time to live to <n> minutes;\n\t\tdefault is "^
         (string_of_int !Ers_cache.default_ttl);
     ]
   in

@@ -31,22 +31,22 @@ let cache_dir = ref None;;
 
 let options = [
     "--url", Arg.Set query_url,
-    " indicate that the argument is a url to fetch the query from" ;
+    " Indicate that the argument is a url to fetch the query from" ;
 
     "--ical", Arg.Unit (fun () -> out_format := Some Ers_types.Ical),
-    " output result in Ical format" ;
+    " Output result in Ical format" ;
 
     "--rss", Arg.Unit (fun () -> out_format := Some Ers_types.Rss),
-    " output result in RSS format" ;
+    " Output result in RSS format" ;
 
     "--debug", Arg.Unit (fun () -> out_format := Some Ers_types.Debug),
-    " output result in debug format" ;
+    " Output result in debug format" ;
 
     "--cache", Arg.String (fun s -> cache_dir := Some s),
-    "<dir> cache fetched RSS channels in <dir>" ;
+    "<dir> Cache fetched RSS channels in <dir>" ;
 
-    "--default-ttl", Arg.Set_int Ers_cache.default_ttl,
-    "<n> when using cache, set default time to live to <n> minutes; default is "^
+    "--ttl", Arg.Set_int Ers_cache.default_ttl,
+    "<n> Chen using cache, set default time to live to <n> minutes;\n\t\tdefault is "^
     (string_of_int !Ers_cache.default_ttl);
   ]
 

@@ -14,35 +14,5 @@ the given <code>url</code>, executes it and outputs the result on stdout.
 <p>
 Options are:
 </p>
-<ocaml-eval show-code="false" show-stdout="true"><![CDATA[
-(*c==v=[File.string_of_file]=1.0====*)
-let string_of_file name =
-  let chanin = open_in_bin name in
-  let len = 1024 in
-  let s = String.create len in
-  let buf = Buffer.create len in
-  let rec iter () =
-    try
-      let n = input chanin s 0 len in
-      if n = 0 then
-        ()
-      else
-        (
-         Buffer.add_substring buf s 0 n;
-         iter ()
-        )
-    with
-      End_of_file -> ()
-  in
-  iter ();
-  close_in chanin;
-  Buffer.contents buf
-(*/c==v=[File.string_of_file]=1.0====*)
-let tmp_file = Filename.temp_file "erssicalweb" ".txt";;
-match Sys.command ("../erssical --help 2>&1 | tail -n +3 > "^(Filename.quote tmp_file)) with
-  0 -> ()
-| n -> failwith "Error";;
-print_string (string_of_file tmp_file);;
-flush stdout;;
-try Sys.remove tmp_file with _ -> ();;]]></ocaml-eval>
+<div class="options"><hcode defer_="1" ><include file="./options_erssical.txt" raw="true"/></hcode></div>
 </page>
