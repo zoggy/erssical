@@ -27,19 +27,27 @@
 
 let out_format = ref None;;
 let query_url = ref false;;
+let cache_dir = ref None;;
 
 let options = [
-  "--url", Arg.Set query_url,
-  " indicate that the argument is a url to fetch the query from" ;
+    "--url", Arg.Set query_url,
+    " indicate that the argument is a url to fetch the query from" ;
 
-  "--ical", Arg.Unit (fun () -> out_format := Some Ers_types.Ical),
-  " output result in Ical format" ;
+    "--ical", Arg.Unit (fun () -> out_format := Some Ers_types.Ical),
+    " output result in Ical format" ;
 
-  "--rss", Arg.Unit (fun () -> out_format := Some Ers_types.Rss),
-  " output result in RSS format" ;
+    "--rss", Arg.Unit (fun () -> out_format := Some Ers_types.Rss),
+    " output result in RSS format" ;
 
-  "--debug", Arg.Unit (fun () -> out_format := Some Ers_types.Debug),
-  " output result in debug format" ;
+    "--debug", Arg.Unit (fun () -> out_format := Some Ers_types.Debug),
+    " output result in debug format" ;
+
+    "--cache", Arg.String (fun s -> cache_dir := Some s),
+    "<dir> cache fetched RSS channels in <dir>" ;
+
+    "--default-ttl", Arg.Set_int Ers_cache.default_ttl,
+    "<n> when using cache, set default time to live to <n> minutes; default is "^
+    (string_of_int !Ers_cache.default_ttl);
   ]
 
 let usage = Printf.sprintf "%s [options] <url|file>" Sys.argv.(0)
@@ -51,6 +59,11 @@ let main () =
   match List.rev !args with
     [] | _ :: _ :: _ -> failwith usage
   | [arg] ->
+      let cache =
+        match !cache_dir with
+          None -> None
+        | Some dir -> Some (Ers_cache.mk_cache dir)
+      in
       let query =
         match !query_url with
           false -> Ers_io.query_of_file arg
@@ -58,7 +71,7 @@ let main () =
             let url = Ers_types.url_of_string arg in
             Ers_io.query_of_string (Ers_curl.get url)
       in
-      let res = Ers_do.execute ?rtype: !out_format query in
+      let res = Ers_do.execute ?cache ?rtype: !out_format query in
       match res with
         Ers_types.Res_debug s -> prerr_endline s
       | Ers_types.Res_channel channel ->

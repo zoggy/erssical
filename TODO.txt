@@ -1,4 +1,5 @@
 - web site: add doc
+- add templating part in queries, based on xtmpl
 
 http server:
 - use a cache + ttl info from rss feeds

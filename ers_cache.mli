@@ -23,43 +23,22 @@
 (*                                                                            *)
 (******************************************************************************)
 
-(** Operations on channels and queries. *)
+(** Caching fetched RSS channels. *)
 
-(** Return the list of channels from the queries, fetching channels from
-  URLs if needed.
-  @raise Failure in case of error.
-  @return a list of pairs [(channel, errors)], where [errors] is the list
-  of non-fatal errors encountered while parsing the channel XML.
-*)
-val get_source_channels : ?cache: Ers_cache.t ->
-  Ers_types.query -> (Ers_types.channel * string list) list
+type t
 
-(** Same as {!get_source_channels} but return the optional target of the query. *)
-val get_target_channel : ?cache: Ers_cache.t ->
-  Ers_types.query -> (Ers_types.channel * string list) option
+(** Create a cache from the given directory name. Raise [Failure] if the
+  cache could not be created. *)
+val mk_cache : string -> t
 
-module UMap : Map.S with type key = Neturl.url
+(** The function called to print error messages. Default is {!prerr_endline}. *)
+val print_error : (string -> unit) ref
 
-(** [merge_channels ?target sources] merges the given source channels,
-  including the optional [target] channel.
+(** Default time to live of cached RSS channels, in minutes.
+  Used when a cached RSS channel does no specify a ttl. Default is 60 minutes. *)
+val default_ttl : int ref
 
-  If two items have the same [item_link], then only
-  the first one is kept. The [item_source] field of each item is set
-  to the original channel URL, if the source channel was given with
-  an URL in the query. Return a new channel, using information
-  from the "base" channel. This "base" channel is the given target,
-  or else the first channel of the list.
-  @raise Failure in case of error (e.g. when no channel is given).
-*)
-val merge_channels :
-  ?target:('a, 'b) Rss.channel_t ->
-  ('a, 'b) Rss.channel_t list -> ('a, 'b) Rss.channel_t
+(** Fetch the given URL of RSS channel, first looking in cache and fetching
+  only if time to live has expired. *)
+val get : t -> Neturl.url -> string
 
-(** Execute a query.
- @param rtype can be used to override the return type specified in the query.
- @raise Failure in case of error.
-*)
-val execute :
-  ?cache: Ers_cache.t ->
-  ?rtype:Ers_types.query_return_type ->
-  Ers_types.query -> Ers_types.query_result

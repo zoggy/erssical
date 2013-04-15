@@ -83,10 +83,14 @@ let set_item_source src item =
     None -> { item with Rss.item_source = Some src }
   | _ -> item
 
-let get_source ?(add_event_info=true) = function
+let get_source ?cache ?(add_event_info=true) = function
 | Channel ch -> (ch, [])
 | Url (url, ev) ->
-    let contents = Ers_curl.get url in
+    let contents =
+      match cache with
+        None -> Ers_curl.get url
+      | Some t -> Ers_cache.get t url
+    in
     let (ch, errors) = Ers_io.channel_of_string contents in
     let src = { Rss.src_url = url ; src_name = ch.Rss.ch_title } in
     let f_item item =
@@ -100,14 +104,14 @@ let get_source ?(add_event_info=true) = function
     ({ ch with Rss.ch_items = items }, errors)
 
 
-let get_source_channels query =
-  List.map get_source query.q_sources
+let get_source_channels ?cache query =
+  List.map (get_source ?cache) query.q_sources
 ;;
 
-let get_target_channel query =
+let get_target_channel ?cache query =
   match query.q_target with
     None -> None
-  | Some source -> Some (get_source ~add_event_info: false source)
+  | Some source -> Some (get_source ?cache ~add_event_info: false source)
 ;;
 
 module UMap = Map.Make
@@ -147,12 +151,12 @@ let merge_channels ?target channels =
   | None, [] -> failwith "No channel to merge"
 ;;
 
-let execute ?rtype query =
+let execute ?cache ?rtype query =
   let ret_typ = match rtype with None -> query.q_type | Some t -> t in
   let target_errors = ref [] in
   let source_errors = ref [] in
   try
-    let channels = get_source_channels query in
+    let channels = get_source_channels ?cache query in
     let (channels, errors) = List.fold_left
       (fun (acc_ch, acc_errors) (ch, errors) ->
          (ch :: acc_ch, (List.rev errors) @ acc_errors))
@@ -160,7 +164,7 @@ let execute ?rtype query =
     in
     let channels = List.rev channels in
     source_errors := List.rev errors ;
-    let target = get_target_channel query in
+    let target = get_target_channel ?cache query in
     let target =
       match target with
         None -> None
