@@ -25,6 +25,26 @@
 
 (** *)
 
-type t = string
+type t = { file : string ; oc : out_channel }
 
-let mk_log file = file
+let mk_log file =
+  let oc = open_out_gen [ Open_append ; Open_creat ; Open_text ] 0o600 file in
+  { file ; oc }
+;;
+
+let date_format = "%d %b %Y %T %z" ;;
+let format_date = Netdate.format ~fmt:date_format;;
+
+let date () =
+  let t = Unix.time () in
+  let date = Netdate.create t in
+  format_date date
+;;
+
+let print log s =
+  output_string log.oc ("["^(date())^"] "^s^"\n");
+  flush log.oc
+;;
+
+let close log = close_out log.oc;;
+  

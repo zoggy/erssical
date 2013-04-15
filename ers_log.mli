@@ -28,3 +28,5 @@
 type t
 
 val mk_log : string -> t
+val close : t -> unit
+val print : t -> string -> unit

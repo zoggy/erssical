@@ -38,6 +38,12 @@ type param =
     auth : Ers_auth.t option ;
   }
 
+let log param s =
+  match param.log with
+    None -> ()
+  | Some log -> Ers_log.print log s
+;;
+
 (** Keep only HTTP and HTTPS URLs. *)
 let filter_urls query =
   let pred url =
@@ -57,15 +63,52 @@ let filter_urls query =
   | _ -> { query with q_target = None }
 ;;
 
+let logstring_of_source = function
+  Ers_types.Url (url, _) -> Ers_types.string_of_url url
+| Ers_types.Channel _ -> "<inline channel>"
+;;
+
+let log_query log client origin ?rtype q =
+ let b = Buffer.create 256 in
+ Buffer.add_string b ("From "^client^"\n");
+ Buffer.add_string b (" Query: "^origin^"\n");
+ Buffer.add_string b (" Sources:\n");
+ List.iter
+   (fun s -> Buffer.add_string b ("  "^(logstring_of_source s)^"\n"))
+   q.q_sources;
+ (
+   match q.q_target with
+     None -> ()
+   | Some s -> Buffer.add_string b (" Target: "^(logstring_of_source s)^"\n")
+  );
+ Buffer.add_string b (" Filter: "^(match q.q_filter with None -> "no" | _ -> "yes")^"\n");
+ let t =
+   let rtype = match rtype with None -> q.q_type | Some t -> t in
+   match rtype with
+
+      Ical -> Ers_io.mime_type_ical
+    | Rss -> Ers_io.mime_type_rss
+    | Debug -> "debug"
+  in
+ Buffer.add_string b (" Return type: "^t);
+ Ers_log.print log (Buffer.contents b)
+;;
+
 let handle_http_query param (cgi : Netcgi.cgi_activation) =
   try
-    let query =
+    let env = cgi#environment in
+    let client = Printf.sprintf "host %S (addr %S)"
+      env#cgi_remote_host env#cgi_remote_addr
+    in
+    let (query, query_origin) =
       match cgi#argument_value "query-url" with
         "" ->
           begin
             match cgi#argument_value "query" with
               "" -> failwith "Missing query or query-url"
-            | s -> Ers_io.query_of_string s
+            | s ->
+                let q = Ers_io.query_of_string s in
+                (q, "<inline <query>")
           end
       | url_s ->
         let url = Ers_types.url_of_string url_s in
@@ -78,7 +121,9 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
                 | _ -> ()
               end;
               let query_s = Ers_curl.get url in
-              Ers_io.query_of_string query_s
+              let query = Ers_io.query_of_string query_s in
+              let origin = Ers_types.string_of_url url in
+              (query, origin)
           | _ ->
               failwith ("No valid HTTP or HTTPS URL given")
     in
@@ -91,6 +136,11 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
       | "debug" -> Some Ers_types.Debug
       | _ -> Some Ers_types.Rss
     in
+    begin
+      match param.log with
+        None -> ()
+      | Some log -> log_query log client query_origin ?rtype query
+    end;
     let (ctype, res) =
       match Ers_do.execute ?cache: param.cache ?rtype query with
         Ers_types.Res_ical s -> (Ers_io.mime_type_ical, s)
@@ -110,6 +160,7 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
         ~content_type:"text; charset=\"UTF-8\""
         ();
       cgi#output#output_string msg;
+      log param msg;
       cgi#output#commit_work ()
 ;;
 
@@ -177,12 +228,14 @@ let rec accept param ues srv_sock_acc =
    * [server_connection] returns immediately (it only sets the callbacks needed
    * for serving), the recursive call is also done immediately.
    *)
+  let acc_engine = srv_sock_acc#accept () in
+
   let param =
     match param.auth with
       None -> param
     | Some auth -> { param with auth = Some (Ers_auth.read_if_mod auth) }
   in
-  let acc_engine = srv_sock_acc#accept () in
+
   Uq_engines.when_state
     ~is_done:(fun (fd, fd_spec) ->
        if srv_sock_acc#multiple_connections then
@@ -289,6 +342,11 @@ let main () =
     | Some h -> Some (inet_addr_of_name h)
   in
   let param = { cache ; log ; auth } in
+  begin
+    match log with
+      None -> ()
+    | Some log -> Pervasives.at_exit (fun () -> Ers_log.close log)
+  end;
   start_server param ?host ~pending: !pending ~port: !port
 ;;
 
