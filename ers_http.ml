@@ -94,6 +94,8 @@ let log_query log client origin ?rtype q =
  Ers_log.print log (Buffer.contents b)
 ;;
 
+exception Http_error of string * Nethttp.http_status
+
 let handle_http_query param (cgi : Netcgi.cgi_activation) =
   try
     let env = cgi#environment in
@@ -102,10 +104,13 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
     in
     let (query, query_origin) =
       match cgi#argument_value "query-url" with
-        "" ->
+      | "" when param.auth <> None ->
+          raise
+            (Http_error ("Inline queries are not allowed by this server. Please provide a query-url argument.", `Unauthorized))
+      | "" ->
           begin
             match cgi#argument_value "query" with
-              "" -> failwith "Missing query or query-url"
+              "" -> raise (Http_error ("Missing query or query-url", `Bad_request))
             | s ->
                 let q = Ers_io.query_of_string s in
                 (q, "<inline <query>")
@@ -117,7 +122,8 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
               begin
                 match param.auth with
                   Some auth when not (Ers_auth.url_auth auth url) ->
-                  failwith ("Unauthorized query URL: "^(Ers_types.string_of_url url))
+                  let msg = "Unauthorized query URL: "^(Ers_types.string_of_url url) in
+                  raise (Http_error (msg, `Unauthorized))
                 | _ -> ()
               end;
               let query_s = Ers_curl.get url in
@@ -125,7 +131,8 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
               let origin = Ers_types.string_of_url url in
               (query, origin)
           | _ ->
-              failwith ("No valid HTTP or HTTPS URL given")
+              let msg = "No valid HTTP or HTTPS URL given" in
+              raise (Http_error (msg, `Bad_request))
     in
     let query = filter_urls query in
     let rtype =
@@ -153,9 +160,17 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
       ();
     cgi#output#output_string res;
     cgi#output#commit_work ()
-  with Failure msg ->
+  with
+    e ->
+      let (msg, status) =
+        match e with
+          Failure msg -> (msg, `Internal_server_error)
+        | Http_error (msg, status) -> (msg, status)
+        | _ -> (Printexc.to_string e, `Internal_server_error)
+      in
       (* A Netcgi-based content provider *)
       cgi#set_header
+        ~status
         ~cache:`No_cache
         ~content_type:"text; charset=\"UTF-8\""
         ();

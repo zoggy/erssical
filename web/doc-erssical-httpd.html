@@ -10,10 +10,7 @@ Queries can be sent to the Erssical HTTP server, which will
 take care of fetching RSS channels, merging and filtering items and finally
 return a new RSS channel or Ical data.
 </p>
-<p>
-The difference with the <page href="doc-erssical"/> is that the HTTP server
-will only fetch HTTP or HTTPS URLs.
-</p>
+
 </section>
 <section id="launching" title="Launching the server">
 <p><strong>Synopsis:</strong></p>
@@ -21,6 +18,23 @@ will only fetch HTTP or HTTPS URLs.
 
 <p>Options are:</p>
 <div class="options"><hcode defer_="1" ><include file="./options_httpd.txt" raw="true"/></hcode></div>
+</section>
+
+<section id="api" title="API">
+<p>
+The HTTP server, when contacted, looks for a <code>query-url</code> argument to
+fetch the query from. If no such argument is provided, then a query in <page href="doc-query">XML format</page>
+is looked in the <code>query</code> argument. If no query is provided, the
+server replies with an error.
+</p>
+<p>
+The <code>rtype</code> argument can be used to override the return type specified
+in the query.
+</p>
+<p>
+After executing the query, the server responds with a document according to the requested
+return type: <code>application/xml+rss</code> or <code>text/calendar</code>.
+</p>
 </section>
 
 <section id="curl" title="Command line querying the server">
@@ -54,6 +68,30 @@ Example of code providing a link to events in Ical format:
 <a href="http://localhost:8915?query-url=https://raw.github.com/zoggy/erssical/master/tests/query.xml&amp;rtype=ical"
 ><img src="Calendar.svg" width="32" height="32" alt="My merged calendar"/></a>
 </hcode>
+</section>
+
+<section id="secutiry" title="Security">
+<p>
+The HTTP server will only fetch HTTP or HTTPS URLs.
+</p>
+<p>
+The <code>--auth</code> command line option allows to specify which URLs the queries
+can be fetched from. Moreover, it forbids sending inline queries: All queries must be
+indicated by a URL, with the <code>query-url</code> argument.
+The aim is to be able to link which query URL refers to which channels.
+</p>
+<p>
+The file passed with option <code>--auth</code> contains lines of the following form:
+</p>
+<hcode>&lt;regexp matching URLs&gt;[ // optional comment]</hcode>
+<p>
+The regular expressions handled can contain the various constructions
+detailed in the OCaml <ext-a href="http://caml.inria.fr/pub/docs/manual-ocaml-4.00/libref/Str.html"><code>Str</code></ext-a> module.
+</p>
+<p>
+Here is an example of such a file:
+</p>
+<hcode defer_="1"><include file="../tests/auth.txt"/></hcode>
 </section>
 
 </prepare-toc>
