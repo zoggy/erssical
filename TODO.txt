@@ -1,7 +1,3 @@
 - web site: add doc
 - add templating part in queries, based on xtmpl
 
-http server:
-- use a cache + ttl info from rss feeds
-- fetch only http and https urls
-- do not fetch urls on same host

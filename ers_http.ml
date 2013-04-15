@@ -29,6 +29,27 @@
   {{:https://godirepo.camlcity.org/wwwsvn/trunk/code/?root=lib-ocamlnet2}OCamlnet distribution}
   and adapted to Erssical. *)
 
+open Ers_types;;
+
+(** Keep only HTTP and HTTPS URLs. *)
+let filter_urls query =
+  let pred url =
+    match Neturl.url_scheme url with
+      "http" | "https" -> true
+    | _ -> false
+  in
+  let pred_source = function
+    Ers_types.Url (url, _) -> pred url
+  | Ers_types.Channel _ -> true
+  in
+  let sources = List.filter pred_source query.q_sources in
+  let query = { query with q_sources = sources } in
+  match query.q_target with
+  | None -> query
+  | Some s when pred_source s -> query
+  | _ -> { query with q_target = None }
+;;
+
 let handle_http_query ?cache (cgi : Netcgi.cgi_activation) =
   try
     let query =
@@ -41,9 +62,14 @@ let handle_http_query ?cache (cgi : Netcgi.cgi_activation) =
           end
       | url_s ->
         let url = Ers_types.url_of_string url_s in
-        let query_s = Ers_curl.get url in
-        Ers_io.query_of_string query_s
+        match Neturl.url_scheme url with
+            "http" | "https" ->
+              let query_s = Ers_curl.get url in
+              Ers_io.query_of_string query_s
+          | _ ->
+              failwith ("No valid HTTP or HTTPS URL given")
     in
+    let query = filter_urls query in
     let rtype =
       match cgi#argument_value "rtype" with
       | "" -> None
