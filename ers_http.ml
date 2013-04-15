@@ -71,6 +71,12 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
         let url = Ers_types.url_of_string url_s in
         match Neturl.url_scheme url with
             "http" | "https" ->
+              begin
+                match param.auth with
+                  Some auth when not (Ers_auth.url_auth auth url) ->
+                  failwith ("Unauthorized query URL: "^(Ers_types.string_of_url url))
+                | _ -> ()
+              end;
               let query_s = Ers_curl.get url in
               Ers_io.query_of_string query_s
           | _ ->
@@ -171,6 +177,11 @@ let rec accept param ues srv_sock_acc =
    * [server_connection] returns immediately (it only sets the callbacks needed
    * for serving), the recursive call is also done immediately.
    *)
+  let param =
+    match param.auth with
+      None -> param
+    | Some auth -> { param with auth = Some (Ers_auth.read_if_mod auth) }
+  in
   let acc_engine = srv_sock_acc#accept () in
   Uq_engines.when_state
     ~is_done:(fun (fd, fd_spec) ->

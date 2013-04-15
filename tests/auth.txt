@@ -1,0 +1,2 @@
+https?://zoggy\.github\.com/.* // Ok for Zoggy's urls
+https?://raw\.github\.com/zoggy/.* // Raw zoggy files from github
