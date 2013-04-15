@@ -1,13 +1,20 @@
 <page title="Erssical HTTP server"
 navbar-doc="active"
+escamp_="href"
 >
+<prepare-toc>
+<toc/>
+<section id="intro" title="Introduction">
 <p>
 Queries can be sent to the Erssical HTTP server, which will
 take care of fetching RSS channels, merging and filtering items and finally
 return a new RSS channel or Ical data.
 </p>
-<p class="alert alert-info">This page is not finished yet.</p>
-
+<p>
+The difference with the <page href="doc-erssical"/> is that the HTTP server
+will only fetch HTTP or HTTPS URLs.
+</p>
+</section>
 <section id="launching" title="Launching the server">
 <p><strong>Synopsis:</strong></p>
 <command-line>erssical-httpd [options]</command-line>
@@ -17,6 +24,12 @@ return a new RSS channel or Ical data.
 </section>
 
 <section id="curl" title="Command line querying the server">
+<p>
+Here are examples of querying the HTTP server from the command line, using
+<ext-a href="http://curl.haxx.se/">the Curl tool</ext-a>. You do not need
+to have Erssical installed on your machine, but just known about a Erssical
+accepting your queries.
+</p>
 <command-line>
 curl --data-urlencode query@tests/query.xml localhost:8915
 </command-line>
@@ -27,4 +40,21 @@ curl -d rtype="text/calendar" \
 </command-line>
 </section>
 
+<section id="embedding" title="Embedding results of Erssical in a web page">
+<p>
+Example of code providing a link to merged RSS channels:
+</p>
+<hcode lang="xml"><a href="http://localhost:8915?query-url=https://raw.github.com/zoggy/erssical/master/tests/query.xml"
+><img src="rss.png" alt="My merged RSS channel"/></a>
+</hcode>
+<p>
+Example of code providing a link to events in Ical format:
+</p>
+<hcode lang="xml">
+<a href="http://localhost:8915?query-url=https://raw.github.com/zoggy/erssical/master/tests/query.xml&amp;rtype=ical"
+><img src="Calendar.svg" width="32" height="32" alt="My merged calendar"/></a>
+</hcode>
+</section>
+
+</prepare-toc>
 </page>
