@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
 <link rel="Start" href="index.html">
-<link rel="previous" href="Ers_filter.html">
+<link rel="previous" href="Ers_log.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
@@ -14,10 +14,13 @@
 <link title="Ers_io" rel="Chapter" href="Ers_io.html">
 <link title="Ers_ical" rel="Chapter" href="Ers_ical.html">
 <link title="Ers_filter" rel="Chapter" href="Ers_filter.html">
+<link title="Ers_cache" rel="Chapter" href="Ers_cache.html">
+<link title="Ers_auth" rel="Chapter" href="Ers_auth.html">
+<link title="Ers_log" rel="Chapter" href="Ers_log.html">
 <link title="Ers_do" rel="Chapter" href="Ers_do.html"><title>Erssical library reference : Ers_do</title>
 </head>
 <body>
-<div class="navbar"><a class="pre" href="Ers_filter.html" title="Ers_filter">Previous</a>
+<div class="navbar"><a class="pre" href="Ers_log.html" title="Ers_log">Previous</a>
 &nbsp;<a class="up" href="index.html" title="Index">Up</a>
 &nbsp;</div>
 <h1>Module <a href="type_Ers_do.html">Ers_do</a></h1>
@@ -25,14 +28,14 @@
 Operations on channels and queries.<br>
 </div>
 <hr width="100%">
-<pre><span id="VALget_source_channels"><span class="keyword">val</span> get_source_channels</span> : <code class="type"><a href="Ers_types.html#TYPEquery">Ers_types.query</a> -> (<a href="Ers_types.html#TYPEchannel">Ers_types.channel</a> * string list) list</code></pre><div class="info">
+<pre><span id="VALget_source_channels"><span class="keyword">val</span> get_source_channels</span> : <code class="type">?cache:<a href="Ers_cache.html#TYPEt">Ers_cache.t</a> -><br>       <a href="Ers_types.html#TYPEquery">Ers_types.query</a> -> (<a href="Ers_types.html#TYPEchannel">Ers_types.channel</a> * string list) list</code></pre><div class="info">
 Return the list of channels from the queries, fetching channels from
   URLs if needed.<br>
 <b>Raises</b> <code>Failure</code> in case of error.<br>
 <b>Returns</b> a list of pairs <code class="code">(channel, errors)</code>, where <code class="code">errors</code> is the list
   of non-fatal errors encountered while parsing the channel XML.<br>
 </div>
-<pre><span id="VALget_target_channel"><span class="keyword">val</span> get_target_channel</span> : <code class="type"><a href="Ers_types.html#TYPEquery">Ers_types.query</a> -> (<a href="Ers_types.html#TYPEchannel">Ers_types.channel</a> * string list) option</code></pre><div class="info">
+<pre><span id="VALget_target_channel"><span class="keyword">val</span> get_target_channel</span> : <code class="type">?cache:<a href="Ers_cache.html#TYPEt">Ers_cache.t</a> -><br>       <a href="Ers_types.html#TYPEquery">Ers_types.query</a> -> (<a href="Ers_types.html#TYPEchannel">Ers_types.channel</a> * string list) option</code></pre><div class="info">
 Same as <a href="Ers_do.html#VALget_source_channels"><code class="code">Ers_do.get_source_channels</code></a> but return the optional target of the query.<br>
 </div>
 <pre><span class="keyword">module</span> <a href="Ers_do.UMap.html">UMap</a>: <code class="type">Map.S</code><code class="type">  with type key = Neturl.url</code></pre><pre><span id="VALmerge_channels"><span class="keyword">val</span> merge_channels</span> : <code class="type">?target:('a, 'b) Rss.channel_t -><br>       ('a, 'b) Rss.channel_t list -> ('a, 'b) Rss.channel_t</code></pre><div class="info">
@@ -48,7 +51,7 @@ Same as <a href="Ers_do.html#VALget_source_channels"><code class="code">Ers_do.g
   or else the first channel of the list.<br>
 <b>Raises</b> <code>Failure</code> in case of error (e.g. when no channel is given).<br>
 </div>
-<pre><span id="VALexecute"><span class="keyword">val</span> execute</span> : <code class="type">?rtype:<a href="Ers_types.html#TYPEquery_return_type">Ers_types.query_return_type</a> -><br>       <a href="Ers_types.html#TYPEquery">Ers_types.query</a> -> <a href="Ers_types.html#TYPEquery_result">Ers_types.query_result</a></code></pre><div class="info">
+<pre><span id="VALexecute"><span class="keyword">val</span> execute</span> : <code class="type">?cache:<a href="Ers_cache.html#TYPEt">Ers_cache.t</a> -><br>       ?rtype:<a href="Ers_types.html#TYPEquery_return_type">Ers_types.query_return_type</a> -><br>       <a href="Ers_types.html#TYPEquery">Ers_types.query</a> -> <a href="Ers_types.html#TYPEquery_result">Ers_types.query_result</a></code></pre><div class="info">
 Execute a query.<br>
 <b>Raises</b> <code>Failure</code> in case of error.<br>
 </div>

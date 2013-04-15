@@ -5678,6 +5678,9 @@ span.icode {
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
+.options pre.code-txt {
+  font-size: 0.790321em;
+}
 .author-photo {
   max-height: 120px;
 }

@@ -33,33 +33,101 @@
 <span/>
 
 
+
+<ul class="toc"><li class="toc-section"><a href="#intro">Introduction</a></li><li class="toc-section"><a href="#launching">Launching the server</a></li><li class="toc-section"><a href="#api">API</a></li><li class="toc-section"><a href="#curl">Command line querying the server</a></li><li class="toc-section"><a href="#embedding">Embedding results of Erssical in a web page</a></li><li class="toc-section"><a href="#secutiry">Security</a></li></ul>
+<div class="section"><div class="section-title" id="intro">Introduction</div>
 <p>
 Queries can be sent to the Erssical HTTP server, which will
 take care of fetching RSS channels, merging and filtering items and finally
 return a new RSS channel or Ical data.
 </p>
-<p class="alert alert-info">This page is not finished yet.</p>
 
+</div>
 <div class="section"><div class="section-title" id="launching">Launching the server</div>
 <p><strong>Synopsis:</strong></p>
 <pre class="code-sh">erssical<span class="hl opt">-</span>httpd <span class="hl opt">[</span>options<span class="hl opt">]</span></pre>
 
 <p>Options are:</p>
-<pre class="code-ocaml"><div class="ocaml-toplevel"></div><div class="ocaml-toplevel"></div><div class="ocaml-toplevel"></div><div class="ocaml-toplevel">  -p &lt;n&gt;    Listen to port number &lt;n&gt;; default is 8915
-  -h &lt;name&gt; reply to connections on host &lt;name&gt;; default is to
-      reply to any query; (&quot;localhost&quot; can be used as &lt;name&gt;)
-  -q &lt;n&gt;    Set maximum number of pending connections; default is 20
-  -help     Display this list of options
-  --help    Display this list of options
-</div><div class="ocaml-toplevel"></div></pre>
+<div class="options"><pre class="code-txt">  -p &lt;n&gt;        Listen to port number &lt;n&gt;; default is 8915
+  -h &lt;name&gt;     Reply to connections on host &lt;name&gt;; default is to reply
+		to any query; (&quot;localhost&quot; can be used as &lt;name&gt;)
+  -q &lt;n&gt;        Set maximum number of pending connections; default is 20
+  --cache &lt;dir&gt; Cache fetched RSS channels in &lt;dir&gt;
+  --ttl &lt;n&gt;     When using cache, set default time to live to &lt;n&gt; minutes;
+		default is 60
+  --auth &lt;file&gt; read authorized query urls from &lt;file&gt;
+  --log &lt;file&gt;  log to &lt;file&gt;
+  -help         Display this list of options
+  --help        Display this list of options
+</pre></div>
+</div>
+
+<div class="section"><div class="section-title" id="api">API</div>
+<p>
+The HTTP server, when contacted, looks for a <code>query-url</code> argument to
+fetch the query from. If no such argument is provided, then a query in <a href="http://zoggy.github.io/erssical/doc-query.html">XML format</a>
+is looked in the <code>query</code> argument. If no query is provided, the
+server replies with an error.
+</p>
+<p>
+The <code>rtype</code> argument can be used to override the return type specified
+in the query.
+</p>
+<p>
+After executing the query, the server responds with a document according to the requested
+return type: <code>application/xml+rss</code> or <code>text/calendar</code>.
+</p>
 </div>
 
 <div class="section"><div class="section-title" id="curl">Command line querying the server</div>
+<p>
+Here are examples of querying the HTTP server from the command line, using
+<span class="ext-a"><a href="http://curl.haxx.se/">the Curl tool</a></span>. You do not need
+to have Erssical installed on your machine, but just known about a Erssical
+accepting your queries.
+</p>
 <pre class="code-sh">curl <span class="hl opt">--</span>data<span class="hl opt">-</span>urlencode query@tests<span class="hl opt">/</span>query.xml localhost<span class="hl opt">:</span><span class="hl num">8915</span></pre>
 
 <pre class="code-sh">curl <span class="hl opt">-</span>d rtype<span class="hl opt">=</span><span class="hl str">&quot;text/calendar&quot;</span> \
   <span class="hl opt">--</span>data<span class="hl opt">-</span>urlencode query@tests<span class="hl opt">/</span>query.xml localhost<span class="hl opt">:</span><span class="hl num">8915</span></pre>
 </div>
+
+<div class="section"><div class="section-title" id="embedding">Embedding results of Erssical in a web page</div>
+<p>
+Example of code providing a link to merged RSS channels:
+</p>
+<pre class="code-xml"><span class="hl kwa">&lt;a</span> <span class="hl kwb">href</span>=<span class="hl str">&quot;http://localhost:8915?query-url=https://raw.github.com/zoggy/erssical/master/tests/query.xml&quot;</span><span class="hl kwa">&gt;&lt;img</span> <span class="hl kwb">src</span>=<span class="hl str">&quot;rss.png&quot;</span> <span class="hl kwb">alt</span>=<span class="hl str">&quot;My merged RSS channel&quot;</span><span class="hl kwa">/&gt;&lt;/a&gt;</span></pre>
+<p>
+Example of code providing a link to events in Ical format:
+</p>
+<pre class="code-xml"><span class="hl kwa">&lt;a</span> <span class="hl kwb">href</span>=<span class="hl str">&quot;http://localhost:8915?query-url=https://raw.github.com/zoggy/erssical/master/tests/query.xml&amp;amp;rtype=ical&quot;</span><span class="hl kwa">&gt;&lt;img</span> <span class="hl kwb">src</span>=<span class="hl str">&quot;Calendar.svg&quot;</span> <span class="hl kwb">width</span>=<span class="hl str">&quot;32&quot;</span> <span class="hl kwb">height</span>=<span class="hl str">&quot;32&quot;</span> <span class="hl kwb">alt</span>=<span class="hl str">&quot;My merged calendar&quot;</span><span class="hl kwa">/&gt;&lt;/a&gt;</span></pre>
+</div>
+
+<div class="section"><div class="section-title" id="secutiry">Security</div>
+<p>
+The HTTP server will only fetch HTTP or HTTPS URLs.
+</p>
+<p>
+The <code>--auth</code> command line option allows to specify which URLs the queries
+can be fetched from. Moreover, it forbids sending inline queries: All queries must be
+indicated by a URL, with the <code>query-url</code> argument.
+The aim is to be able to link which query URL refers to which channels.
+</p>
+<p>
+The file passed with option <code>--auth</code> contains lines of the following form:
+</p>
+<pre class="code-txt">&lt;regexp matching URLs&gt;[ // optional comment]</pre>
+<p>
+The regular expressions handled can contain the various constructions
+detailed in the OCaml <span class="ext-a"><a href="http://caml.inria.fr/pub/docs/manual-ocaml-4.00/libref/Str.html"><code>Str</code></a></span> module.
+</p>
+<p>
+Here is an example of such a file:
+</p>
+<pre class="code-txt">https?://zoggy\.github\.com/.* // Ok for Zoggy's urls
+https?://raw\.github\.com/zoggy/.* // Raw zoggy files from github</pre>
+</div>
+
 
 
 

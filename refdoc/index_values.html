@@ -11,6 +11,9 @@
 <link title="Ers_io" rel="Chapter" href="Ers_io.html">
 <link title="Ers_ical" rel="Chapter" href="Ers_ical.html">
 <link title="Ers_filter" rel="Chapter" href="Ers_filter.html">
+<link title="Ers_cache" rel="Chapter" href="Ers_cache.html">
+<link title="Ers_auth" rel="Chapter" href="Ers_auth.html">
+<link title="Ers_log" rel="Chapter" href="Ers_log.html">
 <link title="Ers_do" rel="Chapter" href="Ers_do.html"><title>Erssical library reference : Index of values</title>
 </head>
 <body>
@@ -29,12 +32,20 @@ The base URL used for namespace of event fields in RSS channels.
 <td></td></tr>
 <tr><td><a href="Ers_io.html#VALchannel_of_string">channel_of_string</a> [<a href="Ers_io.html">Ers_io</a>]</td>
 <td></td></tr>
+<tr><td><a href="Ers_log.html#VALclose">close</a> [<a href="Ers_log.html">Ers_log</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ers_types.html#VALcompare_url">compare_url</a> [<a href="Ers_types.html">Ers_types</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ers_filter.html#VALcompile_filter">compile_filter</a> [<a href="Ers_filter.html">Ers_filter</a>]</td>
 <td><div class="info">
 This function takes a filter description and returns a function
   to filter a set of items.
+</div>
+</td></tr>
+<tr><td align="left"><br>D</td></tr>
+<tr><td><a href="Ers_cache.html#VALdefault_ttl">default_ttl</a> [<a href="Ers_cache.html">Ers_cache</a>]</td>
+<td><div class="info">
+Default time to live of cached RSS channels, in minutes.
 </div>
 </td></tr>
 <tr><td align="left"><br>E</td></tr>
@@ -55,6 +66,12 @@ Execute a query.
 </div>
 </td></tr>
 <tr><td align="left"><br>G</td></tr>
+<tr><td><a href="Ers_cache.html#VALget">get</a> [<a href="Ers_cache.html">Ers_cache</a>]</td>
+<td><div class="info">
+Fetch the given URL of RSS channel, first looking in cache and fetching
+  only if time to live has expired.
+</div>
+</td></tr>
 <tr><td><a href="Ers_curl.html#VALget">get</a> [<a href="Ers_curl.html">Ers_curl</a>]</td>
 <td><div class="info">
 </div>
@@ -88,9 +105,24 @@ Same as <a href="Ers_do.html#VALget_source_channels"><code class="code">Ers_do.g
 <td></td></tr>
 <tr><td><a href="Ers_io.html#VALmime_type_rss">mime_type_rss</a> [<a href="Ers_io.html">Ers_io</a>]</td>
 <td></td></tr>
+<tr><td><a href="Ers_cache.html#VALmk_cache">mk_cache</a> [<a href="Ers_cache.html">Ers_cache</a>]</td>
+<td><div class="info">
+Create a cache from the given directory name.
+</div>
+</td></tr>
+<tr><td><a href="Ers_log.html#VALmk_log">mk_log</a> [<a href="Ers_log.html">Ers_log</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>O</td></tr>
 <tr><td><a href="Ers_io.html#VALopts">opts</a> [<a href="Ers_io.html">Ers_io</a>]</td>
 <td></td></tr>
+<tr><td align="left"><br>P</td></tr>
+<tr><td><a href="Ers_log.html#VALprint">print</a> [<a href="Ers_log.html">Ers_log</a>]</td>
+<td></td></tr>
+<tr><td><a href="Ers_cache.html#VALprint_error">print_error</a> [<a href="Ers_cache.html">Ers_cache</a>]</td>
+<td><div class="info">
+The function called to print error messages.
+</div>
+</td></tr>
 <tr><td align="left"><br>Q</td></tr>
 <tr><td><a href="Ers_io.html#VALquery_of_file">query_of_file</a> [<a href="Ers_io.html">Ers_io</a>]</td>
 <td></td></tr>
@@ -98,6 +130,18 @@ Same as <a href="Ers_do.html#VALget_source_channels"><code class="code">Ers_do.g
 <td></td></tr>
 <tr><td><a href="Ers_io.html#VALquery_of_xml">query_of_xml</a> [<a href="Ers_io.html">Ers_io</a>]</td>
 <td></td></tr>
+<tr><td align="left"><br>R</td></tr>
+<tr><td><a href="Ers_auth.html#VALread_auth">read_auth</a> [<a href="Ers_auth.html">Ers_auth</a>]</td>
+<td><div class="info">
+Return an authorization structure from a file.
+</div>
+</td></tr>
+<tr><td><a href="Ers_auth.html#VALread_if_mod">read_if_mod</a> [<a href="Ers_auth.html">Ers_auth</a>]</td>
+<td><div class="info">
+Return the same autorization structure or a new one if the
+  file was modified since it was read.
+</div>
+</td></tr>
 <tr><td align="left"><br>S</td></tr>
 <tr><td><a href="Ers_io.html#VALsplit_string">split_string</a> [<a href="Ers_io.html">Ers_io</a>]</td>
 <td></td></tr>
@@ -139,6 +183,11 @@ Same as <a href="Ers_do.html#VALget_source_channels"><code class="code">Ers_do.g
 <tr><td><a href="Ers_io.html#VALtag_type_short">tag_type_short</a> [<a href="Ers_io.html">Ers_io</a>]</td>
 <td></td></tr>
 <tr><td align="left"><br>U</td></tr>
+<tr><td><a href="Ers_auth.html#VALurl_auth">url_auth</a> [<a href="Ers_auth.html">Ers_auth</a>]</td>
+<td><div class="info">
+Return whether the given URL is authorized or not.
+</div>
+</td></tr>
 <tr><td><a href="Ers_types.html#VALurl_of_string">url_of_string</a> [<a href="Ers_types.html">Ers_types</a>]</td>
 <td><div class="info">
 </div>
