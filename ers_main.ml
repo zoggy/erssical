@@ -46,7 +46,7 @@ let options = [
     "<dir> Cache fetched RSS channels in <dir>" ;
 
     "--ttl", Arg.Set_int Ers_cache.default_ttl,
-    "<n> Chen using cache, set default time to live to <n> minutes;\n\t\tdefault is "^
+    "<n> When using cache, set default time to live to <n> minutes;\n\t\tdefault is "^
     (string_of_int !Ers_cache.default_ttl);
   ]
 
