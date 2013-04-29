@@ -160,6 +160,7 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
     cgi#set_header
       ~cache:`No_cache
       ~content_type:(ctype ^ "; charset=\"UTF-8\"")
+      ~fields: ["Access-Control-Allow-Origin", ["*"]]
       ();
     cgi#output#output_string res;
     cgi#output#commit_work ()
@@ -176,7 +177,8 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
         ~status
         ~cache:`No_cache
         ~content_type:"text; charset=\"UTF-8\""
-        ();
+        ~fields: ["Access-Control-Allow-Origin", ["*"]]
+      ();
       cgi#output#output_string msg;
       log param msg;
       cgi#output#commit_work ()
