@@ -83,13 +83,18 @@ Filters allow to keep only some items of an Event RSS channel.
 *)
 
 type contains_connector = Conn_or | Conn_and
-type filter =
-    Not of filter
-  | Or of filter list
-  | And of filter list
+type filter_exp =
+    Not of filter_exp
+  | Or of filter_exp list
+  | And of filter_exp list
   | Contains of (string * contains_connector * Str.regexp list)
   | StartDate of Netdate.t option * Netdate.t option (** (after (inclusive), before (exclusive)) *)
   | EndDate of Netdate.t option * Netdate.t option (** (after (inclusive), before (exclusive)) *)
+
+type filter = {
+  filter_exp : filter_exp ;
+  filter_max : int option ;
+}
 
 (** {2 Queries}
 
@@ -130,7 +135,7 @@ type source = Url of Neturl.url * event | Channel of channel
   information, i.e. text information, for example errors encountered while
   parsing source and target channels.
 *)
-type query_return_type = Rss | Ical | Debug
+type query_return_type = Rss | Ical | Debug | Xtmpl
 
 (** This is the result computed from a query. A calendar is just the
   string in the Ical format. *)
@@ -138,11 +143,12 @@ type query_result =
     Res_channel of channel
   | Res_ical of string
   | Res_debug of string
-
+  | Res_xtmpl of Xtmpl.tree
 
 type query = {
   q_type : query_return_type;
   q_sources : source list;
   q_target : source option;
   q_filter : filter option;
+  q_tmpl : Xtmpl.tree option ;
 }

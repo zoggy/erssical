@@ -85,9 +85,9 @@ let log_query log client origin ?rtype q =
  let t =
    let rtype = match rtype with None -> q.q_type | Some t -> t in
    match rtype with
-
       Ical -> Ers_io.mime_type_ical
     | Rss -> Ers_io.mime_type_rss
+    | Xtmpl -> Ers_io.mime_type_xml
     | Debug -> "debug"
   in
  Buffer.add_string b (" Return type: "^t);
@@ -140,6 +140,8 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
       | "" -> None
       | "ical" -> Some Ers_types.Ical
       | s when s = Ers_io.mime_type_ical -> Some Ers_types.Ical
+      | "xml" -> Some Ers_types.Xtmpl
+      | s when s = Ers_io.mime_type_xml -> Some Ers_types.Xtmpl
       | "debug" -> Some Ers_types.Debug
       | _ -> Some Ers_types.Rss
     in
@@ -153,6 +155,7 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
         Ers_types.Res_ical s -> (Ers_io.mime_type_ical, s)
       | Ers_types.Res_channel ch -> (Ers_io.mime_type_rss, Ers_io.string_of_channel ch)
       | Ers_types.Res_debug s -> ("text", s)
+      | Ers_types.Res_xtmpl tree -> (Ers_io.mime_type_xml, Xtmpl.string_of_xml tree)
     in
     cgi#set_header
       ~cache:`No_cache

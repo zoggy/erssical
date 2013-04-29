@@ -123,16 +123,16 @@ let compile_end_date_filter =
   compile_date_filter f
 ;;
 
-let rec compile_filter = function
+let rec compile_filter_exp = function
   Not f ->
-    let f = compile_filter f in
+    let f = compile_filter_exp f in
     (fun set -> S.diff set (f set))
 | Or l ->
-    let l = List.map compile_filter l in
+    let l = List.map compile_filter_exp l in
     let f_or base_set set f = S.union set (f base_set) in
     (fun set -> List.fold_left (f_or set) S.empty l)
 | And l ->
-    let l = List.map compile_filter l in
+    let l = List.map compile_filter_exp l in
     let f_and set f = S.inter set (f set) in
     (fun set -> List.fold_left f_and set l)
 | StartDate (after, before) -> compile_start_date_filter after before
@@ -147,12 +147,21 @@ let rec compile_filter = function
         let f_and set f = S.inter set (f set) in
         (fun set -> List.fold_left f_and set filters)
 
+let rec keep_n n = function
+| h :: q when n > 0 -> h :: (keep_n (n-1) q)
+| _ -> [];;
+
 let filter f ch =
-  let filter = compile_filter f in
+  let filter = compile_filter_exp f.filter_exp in
   let set = List.fold_right
     Ers_types.ItemSet.add ch.Rss.ch_items Ers_types.ItemSet.empty
   in
   let set = filter set in
   let items = Rss.sort_items_by_date (Ers_types.ItemSet.elements set) in
+  let items =
+    match f.filter_max with
+      None -> items
+    | Some n -> keep_n n items
+  in
   { ch with Rss.ch_items = items }
 ;;

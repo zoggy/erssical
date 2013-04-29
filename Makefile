@@ -27,12 +27,12 @@
 VERSION=0.1
   # do not forget to change in META file too
 
-PACKAGES=rss,str,curl
+PACKAGES=rss,str,curl,xtmpl
 HTTPPACKAGES=nethttpd
 
 OF_FLAGS=-package $(PACKAGES),$(HTTPPACKAGES)
 OCAMLFIND=ocamlfind
-OCAML_COMPFLAGS= -annot
+OCAML_COMPFLAGS= -annot -rectypes
 OCAMLC=$(OCAMLFIND) ocamlc $(OF_FLAGS) $(OCAML_COMPFLAGS)
 OCAMLOPT=$(OCAMLFIND) ocamlopt $(OF_FLAGS) $(OCAML_COMFLAGS)
 OCAMLDOC=OCAMLFIND_COMMANDS="ocamldoc=ocamldoc.opt" $(OCAMLFIND) ocamldoc -predicates native $(OF_FLAGS) -v
@@ -59,6 +59,7 @@ CMOFILES= \
 	ers_cache.cmo \
 	ers_auth.cmo \
 	ers_log.cmo \
+	ers_xtmpl.cmo \
 	ers_do.cmo
 
 CMXFILES=$(CMOFILES:.cmo=.cmx)

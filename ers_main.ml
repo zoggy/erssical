@@ -79,6 +79,8 @@ let main () =
           print_string str
       | Ers_types.Res_ical str ->
           print_string str
+      | Ers_types.Res_xtmpl tree ->
+          print_string (Xtmpl.string_of_xml tree)
 ;;
 
 try main ()

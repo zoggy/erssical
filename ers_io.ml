@@ -218,10 +218,12 @@ let read_item_data xmls =
 
 let mime_type_ical = "text/calendar"
 let mime_type_rss = "application/rss+xml"
+let mime_type_xml = "application/xml"
 
 let q_return_type_of_atts atts =
   match get_att "type" atts with
   | Some s when s = mime_type_ical -> Ical
+  | Some s when s = mime_type_xml -> Xtmpl
   | _ -> Rss
 ;;
 
@@ -335,7 +337,37 @@ and read_filters xmls = List.fold_left read_filter [] xmls
 let read_filter_opt xmls =
   match get_elt "filter" xmls with
     None -> None
-  | Some (_,subs) -> Some (Ers_types.And (read_filters subs))
+  | Some (atts,subs) -> 
+      let exp = Ers_types.And (read_filters subs) in
+      let max =
+        match get_att "max" atts with
+          None -> None
+        | Some s -> 
+            try Some (int_of_string s)
+            with _ -> failwith (s ^ " is not an integer")
+      in
+      Some { filter_exp = exp ; filter_max = max }
+
+let rec xtmpl_of_xmlm = function
+  E ((tag, atts), subs) -> Xtmpl.E (tag, atts, List.map xtmpl_of_xmlm subs)
+| D s -> Xtmpl.D s
+;;
+
+let read_template_opt xmls =
+  match get_elt "template" xmls with
+    None -> None
+  | Some (atts, subs) ->
+      let (tag_atts, other_atts) =
+        List.partition (function (("","tag"),_) -> true | _ -> false) atts
+      in
+      let tag =
+        match tag_atts with
+          [] -> ("","div")
+        | (_, t) :: _ -> ("",t)
+      in
+      let subs = List.map xtmpl_of_xmlm subs in
+      Some (Xtmpl.E (tag, other_atts, subs))
+;;
 
 let query_of_xml xml =
   match xml with
@@ -345,10 +377,12 @@ let query_of_xml xml =
       let sources = read_sources subs in
       let target = read_target subs in
       let filter = read_filter_opt subs in
+      let tmpl = read_template_opt subs in
       { q_type = typ ;
         q_sources = sources ;
         q_target = target ;
         q_filter = filter ;
+        q_tmpl = tmpl ;
       }
 ;;
 

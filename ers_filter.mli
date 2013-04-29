@@ -27,9 +27,9 @@
 
 module S : Set.S with type elt = Ers_types.item
 
-(** This function takes a filter description and returns a function
+(** This function takes a filter expression and returns a function
   to filter a set of items. *)
-val compile_filter : Ers_types.filter -> (S.t -> S.t)
+val compile_filter_exp : Ers_types.filter_exp -> (S.t -> S.t)
 
 (** [filter filt chan] returns a new channel where only items from [ch]
   verifying filter [filt] are kept.*)

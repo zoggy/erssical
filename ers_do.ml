@@ -153,6 +153,10 @@ let merge_channels ?target channels =
 
 let execute ?cache ?rtype query =
   let ret_typ = match rtype with None -> query.q_type | Some t -> t in
+  (match ret_typ, query.q_tmpl with
+     Xtmpl, None -> failwith "Missing template in query"
+   | _ -> ()
+  );
   let target_errors = ref [] in
   let source_errors = ref [] in
   try
@@ -182,6 +186,10 @@ let execute ?cache ?rtype query =
     | Debug -> Res_debug (String.concat "\n" ("Ok" :: !target_errors @ !source_errors))
     | Rss -> Res_channel channel
     | Ical -> Res_ical (Ers_ical.ical_of_channel channel)
+    | Xtmpl ->
+        match query.q_tmpl with
+          None -> assert false
+        | Some tmpl -> Res_xtmpl (Ers_xtmpl.apply_template tmpl channel)
   with
     e when ret_typ = Debug ->
       begin

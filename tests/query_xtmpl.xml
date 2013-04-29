@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<query type="application/xml">
+  <sources>
+    <source href="http://zoggy.github.io/stog/index.rss"/>
+    <source href="http://planet.ocamlcore.org/rss20.xml">
+      <keywords><item>ocaml</item></keywords>
+    </source>
+    <source href="https://raw.github.com/zoggy/erssical/master/tests/example.rss"/>
+  </sources>
+  <target>
+    <title>Merged channel</title>
+    <link>file:///tmp/t.xml</link>
+    <description>Merged channel - test of ERSSICAL</description>
+  </target>
+  <filter>
+    <keywords><item regexp="true">o?caml</item></keywords>
+    <startDate before="24 Apr 2013 07:00:00 +0100"/>
+    <endDate after="20 Mar 2013 07:00:00 +0100"/>
+  </filter>
+  <template tag="div">
+    <div class="rss-item">
+      <div class="rss-item-title"><a href="&lt;item-url/&gt;"><item-title/></a></div>
+      <!--<div class="rss-item-desc"><item-description/></div>-->
+    </div>
+  </template>
+</query>

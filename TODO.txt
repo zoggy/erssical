@@ -1,3 +1,2 @@
-- web site: add doc
 - add templating part in queries, based on xtmpl
-
+- filter: allow max=n to keep only n-first elements on final channel
