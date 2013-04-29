@@ -12,13 +12,14 @@
     <link>file:///tmp/t.xml</link>
     <description>Merged channel - test of ERSSICAL</description>
   </target>
-  <filter>
+  <filter max="2">
     <keywords><item regexp="true">o?caml</item></keywords>
     <startDate before="24 Apr 2013 07:00:00 +0100"/>
     <endDate after="20 Mar 2013 07:00:00 +0100"/>
   </filter>
   <template tag="div">
     <div class="rss-item">
+      [<item-pub-year/>-<item-pub-month/>-<item-pub-mday/>]
       <div class="rss-item-title"><a href="&lt;item-url/&gt;"><item-title/></a></div>
       <!--<div class="rss-item-desc"><item-description/></div>-->
     </div>

@@ -31,6 +31,12 @@ let env_of_item item =
       "item-description", Xtmpl.D (s_opt item.item_desc) ;
       "item-url", Xtmpl.D (map_opt Ers_types.string_of_url item.item_link) ;
       "item-pubdate", Xtmpl.D (map_opt Rss.string_of_date item.item_pubdate) ;
+      "item-pub-year", Xtmpl.D (map_opt (fun d -> string_of_int d.Netdate.year) item.item_pubdate) ;
+      "item-pub-month", Xtmpl.D (map_opt (fun d -> Printf.sprintf "%02d" d.Netdate.month) item.item_pubdate) ;
+      "item-pub-mday", Xtmpl.D (map_opt (fun d -> Printf.sprintf "%02d" d.Netdate.day) item.item_pubdate) ;
+      "item-pub-hour", Xtmpl.D (map_opt (fun d -> Printf.sprintf "%02d" d.Netdate.hour) item.item_pubdate) ;
+      "item-pub-minute", Xtmpl.D (map_opt (fun d -> Printf.sprintf "%02d" d.Netdate.minute) item.item_pubdate) ;
+      "item-pub-second", Xtmpl.D (map_opt (fun d -> Printf.sprintf "%02d" d.Netdate.second) item.item_pubdate) ;
       "item-author", Xtmpl.D (s_opt item.item_author) ;
       "item-source-url", on_source_opt (fun s -> Ers_types.string_of_url s.src_url) item.item_source ;
       "item-source-name", on_source_opt (fun s -> s.src_name) item.item_source ;
