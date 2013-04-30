@@ -17,6 +17,7 @@
 <link title="Ers_cache" rel="Chapter" href="Ers_cache.html">
 <link title="Ers_auth" rel="Chapter" href="Ers_auth.html">
 <link title="Ers_log" rel="Chapter" href="Ers_log.html">
+<link title="Ers_xtmpl" rel="Chapter" href="Ers_xtmpl.html">
 <link title="Ers_do" rel="Chapter" href="Ers_do.html"><link title="Using URLs" rel="Section" href="#2_UsingURLs">
 <link title="Events" rel="Section" href="#2_Events">
 <link title="Items and channels" rel="Section" href="#2_Itemsandchannels">
@@ -140,6 +141,13 @@ An event is represented by additional information in nodes under the <code class
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
+<code><span id="TYPEELTevent.ev_link">ev_link</span>&nbsp;:<code class="type">Neturl.url option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
 <code><span id="TYPEELTevent.ev_level">ev_level</span>&nbsp;:<code class="type"><a href="Ers_types.html#TYPEevent_level">event_level</a> option</code>;</code></td>
 
 </tr>
@@ -202,7 +210,7 @@ An event is represented by additional information in nodes under the <code class
 }
 
 
-<pre><span id="VALevent"><span class="keyword">val</span> event</span> : <code class="type">?level:<a href="Ers_types.html#TYPEevent_level">event_level</a> -><br>       ?typ:<a href="Ers_types.html#TYPEevent_type">event_type</a> -><br>       ?keywords:string list -><br>       ?speakers:string list -><br>       ?organizers:string list -><br>       ?location:<a href="Ers_types.html#TYPElocation">location</a> -><br>       ?start_date:Netdate.t -><br>       ?end_date:Netdate.t -> ?audience:string -> unit -> <a href="Ers_types.html#TYPEevent">event</a></code></pre><br>
+<pre><span id="VALevent"><span class="keyword">val</span> event</span> : <code class="type">?link:Neturl.url -><br>       ?level:<a href="Ers_types.html#TYPEevent_level">event_level</a> -><br>       ?typ:<a href="Ers_types.html#TYPEevent_type">event_type</a> -><br>       ?keywords:string list -><br>       ?speakers:string list -><br>       ?organizers:string list -><br>       ?location:<a href="Ers_types.html#TYPElocation">location</a> -><br>       ?start_date:Netdate.t -><br>       ?end_date:Netdate.t -> ?audience:string -> unit -> <a href="Ers_types.html#TYPEevent">event</a></code></pre><br>
 <h2 id="2_Itemsandchannels">Items and channels</h2><br>
 <pre><span id="TYPEitem"><span class="keyword">type</span> <code class="type"></code>item</span> = <code class="type"><a href="Ers_types.html#TYPEevent">event</a> Rss.item_t</code> </pre>
 
@@ -230,49 +238,67 @@ Filters allow to keep only some items of an Event RSS channel.<br>
 </tr></table>
 
 
-<pre><code><span id="TYPEfilter"><span class="keyword">type</span> <code class="type"></code>filter</span> = </code></pre><table class="typetable">
+<pre><code><span id="TYPEfilter_exp"><span class="keyword">type</span> <code class="type"></code>filter_exp</span> = </code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTfilter.Not"><span class="constructor">Not</span></span> <span class="keyword">of</span> <code class="type"><a href="Ers_types.html#TYPEfilter">filter</a></code></code></td>
+<code><span id="TYPEELTfilter_exp.Not"><span class="constructor">Not</span></span> <span class="keyword">of</span> <code class="type"><a href="Ers_types.html#TYPEfilter_exp">filter_exp</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTfilter.Or"><span class="constructor">Or</span></span> <span class="keyword">of</span> <code class="type"><a href="Ers_types.html#TYPEfilter">filter</a> list</code></code></td>
+<code><span id="TYPEELTfilter_exp.Or"><span class="constructor">Or</span></span> <span class="keyword">of</span> <code class="type"><a href="Ers_types.html#TYPEfilter_exp">filter_exp</a> list</code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTfilter.And"><span class="constructor">And</span></span> <span class="keyword">of</span> <code class="type"><a href="Ers_types.html#TYPEfilter">filter</a> list</code></code></td>
+<code><span id="TYPEELTfilter_exp.And"><span class="constructor">And</span></span> <span class="keyword">of</span> <code class="type"><a href="Ers_types.html#TYPEfilter_exp">filter_exp</a> list</code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTfilter.Contains"><span class="constructor">Contains</span></span> <span class="keyword">of</span> <code class="type">(string * <a href="Ers_types.html#TYPEcontains_connector">contains_connector</a> * Str.regexp list)</code></code></td>
+<code><span id="TYPEELTfilter_exp.Contains"><span class="constructor">Contains</span></span> <span class="keyword">of</span> <code class="type">(string * <a href="Ers_types.html#TYPEcontains_connector">contains_connector</a> * Str.regexp list)</code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTfilter.StartDate"><span class="constructor">StartDate</span></span> <span class="keyword">of</span> <code class="type">Netdate.t option * Netdate.t option</code></code></td>
+<code><span id="TYPEELTfilter_exp.StartDate"><span class="constructor">StartDate</span></span> <span class="keyword">of</span> <code class="type">Netdate.t option * Netdate.t option</code></code></td>
 <td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >(after (inclusive), before (exclusive))</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTfilter.EndDate"><span class="constructor">EndDate</span></span> <span class="keyword">of</span> <code class="type">Netdate.t option * Netdate.t option</code></code></td>
+<code><span id="TYPEELTfilter_exp.EndDate"><span class="constructor">EndDate</span></span> <span class="keyword">of</span> <code class="type">Netdate.t option * Netdate.t option</code></code></td>
 <td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >(after (inclusive), before (exclusive))</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
 </tr></table>
+
+
+<pre><code><span id="TYPEfilter"><span class="keyword">type</span> <code class="type"></code>filter</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTfilter.filter_exp">filter_exp</span>&nbsp;:<code class="type"><a href="Ers_types.html#TYPEfilter_exp">filter_exp</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTfilter.filter_max">filter_max</span>&nbsp;:<code class="type">int option</code>;</code></td>
+
+</tr></table>
+}
 
 
 <br>
@@ -353,6 +379,13 @@ A source can be a channel given directly in a <code class="code">&lt;source&gt;<
 <td align="left" valign="top" >
 <code><span id="TYPEELTquery_return_type.Debug"><span class="constructor">Debug</span></span></code></td>
 
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery_return_type.Xtmpl"><span class="constructor">Xtmpl</span></span></code></td>
+
 </tr></table>
 
 <div class="info">
@@ -381,6 +414,13 @@ A query can be asked to return a new channel, a calendar or debug
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
 <code><span id="TYPEELTquery_result.Res_debug"><span class="constructor">Res_debug</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery_result.Res_xtmpl"><span class="constructor">Res_xtmpl</span></span> <span class="keyword">of</span> <code class="type">Xtmpl.tree</code></code></td>
 
 </tr></table>
 
@@ -416,6 +456,13 @@ This is the result computed from a query. A calendar is just the
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
 <code><span id="TYPEELTquery.q_filter">q_filter</span>&nbsp;:<code class="type"><a href="Ers_types.html#TYPEfilter">filter</a> option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTquery.q_tmpl">q_tmpl</span>&nbsp;:<code class="type">Xtmpl.tree option</code>;</code></td>
 
 </tr></table>
 }

@@ -38,7 +38,7 @@ A query is described in an XML document of the following form ↴
 </p>
 
 <div class="row">
-<div class="span5"><ul class="toc"><li class="toc-section"><a href="#query">&lt;query&gt;</a></li><li class="toc-section"><a href="#sources">&lt;sources&gt;</a><ul class="toc"><li class="toc-subsection"><a href="#sourceurl">Referenced source</a></li><li class="toc-subsection"><a href="#sourceembed">Embedded source</a></li></ul></li><li class="toc-section"><a href="#target">&lt;target&gt;</a></li><li class="toc-section"><a href="#filter">&lt;filter&gt;</a><ul class="toc"><li class="toc-subsection"><a href="#keywords">&lt;keywords&gt;</a></li><li class="toc-subsection"><a href="#organizers">&lt;organizers&gt;</a></li><li class="toc-subsection"><a href="#speakers">&lt;speakers&gt;</a></li><li class="toc-subsection"><a href="#startdate">&lt;startDate&gt;/&lt;endDate&gt;</a></li><li class="toc-subsection"><a href="#or">&lt;or&gt;</a></li><li class="toc-subsection"><a href="#and">&lt;and&gt;</a></li><li class="toc-subsection"><a href="#not">&lt;not&gt;</a></li></ul></li></ul></div>
+<div class="span5"><ul class="toc"><li class="toc-section"><a href="#query">&lt;query&gt;</a></li><li class="toc-section"><a href="#sources">&lt;sources&gt;</a><ul class="toc"><li class="toc-subsection"><a href="#sourceurl">Referenced source</a></li><li class="toc-subsection"><a href="#sourceembed">Embedded source</a></li></ul></li><li class="toc-section"><a href="#target">&lt;target&gt;</a></li><li class="toc-section"><a href="#filter">&lt;filter&gt;</a><ul class="toc"><li class="toc-subsection"><a href="#keywords">&lt;keywords&gt;</a></li><li class="toc-subsection"><a href="#organizers">&lt;organizers&gt;</a></li><li class="toc-subsection"><a href="#speakers">&lt;speakers&gt;</a></li><li class="toc-subsection"><a href="#startdate">&lt;startDate&gt;/&lt;endDate&gt;</a></li><li class="toc-subsection"><a href="#or">&lt;or&gt;</a></li><li class="toc-subsection"><a href="#and">&lt;and&gt;</a></li><li class="toc-subsection"><a href="#not">&lt;not&gt;</a></li></ul></li><li class="toc-section"><a href="#template">&lt;template&gt;</a></li></ul></div>
 <div class="span6"><pre class="code-xml"><span class="hl kwa">&lt;?xml</span> <span class="hl kwb">version</span>=<span class="hl str">&quot;1.0&quot;</span><span class="hl kwa">?&gt;</span>
 <span class="hl kwa">&lt;query&gt;</span>
   <span class="hl kwa">&lt;sources&gt;</span> ... <span class="hl kwa">&lt;/sources&gt;</span>
@@ -56,15 +56,17 @@ The following types are handled:
 </p>
 <ul>
 <li><code>application/rss+xml</code>: the query will return a new RSS document,</li>
-<li><code>text/calendar</code>: the query will return calendar data in Ical format.</li>
+<li><code>text/calendar</code>: the query will return calendar data in Ical format,</li>
+<li><code>application/xml</code>: the query will return an XML tree based on a template.</li>
 </ul>
 <p>For any other value or if this attribute is not present, the type <code>application/rss+xml</code>
 is assumed.
 </p>
 <p>The <code>&lt;query&gt;</code> element can contain
 <code><a href="http://zoggy.github.io/erssical/doc-query.html#sources">&lt;sources&gt;</a></code>,
-<code><a href="http://zoggy.github.io/erssical/doc-query.html#target">&lt;target&gt;</a></code> and
-<code><a href="http://zoggy.github.io/erssical/doc-query.html#filter">&lt;filter&gt;</a></code> elements.
+<code><a href="http://zoggy.github.io/erssical/doc-query.html#target">&lt;target&gt;</a></code>,
+<code><a href="http://zoggy.github.io/erssical/doc-query.html#filter">&lt;filter&gt;</a></code> and
+<code><a href="http://zoggy.github.io/erssical/doc-query.html#template">&lt;template&gt;</a></code> elements.
 </p>
 </div>
 
@@ -242,7 +244,45 @@ keyword and start after the 1<sup>st</sup> of May 2012 at 12:00:
   <span class="hl kwa">&lt;/not&gt;</span>
 <span class="hl kwa">&lt;/filter&gt;</span></pre>
 </div>
+</div>
 
+<div class="section"><div class="section-title" id="template">&lt;template&gt;</div>
+<p>
+This element contains the XML template used when querying a XML result.
+Here is an example of such a template element:
+</p>
+<pre class="code-xml"><span class="hl kwa">&lt;query</span> <span class="hl kwb">type</span>=<span class="hl str">&quot;application/xml&quot;</span><span class="hl kwa">&gt;</span>
+  <span class="hl kwa">&lt;template</span> <span class="hl kwb">tag</span>=<span class="hl str">&quot;div&quot;</span> <span class="hl kwb">class</span>=<span class="hl str">&quot;rss-items&quot;</span><span class="hl kwa">&gt;</span>
+    <span class="hl kwa">&lt;div</span> <span class="hl kwb">class</span>=<span class="hl str">&quot;rss-item&quot;</span><span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;span</span> <span class="hl kwb">class</span>=<span class="hl str">&quot;rss-date&quot;</span><span class="hl kwa">&gt;&lt;item-pub-year/&gt;</span>-<span class="hl kwa">&lt;item-pub-month/&gt;</span>-<span class="hl kwa">&lt;item-pub-mday/&gt;&lt;/span</span>
+      <span class="hl kwa">&gt;&lt;span</span> <span class="hl kwb">class</span>=<span class="hl str">&quot;rss-item-title&quot;</span><span class="hl kwa">&gt;&lt;a</span> <span class="hl kwb">href</span>=<span class="hl str">&quot;&amp;lt;item-url/&amp;gt;&quot;</span><span class="hl kwa">&gt;&lt;item-title/&gt;&lt;/a&gt;&lt;/span&gt;</span>
+      <span class="hl kwa">&lt;span</span> <span class="hl kwb">class</span>=<span class="hl str">&quot;rss-source&quot;</span><span class="hl kwa">&gt;</span>[<span class="hl kwa">&lt;item-source-name/&gt;</span>]<span class="hl kwa">&lt;/span&gt;</span>
+    <span class="hl kwa">&lt;/div&gt;</span>
+  <span class="hl kwa">&lt;/template&gt;</span>
+<span class="hl kwa">&lt;/query&gt;</span></pre>
+<p>The <span class="icode"><span class="hl kwb">tag</span>=<span class="hl str">&quot;div&quot;</span></span> means that the root element of the result tree
+will be a &quot;div&quot;. The additional attributes of the <span class="icode"><span class="hl kwa">&lt;template&gt;</span></span>
+are added to this root node.
+</p>
+<p>
+The elements under the <span class="icode"><span class="hl kwa">&lt;template&gt;</span></span> are used as template: for each
+item in the final channel (i.e. after merging and filtering), rewrite rules
+are applied and the result in added to root node of the result. Rewrite
+rules consist in replacing some XML nodes by information about the current item.
+</p>
+<p>The following nodes are replaced:</p>
+<ul>
+<li><span class="icode"><span class="hl kwa">&lt;item-title&gt;</span></span>: title of the item,</li>
+<li><span class="icode"><span class="hl kwa">&lt;item-description&gt;</span></span>: description of the item,</li>
+<li><span class="icode"><span class="hl kwa">&lt;item-url&gt;</span></span>: link of the item,</li>
+<li><span class="icode"><span class="hl kwa">&lt;item-pubdate&gt;</span></span>: publication date of the item,</li>
+<li><span class="icode"><span class="hl kwa">&lt;item-pub-year&gt;</span></span>: year of the publication date of the item;
+you can also use <span class="icode"><span class="hl kwa">&lt;item-pub-month&gt;</span></span>, <span class="icode"><span class="hl kwa">&lt;item-pub-mday&gt;</span></span>, <span class="icode"><span class="hl kwa">&lt;item-pub-hour&gt;</span></span>,
+<span class="icode"><span class="hl kwa">&lt;item-pub-minute&gt;</span></span>, and <span class="icode"><span class="hl kwa">&lt;item-pub-second&gt;</span></span> elements,</li>
+<li><span class="icode"><span class="hl kwa">&lt;item-author&gt;</span></span>: author of the item,</li>
+<li><span class="icode"><span class="hl kwa">&lt;item-source-url&gt;</span></span>: url of the source channel,</li>
+<li><span class="icode"><span class="hl kwa">&lt;item-source-name&gt;</span></span>: name of the source channel.</li>
+</ul>
 </div>
 
 

@@ -13,6 +13,7 @@
 <link title="Ers_cache" rel="Chapter" href="Ers_cache.html">
 <link title="Ers_auth" rel="Chapter" href="Ers_auth.html">
 <link title="Ers_log" rel="Chapter" href="Ers_log.html">
+<link title="Ers_xtmpl" rel="Chapter" href="Ers_xtmpl.html">
 <link title="Ers_do" rel="Chapter" href="Ers_do.html"><title>Erssical library reference : Ers_types</title>
 </head>
 <body>
@@ -61,6 +62,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Other_type</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;location&nbsp;=&nbsp;{&nbsp;loc_href&nbsp;:&nbsp;<span class="constructor">Neturl</span>.url&nbsp;option;&nbsp;loc_name&nbsp;:&nbsp;string;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;event&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ev_link&nbsp;:&nbsp;<span class="constructor">Neturl</span>.url&nbsp;option;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;ev_level&nbsp;:&nbsp;<span class="constructor">Ers_types</span>.event_level&nbsp;option;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;ev_type&nbsp;:&nbsp;<span class="constructor">Ers_types</span>.event_type&nbsp;option;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;ev_keywords&nbsp;:&nbsp;string&nbsp;list;<br>
@@ -72,6 +74,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;ev_audience&nbsp;:&nbsp;string&nbsp;option;<br>
 &nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;event&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?link:<span class="constructor">Neturl</span>.url&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?level:<span class="constructor">Ers_types</span>.event_level&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?typ:<span class="constructor">Ers_types</span>.event_type&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?keywords:string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -112,25 +115,31 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;split&nbsp;:&nbsp;elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t&nbsp;*&nbsp;bool&nbsp;*&nbsp;t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;contains_connector&nbsp;=&nbsp;<span class="constructor">Conn_or</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Conn_and</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;filter&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Not</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ers_types</span>.filter<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Or</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ers_types</span>.filter&nbsp;list<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">And</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ers_types</span>.filter&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;filter_exp&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Not</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ers_types</span>.filter_exp<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Or</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ers_types</span>.filter_exp&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">And</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ers_types</span>.filter_exp&nbsp;list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Contains</span>&nbsp;<span class="keyword">of</span>&nbsp;(string&nbsp;*&nbsp;<span class="constructor">Ers_types</span>.contains_connector&nbsp;*&nbsp;<span class="constructor">Str</span>.regexp&nbsp;list)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">StartDate</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Netdate</span>.t&nbsp;option&nbsp;*&nbsp;<span class="constructor">Netdate</span>.t&nbsp;option<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">EndDate</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Netdate</span>.t&nbsp;option&nbsp;*&nbsp;<span class="constructor">Netdate</span>.t&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;filter&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filter_exp&nbsp;:&nbsp;<span class="constructor">Ers_types</span>.filter_exp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filter_max&nbsp;:&nbsp;int&nbsp;option;<br>
+&nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;source&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Url</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Neturl</span>.url&nbsp;*&nbsp;<span class="constructor">Ers_types</span>.event<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Channel</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ers_types</span>.channel<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;query_return_type&nbsp;=&nbsp;<span class="constructor">Rss</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Ical</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Debug</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;query_return_type&nbsp;=&nbsp;<span class="constructor">Rss</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Ical</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Debug</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Xtmpl</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;query_result&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Res_channel</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ers_types</span>.channel<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Res_ical</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Res_debug</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Res_xtmpl</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Xtmpl</span>.tree<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;query&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;q_type&nbsp;:&nbsp;<span class="constructor">Ers_types</span>.query_return_type;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;q_sources&nbsp;:&nbsp;<span class="constructor">Ers_types</span>.source&nbsp;list;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;q_target&nbsp;:&nbsp;<span class="constructor">Ers_types</span>.source&nbsp;option;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;q_filter&nbsp;:&nbsp;<span class="constructor">Ers_types</span>.filter&nbsp;option;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;q_tmpl&nbsp;:&nbsp;<span class="constructor">Xtmpl</span>.tree&nbsp;option;<br>
 &nbsp;&nbsp;}<br>
 <span class="keyword">end</span></code></body></html>

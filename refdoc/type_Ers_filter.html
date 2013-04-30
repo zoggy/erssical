@@ -13,6 +13,7 @@
 <link title="Ers_cache" rel="Chapter" href="Ers_cache.html">
 <link title="Ers_auth" rel="Chapter" href="Ers_auth.html">
 <link title="Ers_log" rel="Chapter" href="Ers_log.html">
+<link title="Ers_xtmpl" rel="Chapter" href="Ers_xtmpl.html">
 <link title="Ers_do" rel="Chapter" href="Ers_do.html"><title>Erssical library reference : Ers_filter</title>
 </head>
 <body>
@@ -46,7 +47,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;choose&nbsp;:&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;elt<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;split&nbsp;:&nbsp;elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t&nbsp;*&nbsp;bool&nbsp;*&nbsp;t<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;compile_filter&nbsp;:&nbsp;<span class="constructor">Ers_types</span>.filter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ers_filter</span>.<span class="constructor">S</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ers_filter</span>.<span class="constructor">S</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;compile_filter_exp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ers_types</span>.filter_exp&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ers_filter</span>.<span class="constructor">S</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ers_filter</span>.<span class="constructor">S</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;filter&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ers_types</span>.filter&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>a,&nbsp;<span class="constructor">Ers_types</span>.event)&nbsp;<span class="constructor">Rss</span>.channel_t&nbsp;<span class="keywordsign">-&gt;</span><br>

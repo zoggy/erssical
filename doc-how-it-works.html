@@ -50,6 +50,7 @@ to events, initially to share software developer events. This additional informa
 consists in:
 </p>
 <ul>
+<li>the link to the event information,</li>
 <li>the intended audience (a string),</li>
 <li>the type of event (conference, course, ...),</li>
 <li>some keywords (a list of strings),</li>
@@ -71,7 +72,8 @@ information are given on <a href="http://zoggy.github.io/erssical/doc-event.html
 <li>a mime-type specifying what to output,</li>
 <li>a list of source RSS channels,</li>
 <li>an optional target channel,</li>
-<li>an optional filter.</li>
+<li>an optional filter,</li>
+<li>an optional template.</li>
 </ul>
 <p>A query is described in XML. An example of query is available
 <span class="ext-a"><a href="https://raw.github.com/zoggy/erssical/master/tests/query.xml">here</a></span>.
@@ -98,8 +100,12 @@ When given a query, Erssical performs the following operations:
 <li>If a filter was specified, only the items of this new channel matching
   the filter are kept.
 </li>
-<li>Depending of the output format specified, output the resulting RSS channel
-  or the calendar data in Ical format.
+<li>Depending of the output format specified, output:
+  <ul>
+    <li>the resulting RSS channel,</li>
+    <li>the calendar data in Ical format,</li>
+    <li>or the XML tree obtained from the XML template provided in the query.</li>
+  </ul>
 </li>
 </ol>
 </div>
