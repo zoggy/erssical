@@ -337,12 +337,12 @@ and read_filters xmls = List.fold_left read_filter [] xmls
 let read_filter_opt xmls =
   match get_elt "filter" xmls with
     None -> None
-  | Some (atts,subs) -> 
+  | Some (atts,subs) ->
       let exp = Ers_types.And (read_filters subs) in
       let max =
         match get_att "max" atts with
           None -> None
-        | Some s -> 
+        | Some s ->
             try Some (int_of_string s)
             with _ -> failwith (s ^ " is not an integer")
       in

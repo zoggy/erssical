@@ -91,7 +91,14 @@ let get_source ?cache ?(add_event_info=true) = function
         None -> Ers_curl.get url
       | Some t -> Ers_cache.get t url
     in
-    let (ch, errors) = Ers_io.channel_of_string contents in
+    let (ch, errors) =
+      try Ers_io.channel_of_string contents
+      with Failure msg -> failwith ((Ers_types.string_of_url url)^": "^msg)
+    in
+    let errors = List.map
+      (fun msg -> (Ers_types.string_of_url url)^": "^msg)
+      errors
+    in
     let src = { Rss.src_url = url ; src_name = ch.Rss.ch_title } in
     let f_item item =
       let item = set_item_source src item in

@@ -367,7 +367,13 @@ let main () =
       None -> ()
     | Some log -> Pervasives.at_exit (fun () -> Ers_log.close log)
   end;
-  start_server param ?host ~pending: !pending ~port: !port
+  let rec iter () =
+    try start_server param ?host ~pending: !pending ~port: !port
+    with e ->
+      prerr_endline ("start_server raised "^(Printexc.to_string e));
+      iter ()
+  in
+  iter ()
 ;;
 
 try main ()
