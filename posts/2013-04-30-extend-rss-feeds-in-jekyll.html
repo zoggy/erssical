@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Erssical : Producing Event RSS feeds in Jekyll</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="http://zoggy.github.io/erssical/style.css"/>
+<rssfeed/>
+</head><body>
+<div id="page">
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container">
+
+  <div class="nav-collapse">
+  <ul class="nav">
+    <li class="&lt;navbar-home/&gt;"><a href="http://zoggy.github.io/erssical">Erssical</a></li>
+    <li class="&lt;navbar-download/&gt;"><a href="http://zoggy.github.io/erssical/download.html">Download</a></li>
+    <li class="&lt;navbar-doc/&gt;"><a href="http://zoggy.github.io/erssical/doc.html">Documentation</a></li>
+    <li class="active"><a href="http://zoggy.github.io/erssical/blog.html">Blog</a></li>
+    <li class="&lt;navbar-about/&gt;"><a href="http://zoggy.github.io/erssical/about.html">?</a></li>
+  </ul>
+  </div>
+  <div class="nav pull-right">
+
+  </div>
+</div>
+</div>
+</div>
+
+<div id="header">
+
+<div class="page-title">Producing Event RSS feeds in Jekyll</div>
+</div>
+<span/>
+<div class="date">April 30, 2013</div>
+
+<p>
+Here is a simple way to produce Event RSS feeds for a web site
+developed with <span class="ext-a"><a href="http://jekyllrb.com/">Jekyll</a></span>.
+</p>
+
+<p>
+In a post, simply define additional fields, here starting with <code>ev_</code>:
+</p>
+<pre class="code-xml">---
+layout: post
+title: A wonderful event title
+ev_link: http://link.to/the/wonderful/event.tml
+ev_keywords:
+  - ocaml
+  - functional programming
+  - typing
+ev_speakers:
+  - Jean Dupond, bla bla bla
+  - George Dupont
+ev_startDate: Thu, <span class="hl num">23</span> May <span class="hl num">2013 9</span>:<span class="hl num">00</span>:<span class="hl num">00</span> +<span class="hl num">0200</span>
+ev_endDate: Thu, <span class="hl num">23</span> May <span class="hl num">2013 17</span>:<span class="hl num">15</span>:<span class="hl num">00</span> +<span class="hl num">0200</span>
+---
+<span class="hl kwa">&lt;rest</span> of the post<span class="hl kwa">&gt;</span></pre>
+<p>
+Then, if your RSS feed template in located in <code>feed.xml</code>, edit this file
+to make it look like the following, to add event fields:
+</p>
+<pre class="code-xml">---
+layout: none
+---
+<span class="hl kwa">&lt;?xml</span> <span class="hl kwb">version</span>=<span class="hl str">&quot;1.0&quot;</span> <span class="hl kwb">encoding</span>=<span class="hl str">&quot;UTF-8&quot;</span><span class="hl kwa">?&gt;</span>
+<span class="hl kwa">&lt;rss</span> <span class="hl kwb">version</span>=<span class="hl str">&quot;2.0&quot;</span>
+  xmlns:<span class="hl kwb">atom</span>=<span class="hl str">&quot;http://www.w3.org/2005/Atom&quot;</span>
+  xmlns:<span class="hl kwb">ev</span>=<span class="hl str">&quot;http://zoggy.github.io/erssical/doc-event.html#&quot;</span>
+<span class="hl kwa">&gt;</span>
+ <span class="hl kwa">&lt;channel&gt;</span>
+  <span class="hl kwa">&lt;title&gt;</span>{{ site.name }}<span class="hl kwa">&lt;/title&gt;</span>
+  <span class="hl kwa">&lt;description&gt;</span>{{ site.description }}<span class="hl kwa">&lt;/description&gt;</span>
+  <span class="hl kwa">&lt;link&gt;</span>{{ site.url }}<span class="hl kwa">&lt;/link&gt;</span>
+  {% for post in site.posts limit:<span class="hl num">10</span> %}
+  <span class="hl kwa">&lt;item&gt;</span>
+   <span class="hl kwa">&lt;title&gt;</span>{{ post.title }}<span class="hl kwa">&lt;/title&gt;</span>
+   <span class="hl kwa">&lt;description&gt;</span>{{ post.content | xml_escape }}<span class="hl kwa">&lt;/description&gt;</span>
+   <span class="hl kwa">&lt;pubDate&gt;</span>{{ post.date | date: <span class="hl str">&quot;%a, %d %b %Y %H:%M:%S %z&quot;</span> }}<span class="hl kwa">&lt;/pubDate&gt;</span>
+   <span class="hl kwa">&lt;link&gt;</span>{{ site.url }}{{ post.url }}<span class="hl kwa">&lt;/link&gt;</span>
+   <span class="hl kwa">&lt;guid</span> <span class="hl kwb">isPermaLink</span>=<span class="hl str">&quot;true&quot;</span><span class="hl kwa">&gt;</span>{{ site.url }}{{ post.url }}<span class="hl kwa">&lt;/guid&gt;</span>
+   {% if post.ev_link %}<span class="hl kwa">&lt;ev:link&gt;</span>{{ post.ev_link }}<span class="hl kwa">&lt;/ev:link&gt;</span>{% endif %}
+   {% if post.ev_keywords %}
+    <span class="hl kwa">&lt;ev:keywords&gt;</span>
+      {% for kw in post.ev_keywords %}<span class="hl kwa">&lt;item&gt;</span>{{ kw }}<span class="hl kwa">&lt;/item&gt;</span>{% endfor %}
+    <span class="hl kwa">&lt;/ev:keywords&gt;</span>
+   {% endif %}
+   {% if post.ev_location %}
+     <span class="hl kwa">&lt;ev:location&gt;</span>{{ post.ev_location }}<span class="hl kwa">&lt;/ev:location&gt;</span>
+   {% endif %}
+   {% if post.ev_audience %}
+     <span class="hl kwa">&lt;ev:audience&gt;</span>{{ post.ev_audience }}<span class="hl kwa">&lt;/ev:audience&gt;</span>
+   {% endif %}
+   {% if post.ev_endDate %}
+     <span class="hl kwa">&lt;ev:endDate&gt;</span>{{ post.ev_endDate }}<span class="hl kwa">&lt;/ev:endDate&gt;</span>
+   {% endif %}
+   {% if post.ev_startDate %}
+     <span class="hl kwa">&lt;ev:startDate&gt;</span>{{ post.ev_startDate }}<span class="hl kwa">&lt;/ev:startDate&gt;</span>
+   {% endif %}
+   {% if post.ev_organizers %}
+     <span class="hl kwa">&lt;ev:organizers&gt;</span>
+       {% for p in post.ev_organizers %}
+         <span class="hl kwa">&lt;item&gt;</span>{{ p }}<span class="hl kwa">&lt;/item&gt;</span>{% endfor %}
+     <span class="hl kwa">&lt;/ev:organizers&gt;</span>
+   {% endif %}
+   {% if post.ev_speakers %}
+     <span class="hl kwa">&lt;ev:speakers&gt;</span>
+       {% for p in post.ev_speakers %}<span class="hl kwa">&lt;item&gt;</span>{{ p }}<span class="hl kwa">&lt;/item&gt;</span>{% endfor %}
+     <span class="hl kwa">&lt;/ev:speakers&gt;</span>
+   {% endif %}
+  <span class="hl kwa">&lt;/item&gt;</span>
+  {% endfor %}
+ <span class="hl kwa">&lt;/channel&gt;</span>
+<span class="hl kwa">&lt;/rss&gt;</span></pre>
+
+
+<div class="comments">
+<div>
+<div class="elt-keywords">
+  <div class="bloc-keywords">
+  Topics: <div class="keywords"><a href="http://zoggy.github.io/erssical/topic_example.html"><span itemprop="keywords">example</span></a></div>
+  </div>
+  <div class="bloc-keywords">
+  Keywords: <div class="keywords"><a href="http://zoggy.github.io/erssical/kw_jekyll.html"><span itemprop="keywords">jekyll</span></a>, <a href="http://zoggy.github.io/erssical/kw_reseau-loops.html"><span itemprop="keywords">reseau-loops</span></a></div>
+  </div>
+</div>
+</div>
+<div itemprop="articleSection" class="section">
+  <div id="disqus_thread"/>
+  <script type="text/javascript">
+      /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+      var disqus_shortname = 'genet'; // required: replace example with your forum shortname
+      var disqus_url = 'http://zoggy.github.io/erssical/posts/2013-04-30-extend-rss-feeds-in-jekyll.html' ;
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+</div>
+</div>
+
+<footer id="bottombar">
+</footer>
+<script type="text/javascript" src="http://zoggy.github.io/erssical/jquery.js">_</script>
+<script type="text/javascript" src="http://zoggy.github.io/erssical/bootstrap-collapse.js">_</script>
+
+</body>
+</html>

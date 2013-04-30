@@ -5269,7 +5269,7 @@ a.badge:focus {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  background-color: #ffc3c3;
+  background-color: #fff6f6;
 }
 div.eqn {
   margin-left: auto;
@@ -5310,7 +5310,7 @@ div.theorem {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  background-color: #ffc3c3;
+  background-color: #fff6f6;
   background-color: #eeeeff;
   border-width: 0 2px 0 2px;
 }
@@ -5339,7 +5339,7 @@ div.lemma {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  background-color: #ffc3c3;
+  background-color: #fff6f6;
   background-color: #eeeeff;
   border-width: 0 2px 0 2px;
 }
@@ -5368,7 +5368,7 @@ div.prop {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  background-color: #ffc3c3;
+  background-color: #fff6f6;
   background-color: #eeeeff;
   border-width: 0 2px 0 2px;
 }
@@ -5397,7 +5397,7 @@ div.remark {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  background-color: #ffc3c3;
+  background-color: #fff6f6;
   background-color: #eeeeff;
   border-width: 0 2px 0 2px;
 }
@@ -5426,7 +5426,7 @@ div.proof {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  background-color: #ffc3c3;
+  background-color: #fff6f6;
   background-color: #eeeeff;
   border-width: 0 2px 0 2px;
   border-width: 0 ;
@@ -5635,6 +5635,7 @@ ul {
 }
 .date {
   color: #737373;
+  font-size: 0.9em;
 }
 /* handles and targets */
 a.paragraph-url {
@@ -5649,7 +5650,7 @@ a.paragraph-url {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  background-color: #ffc3c3;
+  background-color: #fff6f6;
 }
 p:hover a.paragraph-url {
   display: inline ;
@@ -5680,6 +5681,29 @@ span.icode {
 }
 .options pre.code-txt {
   font-size: 0.790321em;
+}
+div.elt-keywords {
+  font-size: 0.9em;
+  /*.rounded-box ;*/
+
+  margin-left: 1em;
+  margin-right: /*@eltRightMargin ;*/
+;
+}
+div.bloc-keywords {
+  padding: 4px;
+  color: #555555 ;
+}
+div.keywords {
+  font-style: italic ;
+  display: inline ;
+}
+div.elt-intro {
+  display: inline ;
+  padding-left: 2em;
+}
+div.elt-intro p {
+  display: inline ;
 }
 .author-photo {
   max-height: 120px;
