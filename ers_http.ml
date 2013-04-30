@@ -197,7 +197,7 @@ let on_request param notification =
    * the response buffer, the advanced implementation can prevent that the
    * buffers become large.
    *)
-  print_endline "Received HTTP request";
+  (*print_endline "Received HTTP request";*)
   ( try
       let env = notification#environment in
       let cgi =
@@ -225,7 +225,7 @@ let on_request_header param (notification : Nethttpd_engine.http_request_header_
    * additional function would be called whenever new body data arrives. (Do so by
    * calling [notification # environment # input_ch_async # request_notification].)
    *)
-  print_endline "Received HTTP header";
+  (*print_endline "Received HTTP header";*)
   let on_request = on_request param in
   notification#schedule_accept_body ~on_request ()
 ;;

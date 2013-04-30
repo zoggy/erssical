@@ -38,7 +38,6 @@ let print_date buf label t =
       tz
   in
   let t = { t with Netdate.zone = tz } in
-  prerr_endline (Printf.sprintf "Netdate.zone = %d" tz);
   let f = Netdate.since_epoch t in
   let t = Netdate.create ~zone: 0 f in
   Buffer.add_string buf (label^":"^(Netdate.format "%Y%m%dT%H%M%SZ" t)^"\n")
