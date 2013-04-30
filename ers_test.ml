@@ -26,8 +26,8 @@
 (** *)
 
 let (ch, errors) = Ers_io.channel_of_file Sys.argv.(1);;
-(*print_endline (Ers_io.string_of_channel ch);;*)
-
+print_endline (Ers_io.string_of_channel ch);;
+(*
 let q = Ers_io.query_of_file Sys.argv.(2) ;;
 let res = Ers_do.execute (*~rtype: Ers_types.Ical*) (*~rtype: Ers_types.Debug*) q;;
 match res with
@@ -38,3 +38,4 @@ match res with
 | Ers_types.Res_ical str ->
     print_string str
 ;;
+*)
