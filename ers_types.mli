@@ -50,6 +50,7 @@ type event_level = Beginner | Confirmed | Expert
 type event_type = Conference | Seminar | Course | Workshop | Dojo | Other_type of string
 type location = { loc_href : Neturl.url option; loc_name : string; }
 type event = {
+  ev_link : Neturl.url option ;
   ev_level : event_level option;
   ev_type : event_type option;
   ev_keywords : string list;
@@ -62,6 +63,7 @@ type event = {
 }
 
 val event :
+  ?link: Neturl.url ->
   ?level:event_level ->
   ?typ:event_type ->
   ?keywords:string list ->

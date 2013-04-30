@@ -32,6 +32,8 @@ let tag_ =
   let url = Ers_types.string_of_url Ers_types.base_url in
   fun s -> (url, s)
 
+let tag_link = tag_"link"
+
 let tag_level = tag_"level"
 
 let tag_type_short = "type"
@@ -134,6 +136,17 @@ let read_string_items =
     cont (List.rev (List.fold_left f [] xmls))
 ;;
 
+let read_link ev atts xmls =
+  match xmls with
+    [] -> ev
+  | (D u) :: _ ->
+      (
+       try { ev with ev_link = Some (Ers_types.url_of_string u) }
+       with Failure _ -> ev
+      )
+  | _ -> ev
+;;
+
 let read_level ev atts xmls = ev
 let read_type ev atts xmls = ev
 
@@ -190,6 +203,7 @@ let read_end ev atts xmls =
 let read_audience ev atts xmls = ev
 
 let funs = [
+    tag_link, read_link ;
     tag_level, read_level ;
     tag_type, read_type ;
     tag_keywords, read_keywords ;
@@ -407,6 +421,12 @@ let query_of_string s =
 
 let string_item_xmls = List.map (fun s -> E ((("","item"),[]), [D s]));;
 
+let xmls_of_link ev =
+  match ev.ev_link with
+    None -> []
+  | Some url -> [E((tag_link, []), [ D (Ers_types.string_of_url url) ])]
+;;
+
 let xmls_of_level ev = []
 let xmls_of_type ev = []
 let xmls_of_keywords ev =
@@ -430,7 +450,8 @@ let xmls_of_end ev = []
 let xmls_of_audience ev = []
 
 let printers =
-  [ xmls_of_level ;
+  [ xmls_of_link ;
+    xmls_of_level ;
     xmls_of_type ;
     xmls_of_keywords ;
     xmls_of_speakers ;

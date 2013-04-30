@@ -46,6 +46,11 @@ let merge_event_info item ev =
   match item.item_data with
     None -> { item with item_data = Some ev }
   | Some evi ->
+      let ev_link =
+        match evi.ev_link, ev.ev_link with
+          Some u, _ -> Some u
+        | None, x -> x
+      in
       let ev_level =
         match evi.ev_level, ev.ev_level with
           Some l, _ -> Some l
@@ -71,7 +76,7 @@ let merge_event_info item ev =
       in
       (* specify all fields to get a compilation error when we add fields in the future *)
       let ev =
-        { ev_level ; ev_type ; ev_keywords ; ev_speakers ; ev_organizers ;
+        { ev_link ; ev_level ; ev_type ; ev_keywords ; ev_speakers ; ev_organizers ;
           ev_location ; ev_audience ; ev_start = evi.ev_start ; ev_end = evi.ev_end ;
         }
       in

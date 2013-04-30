@@ -74,6 +74,12 @@ let print_link_opt buf = function
 | Some url -> Buffer.add_string buf ("URL:" ^ (Ers_types.string_of_url url) ^ "\n")
 ;;
 
+let ical_link_of_item item =
+  match item.item_data with
+    Some { ev_link = Some url } -> Some url
+  | _ -> item.item_link
+;;
+
 let print_vevent_of_item buf item =
   let dtstart, dtend =
     let (dtstart, dtend) =
@@ -108,7 +114,7 @@ let print_vevent_of_item buf item =
       in
       Buffer.add_string buf ("SUMMARY:" ^ summary ^ "\n");
       print_description_opt buf item.item_desc ;
-      print_link_opt buf item.item_link ;
+      print_link_opt buf (ical_link_of_item item) ;
       begin
        match item.item_data with
          None -> ()
@@ -119,12 +125,32 @@ let print_vevent_of_item buf item =
       Buffer.add_string buf "END:VEVENT\n"
 ;;
 
+module USet = Set.Make
+  (struct type t = Neturl.url let compare = Ers_types.compare_url end)
+
+
+let remove_duplicated_events items =
+  let rec iter acc seen = function
+    [] -> List.rev acc
+  | item :: q ->
+    match ical_link_of_item item with
+      None -> iter (item :: acc) seen q
+    | Some url ->
+      if USet.mem url seen then
+        iter acc seen q
+      else
+        iter (item :: acc) (USet.add url seen) q
+  in
+  iter [] USet.empty items
+;;
+
 let ical_of_channel ch =
   let buf = Buffer.create 256 in
   Buffer.add_string buf "BEGIN:VCALENDAR\n";
   Buffer.add_string buf "VERSION:2.0\n";
   Buffer.add_string buf "PRODID:-//erssical/1.0\n";
-  List.iter (print_vevent_of_item buf) ch.ch_items;
+  let items = remove_duplicated_events ch.ch_items in
+  List.iter (print_vevent_of_item buf) items;
   Buffer.add_string buf "END:VCALENDAR\n";
   Buffer.contents buf
 ;;

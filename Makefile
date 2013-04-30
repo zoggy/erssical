@@ -98,7 +98,7 @@ webdoc:
 	cd web && make
 
 .depend depend:
-	$(OCAMLDEP) erss*.ml erss*.mli > .depend
+	$(OCAMLDEP) ers*.ml ers*.mli > .depend
 
 erstest: erssical.cmxa ers_test.ml
 	$(OCAMLOPT) -package $(PACKAGES) -linkpkg -o $@ $(OCAML_COMPFLAGS) $^
