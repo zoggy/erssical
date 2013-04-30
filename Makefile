@@ -87,11 +87,11 @@ $(HTTPSERVER_BYTE): erssical.cma ers_http.cmo
 
 doc: all
 	mkdir -p html
-	$(OCAMLDOC) -t "Erssical library reference" -d html -html $(CMOFILES:.cmo=.mli)
+	$(OCAMLDOC) -rectypes -t "Erssical library reference" -d html -html $(CMOFILES:.cmo=.mli)
 
 depdoc: all
 	mkdir -p html
-	$(OCAMLDOC) -t "Erssical library reference" -d html \
+	$(OCAMLDOC) -rectypes -t "Erssical library reference" -d html \
 	-intro ocamldoc_index.text -g odoc_depgraph.cmxs $(CMOFILES:.cmo=.mli) $(CMOFILES:.cmo=.ml)
 
 webdoc:

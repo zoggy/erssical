@@ -39,6 +39,9 @@ let options = [
     "--rss", Arg.Unit (fun () -> out_format := Some Ers_types.Rss),
     " Output result in RSS format" ;
 
+    "--xtmpl", Arg.Unit (fun () -> out_format := Some Ers_types.Xtmpl),
+    " Output result in XML format, using template provided in the query" ;
+
     "--debug", Arg.Unit (fun () -> out_format := Some Ers_types.Debug),
     " Output result in debug format" ;
 

@@ -1,6 +1,9 @@
 <page title="Queries"
 navbar-doc="active"
+with-contents="true"
 >
+<xmlnode name=""><ixml>&lt;<name/>&gt;</ixml></xmlnode>
+<contents>
 <p>
 A query is described in an XML document of the following form &#x21b4;
 </p>
@@ -24,15 +27,17 @@ The following types are handled:
 </p>
 <ul>
 <li><code>application/rss+xml</code>: the query will return a new RSS document,</li>
-<li><code>text/calendar</code>: the query will return calendar data in Ical format.</li>
+<li><code>text/calendar</code>: the query will return calendar data in Ical format,</li>
+<li><code>application/xml</code>: the query will return an XML tree based on a template.</li>
 </ul>
 <p>For any other value or if this attribute is not present, the type <code>application/rss+xml</code>
 is assumed.
 </p>
 <p>The <code>&lt;query&gt;</code> element can contain
 <code><elt href="#sources"/></code>,
-<code><elt href="#target"/></code> and
-<code><elt href="#filter"/></code> elements.
+<code><elt href="#target"/></code>,
+<code><elt href="#filter"/></code> and
+<code><elt href="#template"/></code> elements.
 </p>
 </section>
 
@@ -212,7 +217,47 @@ keyword and start after the 1<sup>st</sup> of May 2012 at 12:00:
 </filter>
 ]]></hxml>
 </subsection>
+</section>
 
+<section id="template" title="&amp;lt;template&amp;gt;">
+<p>
+This element contains the XML template used when querying a XML result.
+Here is an example of such a template element:
+</p>
+<hxml><![CDATA[<query type="application/xml">
+  <template tag="div" class="rss-items">
+    <div class="rss-item">
+      <span class="rss-date"><item-pub-year/>-<item-pub-month/>-<item-pub-mday/></span
+      ><span class="rss-item-title"><a href="&lt;item-url/&gt;"><item-title/></a></span>
+      <span class="rss-source">[<item-source-name/>]</span>
+    </div>
+  </template>
+</query>
+]]></hxml>
+<p>The <ixml>tag="div"</ixml> means that the root element of the result tree
+will be a "div". The additional attributes of the <xmlnode name="template"/>
+are added to this root node.
+</p>
+<p>
+The elements under the <xmlnode name="template"/> are used as template: for each
+item in the final channel (i.e. after merging and filtering), rewrite rules
+are applied and the result in added to root node of the result. Rewrite
+rules consist in replacing some XML nodes by information about the current item.
+</p>
+<p>The following nodes are replaced:</p>
+<ul>
+<li><xmlnode name="item-title"/>: title of the item,</li>
+<li><xmlnode name="item-description"/>: description of the item,</li>
+<li><xmlnode name="item-url"/>: link of the item,</li>
+<li><xmlnode name="item-pubdate"/>: publication date of the item,</li>
+<li><xmlnode name="item-pub-year"/>: year of the publication date of the item;
+you can also use <xmlnode name="item-pub-month"/>, <xmlnode name="item-pub-mday"/>, <xmlnode name="item-pub-hour"/>,
+<xmlnode name="item-pub-minute"/>, and <xmlnode name="item-pub-second"/> elements,</li>
+<li><xmlnode name="item-author"/>: author of the item,</li>
+<li><xmlnode name="item-source-url"/>: url of the source channel,</li>
+<li><xmlnode name="item-source-name"/>: name of the source channel.</li>
+</ul>
 </section>
 </prepare-toc>
+</contents>
 </page>
