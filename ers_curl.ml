@@ -44,7 +44,9 @@ let get url =
     Curl.set_url connection (Ers_types.string_of_url url);
     Curl.set_writefunction connection (writer buf);
     Curl.perform connection;
-    Buffer.contents buf
+    let s = Buffer.contents buf in
+    Curl.cleanup connection;
+    s
   in
   try handle_curl_error f ()
   with e -> Curl.cleanup connection; raise e

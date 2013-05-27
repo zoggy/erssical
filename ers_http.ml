@@ -163,7 +163,8 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
       ~fields: ["Access-Control-Allow-Origin", ["*"]]
       ();
     cgi#output#output_string res;
-    cgi#output#commit_work ()
+    cgi#output#commit_work ();
+    cgi#output#close_out ()
   with
     e ->
       let (msg, status) =
@@ -172,16 +173,22 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
         | Http_error (msg, status) -> (msg, status)
         | _ -> (Printexc.to_string e, `Internal_server_error)
       in
-      (* A Netcgi-based content provider *)
-      cgi#set_header
-        ~status
-        ~cache:`No_cache
-        ~content_type:"text; charset=\"UTF-8\""
-        ~fields: ["Access-Control-Allow-Origin", ["*"]]
-      ();
-      cgi#output#output_string msg;
-      log param msg;
-      cgi#output#commit_work ()
+      try
+        (* A Netcgi-based content provider *)
+        cgi#set_header
+          ~status
+          ~cache:`No_cache
+          ~content_type:"text; charset=\"UTF-8\""
+          ~fields: ["Access-Control-Allow-Origin", ["*"]]
+          ();
+        cgi#output#output_string msg;
+        log param msg;
+        cgi#output#commit_work ();
+        cgi#output#close_out ()
+      with
+        e ->
+          cgi#output#close_out ();
+          raise e
 ;;
 
 let on_request param notification =
