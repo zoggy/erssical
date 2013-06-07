@@ -29,15 +29,6 @@ open Rss
 open Ers_types
 
 let print_date buf label t =
-  let tz = t.Netdate.zone in
-  (* there is a bug Netdate <= 3.6.3, so we apply a workaround *)
-  let tz =
-    if abs tz >= 100 then
-      (tz / 100) * 60 + tz mod 100
-    else
-      tz
-  in
-  let t = { t with Netdate.zone = tz } in
   let f = Netdate.since_epoch t in
   let t = Netdate.create ~zone: 0 f in
   Buffer.add_string buf (label^":"^(Netdate.format "%Y%m%dT%H%M%SZ" t)^"\n")
