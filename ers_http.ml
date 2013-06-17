@@ -330,7 +330,7 @@ let main () =
 
   let parallelizer =
     (*Netplex_mt.mt()*)     (* multi-threading *)
-    Netplex_mp.mp()   (* multi-processing *)
+    Netplex_mp.mp ~keep_fd_open: true ()   (* multi-processing *)
   in
 
   let fun_handler _ = process (handle_http_query param) in
