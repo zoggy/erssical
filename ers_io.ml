@@ -407,6 +407,7 @@ let query_of_file file =
   in
   try
     let xml = Rss.xml_of_source (`Channel ic) in
+    close_in ic;
     query_of_xml xml
   with
     e -> close_in ic; raise e
