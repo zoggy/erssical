@@ -25,10 +25,6 @@
 
 (** *)
 
-(** Code taken from Easy_engine example of
-  {{:https://godirepo.camlcity.org/wwwsvn/trunk/code/?root=lib-ocamlnet2}OCamlnet distribution}
-  and adapted to Erssical. *)
-
 open Ers_types;;
 
 type param =
@@ -163,8 +159,6 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
       ~fields: ["Access-Control-Allow-Origin", ["*"]]
       ();
     cgi#output#output_string res;
-    cgi#output#commit_work ();
-    cgi#output#close_out ()
   with
     e ->
       let (msg, status) =
@@ -173,142 +167,102 @@ let handle_http_query param (cgi : Netcgi.cgi_activation) =
         | Http_error (msg, status) -> (msg, status)
         | _ -> (Printexc.to_string e, `Internal_server_error)
       in
-      try
-        (* A Netcgi-based content provider *)
-        cgi#set_header
-          ~status
-          ~cache:`No_cache
-          ~content_type:"text; charset=\"UTF-8\""
-          ~fields: ["Access-Control-Allow-Origin", ["*"]]
-          ();
-        cgi#output#output_string msg;
-        log param msg;
-        cgi#output#commit_work ();
-        cgi#output#close_out ()
-      with
-        e ->
-          cgi#output#close_out ();
-          raise e
+      (* A Netcgi-based content provider *)
+      cgi#set_header
+        ~status
+        ~cache:`No_cache
+        ~content_type:"text; charset=\"UTF-8\""
+        ~fields: ["Access-Control-Allow-Origin", ["*"]]
+        ();
+      cgi#output#output_string msg;
+      log param msg;
 ;;
 
-let on_request param notification =
-  (* This function is called when the full HTTP request has been received. For
-   * simplicity, we create a [std_activation] to serve the request.
-   *
-   * An advanced implementation could set up further notifications to get informed
-   * whenever there is space in the response buffer for additional output.
-   * Currently, data is fully buffered (first
-   * in the transactional buffer, then in the response buffer), and only when
-   * the message is complete, the transmission to the client starts.
-   * By generating only the next part of the response when there is space in
-   * the response buffer, the advanced implementation can prevent that the
-   * buffers become large.
-   *)
-  (*print_endline "Received HTTP request";*)
-  ( try
-      let env = notification#environment in
-      let cgi =
-       Netcgi_common.cgi_with_args
-         (new Netcgi_common.cgi)
-         (env :> Netcgi.cgi_environment)
-         Netcgi.buffered_transactional_outtype
-         env#input_channel
-         (fun _ _ _ -> `Automatic)
-     in
-     handle_http_query param cgi;
-    with
-     e ->
-       print_endline ("Uncaught exception: " ^ (Printexc.to_string e))
-  );
-  notification#schedule_finish ()
-;;
-
-let on_request_header param (notification : Nethttpd_engine.http_request_header_notification) =
-  (* After receiving the HTTP header: We always decide to accept the HTTP body, if any
-   * is following. We do not set up special processing of this body, it is just
-   * buffered until complete. Then [on_request] will be called.
-   *
-   * An advanced server could set up a further notification for the HTTP body. This
-   * additional function would be called whenever new body data arrives. (Do so by
-   * calling [notification # environment # input_ch_async # request_notification].)
-   *)
-  (*print_endline "Received HTTP header";*)
-  let on_request = on_request param in
-  notification#schedule_accept_body ~on_request ()
-;;
-
-let serve_connection param ues fd =
-  (* Creates the http engine for the connection [fd]. When a HTTP header is received
-   * the function [on_request_header] is called.
-   *)
-  let config = Nethttpd_engine.default_http_engine_config in
-  Unix.set_nonblock fd;
-  let _http_engine =
-    let on_request_header = on_request_header param in
-    new Nethttpd_engine.http_engine ~on_request_header () config fd ues in
-  ()
-;;
-let rec accept param ues srv_sock_acc =
-  (* This function accepts the next connection using the [acc_engine]. After the
-   * connection has been accepted, it is served by [serve_connection], and the
-   * next connection will be waited for (recursive call of [accept]). Because
-   * [server_connection] returns immediately (it only sets the callbacks needed
-   * for serving), the recursive call is also done immediately.
-   *)
-  let acc_engine = srv_sock_acc#accept () in
-
-  let param =
-    match param.auth with
-      None -> param
-    | Some auth -> { param with auth = Some (Ers_auth.read_if_mod auth) }
-  in
-
-  Uq_engines.when_state
-    ~is_done:(fun (fd, fd_spec) ->
-       if srv_sock_acc#multiple_connections then
-         (
-          serve_connection param ues fd;
-          accept param ues srv_sock_acc
-         )
-       else
-         srv_sock_acc#shut_down ()
-    )
-    ~is_error:(fun _ -> srv_sock_acc#shut_down())
-    acc_engine
-;;
-
-let start_server param ?(host=Unix.inet_addr_any) ~pending ~port =
-  (* We set up [lstn_engine] whose only purpose is to create a server socket listening
-   * on the specified port. When the socket is set up, [accept] is called.
-   *)
-  let ues = Unixqueue.create_unix_event_system () in
-  (* Unixqueue.set_debug_mode true; *)
-  let opts =
-    { (*Uq_engines.default_listen_options with*)
-      Uq_engines.lstn_backlog = pending ;
-      Uq_engines.lstn_reuseaddr = true ;
-    }
-  in
-  let lstn_engine =
-    Uq_engines.listener
-      (`Socket(`Sock_inet(Unix.SOCK_STREAM, host, port), opts)) ues
-  in
-  Uq_engines.when_state ~is_done:(accept param ues) lstn_engine;
-  (* Start the main event loop. *)
-  Unixqueue.run ues
-;;
-
-let inet_addr_of_name host =
+let process handler (cgi : Netcgi.cgi_activation) =
+  (* The [try] block catches errors during the page generation. *)
   try
-    (Unix.gethostbyname host).Unix.h_addr_list.(0)
-  with _ ->
-      try
-        Unix.inet_addr_of_string host
-      with _ ->
-          let message =
-            Printf.sprintf "inet_addr_of_name %s : unknown host" host
-          in
-          raise (Failure message)
+
+    handler cgi;
+
+    (* After the page has been fully generated, we can send it to the
+     * browser.
+     *)
+    cgi#out_channel#commit_work();
+  with
+    error ->
+      (* An error has happened. Generate now an error page instead of
+         * the current page. By rolling back the output buffer, any
+         * uncomitted material is deleted.
+         *)
+        cgi#output#rollback_work();
+
+      (* We change the header here only to demonstrate that this is
+         * possible.
+         *)
+      cgi#set_header
+      ~status:`Forbidden                  (* Indicate the error *)
+      ~cache:`No_cache
+      ~content_type:"text/plain; charset=\"utf-8\""
+      ();
+
+      cgi#output#output_string "While processing the request an O'Caml exception has been raised:\n";
+      let msg =
+        match error with
+          Failure s | Sys_error s -> s
+        | _ -> Printexc.to_string error
+      in
+      cgi#output#output_string (msg ^ "\n");
+
+      (* Now commit the error page: *)
+      cgi#output#commit_work()
+;;
+
+let config_tree host port =
+  `Section ("netplex",
+   [
+     `Section ("service",
+      [
+        `Parameter ("name", `String "nethttpd") ;
+        `Section ("protocol",
+         [
+           `Parameter ("name", `String "http") ;
+           `Section ("address",
+            [ `Parameter ("type", `String "internet") ;
+              `Parameter ("bind", `String (Printf.sprintf "0.0.0.0:%d" port));
+            ]) ;
+         ]) ;
+        `Section ("processor",
+         [
+           `Parameter ("type", `String "nethttpd") ;
+           `Parameter ("access_log", `String "debug");  (* or "off" or "enabled" *)
+           `Parameter ("suppress_broken_pipe", `Bool true);
+           `Section ("host",
+            [
+              (* Think of Apache's "virtual hosts" *)
+              `Parameter ("pref_name", `String host) ;
+              `Parameter ("pref_port", `Int port);
+              `Parameter ("names", `String "*:0"); (* Which requests are matched here: all *)
+              `Section ("uri",
+               [
+                 `Parameter ("path", `String "/");
+                 `Section ("service",
+                  [ `Parameter ("type", `String "dynamic") ;
+                    `Parameter ("handler", `String "api");
+                  ]);
+               ]);
+            ]);
+         ]);
+        `Section ("workload_manager",
+         [
+           `Parameter ("type", `String "dynamic");
+           `Parameter ("max_jobs_per_thread", `Int 1);  (* Everything else is senseless *)
+           `Parameter ("min_free_jobs_capacity", `Int 1);
+           `Parameter ("max_free_jobs_capacity", `Int 1);
+           `Parameter ("max_threads", `Int 20);
+         ]);
+      ]);
+   ]
+  )
 ;;
 
 let main () =
@@ -364,9 +318,8 @@ let main () =
   Netsys_signal.init();
   let host =
     match !host with
-      None -> None
-    | Some "localhost" -> Some Unix.inet_addr_loopback
-    | Some h -> Some (inet_addr_of_name h)
+      None -> ""
+    | Some s -> s
   in
   let param = { cache ; log ; auth } in
   begin
@@ -374,13 +327,36 @@ let main () =
       None -> ()
     | Some log -> Pervasives.at_exit (fun () -> Ers_log.close log)
   end;
-  let rec iter () =
-    try start_server param ?host ~pending: !pending ~port: !port
-    with e ->
-      prerr_endline ("start_server raised "^(Printexc.to_string e));
-      iter ()
+
+  let parallelizer =
+    (*Netplex_mt.mt()*)     (* multi-threading *)
+    Netplex_mp.mp()   (* multi-processing *)
   in
-  iter ()
+
+  let fun_handler _ = process (handle_http_query param) in
+
+  let api =
+    { Nethttpd_services.dyn_handler = fun_handler ;
+      dyn_activation = Nethttpd_services.std_activation `Std_activation_buffered;
+      dyn_uri = Some "/";                 (* not needed *)
+      dyn_translator = (fun s -> s); (* not needed *)
+      dyn_accept_all_conditionals = true ;
+    }
+  in
+  let nethttpd_factory =
+    Nethttpd_plex.nethttpd_factory
+    ~handlers:[ "api", api ]
+    ()
+  in
+  let config_tree = config_tree host !port in
+  let netplex_config = Netplex_main.create ~config_tree () in
+  let netplex_config = Netplex_main.modify ~foreground: true netplex_config in
+  Netplex_main.startup
+    parallelizer
+    Netplex_log.logger_factories   (* allow all built-in logging styles *)
+    Netplex_workload.workload_manager_factories (* ... all ways of workload management *)
+    [ nethttpd_factory ]           (* make this nethttpd available *)
+    netplex_config
 ;;
 
 try main ()
@@ -392,3 +368,4 @@ with
     prerr_endline (Printexc.to_string e);
     exit 1
 ;;
+
