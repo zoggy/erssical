@@ -49,8 +49,8 @@ let on_data_opt f = function
 ;;
 
 let env_of_item item =
-  let mk env (tag, xml) = Xtmpl.env_add tag (fun _ _ _ -> [xml]) env in
-  List.fold_left mk Xtmpl.env_empty
+  let mk env (tag, xml) = Xtmpl.env_add tag (fun x _ _ _ -> (x, [xml])) env in
+  List.fold_left mk (Xtmpl.env_empty ())
     [
       "item-title", Xtmpl.D (s_opt item.item_title);
       "item-description", Xtmpl.D (s_opt item.item_desc) ;
@@ -73,7 +73,7 @@ let apply_template tmpl channel =
     Xtmpl.E (tag, atts, item_tmpl) ->
       let f item =
         let env = env_of_item item in
-        Xtmpl.apply_to_xmls env item_tmpl
+        snd (Xtmpl.apply_to_xmls () env item_tmpl)
       in
       let xmls = List.map f channel.ch_items in
       Xtmpl.E (tag, atts, List.flatten xmls)

@@ -363,7 +363,8 @@ let read_filter_opt xmls =
       Some { filter_exp = exp ; filter_max = max }
 
 let rec xtmpl_of_xmlm = function
-  E ((tag, atts), subs) -> Xtmpl.E (tag, atts, List.map xtmpl_of_xmlm subs)
+  E ((tag, atts), subs) -> 
+    Xtmpl.E (tag, Xtmpl.xmls_of_atts atts, List.map xtmpl_of_xmlm subs)
 | D s -> Xtmpl.D s
 ;;
 
@@ -380,7 +381,7 @@ let read_template_opt xmls =
         | (_, t) :: _ -> ("",t)
       in
       let subs = List.map xtmpl_of_xmlm subs in
-      Some (Xtmpl.E (tag, other_atts, subs))
+      Some (Xtmpl.E (tag, Xtmpl.xmls_of_atts other_atts, subs))
 ;;
 
 let query_of_xml xml =
