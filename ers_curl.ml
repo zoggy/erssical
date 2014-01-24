@@ -40,6 +40,7 @@ let handle_curl_error f x =
 let get url =
   let buf = Buffer.create 256 in
   let connection = handle_curl_error Curl.init () in
+  Curl.setopt connection (Curl.CURLOPT_SSLVERIFYPEER false);
   let f () =
     Curl.set_url connection (Ers_types.string_of_url url);
     Curl.set_writefunction connection (writer buf);
