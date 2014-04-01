@@ -1,4 +1,5 @@
 Next release:
+- better error handling when curl-fetching sources
 - use netplex for http server
 - ignore certificates on https connections
 - upgrade to xtmpl 0.8
