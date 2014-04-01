@@ -1,2 +1,4 @@
 Next release:
 - use netplex for http server
+- ignore certificates on https connections
+- upgrade to xtmpl 0.8

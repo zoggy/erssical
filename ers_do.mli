@@ -32,7 +32,7 @@
   of non-fatal errors encountered while parsing the channel XML.
 *)
 val get_source_channels : ?cache: Ers_cache.t ->
-  Ers_types.query -> (Ers_types.channel * string list) list
+  Ers_types.query -> (Ers_types.channel option * string list) list
 
 (** Same as {!get_source_channels} but return the optional target of the query. *)
 val get_target_channel : ?cache: Ers_cache.t ->

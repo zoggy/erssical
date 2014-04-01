@@ -89,32 +89,39 @@ let set_item_source src item =
   | _ -> item
 
 let get_source ?cache ?(add_event_info=true) = function
-| Channel ch -> (ch, [])
+| Channel ch -> (Some ch, [])
 | Url (url, ev) ->
-    let contents =
-      match cache with
-        None -> Ers_curl.get url
-      | Some t -> Ers_cache.get t url
-    in
-    let (ch, errors) =
-      try Ers_io.channel_of_string contents
-      with Failure msg -> failwith ((Ers_types.string_of_url url)^": "^msg)
-    in
-    let errors = List.map
-      (fun msg -> (Ers_types.string_of_url url)^": "^msg)
-      errors
-    in
-    let src = { Rss.src_url = url ; src_name = ch.Rss.ch_title } in
-    let f_item item =
-      let item = set_item_source src item in
-      if add_event_info then
-        merge_event_info item ev
-      else
-        item
-    in
-    let items = List.map f_item ch.Rss.ch_items in
-    ({ ch with Rss.ch_items = items }, errors)
-
+    try
+      let contents =
+        match cache with
+          None -> Ers_curl.get url
+        | Some t -> Ers_cache.get t url
+      in
+      let (ch, errors) =
+        try Ers_io.channel_of_string contents
+        with Failure msg -> failwith ((Ers_types.string_of_url url)^": "^msg)
+      in
+      let errors = List.map
+        (fun msg -> (Ers_types.string_of_url url)^": "^msg)
+          errors
+      in
+      let src = { Rss.src_url = url ; src_name = ch.Rss.ch_title } in
+      let f_item item =
+        let item = set_item_source src item in
+        if add_event_info then
+          merge_event_info item ev
+        else
+          item
+      in
+      let items = List.map f_item ch.Rss.ch_items in
+      (Some { ch with Rss.ch_items = items }, errors)
+    with
+    e ->
+        let msg = match e with
+            Failure msg -> msg
+          | _ -> Printexc.to_string e
+        in
+        (None, [msg])
 
 let get_source_channels ?cache query =
   List.map (get_source ?cache) query.q_sources
@@ -123,7 +130,11 @@ let get_source_channels ?cache query =
 let get_target_channel ?cache query =
   match query.q_target with
     None -> None
-  | Some source -> Some (get_source ?cache ~add_event_info: false source)
+  | Some source -> 
+      let (ch, errors) = get_source ?cache ~add_event_info: false source in
+      match ch with
+        None -> None
+      | Some ch -> Some (ch, errors)
 ;;
 
 module UMap = Map.Make
@@ -175,7 +186,10 @@ let execute ?cache ?rtype query =
     let channels = get_source_channels ?cache query in
     let (channels, errors) = List.fold_left
       (fun (acc_ch, acc_errors) (ch, errors) ->
-         (ch :: acc_ch, (List.rev errors) @ acc_errors))
+        match ch with
+          None -> (acc_ch, (List.rev errors) @ acc_errors)
+        | Some ch -> (ch :: acc_ch, (List.rev errors) @ acc_errors)
+      )
         ([], []) channels
     in
     let channels = List.rev channels in
