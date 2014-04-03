@@ -35,7 +35,8 @@ let tree_opt = function
   None -> Xtmpl.D ""
 | Some s ->
   try Xtmpl.xml_of_string s
-  with _ -> Xtmpl.D s
+  with _ ->
+    Xtmpl.D s
 ;;
 
 let on_source_opt f = function
@@ -53,7 +54,7 @@ let env_of_item item =
   List.fold_left mk (Xtmpl.env_empty ())
     [
       "item-title", Xtmpl.D (s_opt item.item_title);
-      "item-description", Xtmpl.D (s_opt item.item_desc) ;
+      "item-description", tree_opt item.item_desc ;
       "item-url", Xtmpl.D (map_opt Ers_types.string_of_url item.item_link) ;
       "item-pubdate", Xtmpl.D (map_opt Rss.string_of_date item.item_pubdate) ;
       "item-pub-year", Xtmpl.D (map_opt (fun d -> string_of_int d.Netdate.year) item.item_pubdate) ;
