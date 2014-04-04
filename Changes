@@ -1,4 +1,5 @@
 Next release:
+- templating: replace item-description by xml, not string
 - better error handling when curl-fetching sources
 - use netplex for http server
 - ignore certificates on https connections
