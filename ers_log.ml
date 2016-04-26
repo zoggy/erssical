@@ -33,7 +33,7 @@ let stdout () = { file = "" ; oc = Lwt_io.stdout }
 
 let of_file file =
   let%lwt oc = Lwt_io.open_file
-    ~flags:[ Unix.O_APPEND ; Unix.O_CREAT ]
+    ~flags:[ Unix.O_APPEND ; Unix.O_CREAT ; Unix.O_WRONLY ]
       ~perm: 0o600
       ~mode:Lwt_io.Output file
   in
@@ -51,7 +51,11 @@ let date () =
 ;;
 
 let print log s =
-  Lwt_io.write_line log.oc (Printf.sprintf "[%s] %s" (date ()) s)
+  try%lwt
+    Lwt_io.write_line log.oc (Printf.sprintf "[%s] %s" (date ()) s)
+  with e ->
+    prerr_endline (Printexc.to_string e);
+    Lwt.fail_with (Printexc.to_string e)
 ;;
 
 let close log = Lwt_io.close log.oc;;
