@@ -25,12 +25,21 @@
 
 (** *)
 
-type t = { file : string ; oc : out_channel }
+open Lwt.Infix
 
-let mk_log file =
-  let oc = open_out_gen [ Open_append ; Open_creat ; Open_text ] 0o600 file in
-  { file ; oc }
+type t = { file : string ; oc : Lwt_io.output_channel }
+
+let stdout () = { file = "" ; oc = Lwt_io.stdout }
+
+let of_file file =
+  let%lwt oc = Lwt_io.open_file
+    ~flags:[ Unix.O_APPEND ; Unix.O_CREAT ]
+      ~perm: 0o600
+      ~mode:Lwt_io.Output file
+  in
+  Lwt.return { file ; oc }
 ;;
+
 
 let date_format = "%d %b %Y %T %z" ;;
 let format_date = Netdate.format ~fmt:date_format;;
@@ -42,9 +51,8 @@ let date () =
 ;;
 
 let print log s =
-  output_string log.oc ("["^(date())^"] "^s^"\n");
-  flush log.oc
+  Lwt_io.write_line log.oc (Printf.sprintf "[%s] %s" (date ()) s)
 ;;
 
-let close log = close_out log.oc;;
+let close log = Lwt_io.close log.oc;;
   

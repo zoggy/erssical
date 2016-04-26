@@ -77,7 +77,10 @@ let print_link_opt buf = function
 let ical_link_of_item item =
   match item.item_data with
     Some { ev_link = Some url } -> Some url
-  | _ -> item.item_link
+  | _ -> 
+  match item.item_link with
+    None -> None
+  | Some url -> Some (Uri.of_string (Neturl.string_of_url url))
 ;;
 
 let print_vevent_of_item buf item =
@@ -126,7 +129,7 @@ let print_vevent_of_item buf item =
 ;;
 
 module USet = Set.Make
-  (struct type t = Neturl.url let compare = Ers_types.compare_url end)
+  (struct type t = Uri.t let compare = Ers_types.compare_url end)
 
 
 let remove_duplicated_events items =

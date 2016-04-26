@@ -48,9 +48,9 @@ let options = [
     "--cache", Arg.String (fun s -> cache_dir := Some s),
     "<dir> Cache fetched RSS channels in <dir>" ;
 
-    "--ttl", Arg.Set_int Ers_cache.default_ttl,
+    "--ttl", Arg.Int (fun n -> Ers_fetch.default_ttl := float n),
     "<n> When using cache, set default time to live to <n> minutes;\n\t\tdefault is "^
-    (string_of_int !Ers_cache.default_ttl);
+    (string_of_int (truncate !Ers_fetch.default_ttl));
   ]
 
 let usage = Printf.sprintf "%s [options] <url|file>" Sys.argv.(0)
@@ -60,33 +60,33 @@ let main () =
   let options = Arg.align options in
   Arg.parse options (fun s -> args := s :: !args) (usage^"\nwhere options are:");
   match List.rev !args with
-    [] | _ :: _ :: _ -> failwith usage
+    [] | _ :: _ :: _ -> Lwt.fail_with usage
   | [arg] ->
-      let cache =
-        match !cache_dir with
-          None -> None
-        | Some dir -> Some (Ers_cache.mk_cache dir)
-      in
-      let query =
+      let log = Ers_log.stdout () in
+      let%lwt query =
         match !query_url with
-          false -> Ers_io.query_of_file arg
+          false -> Lwt.return (Ers_io.query_of_file arg)
         | true ->
             let url = Ers_types.url_of_string arg in
-            Ers_io.query_of_string (Ers_curl.get url)
+            let%lwt str = Ers_fetch.get log url in
+            Lwt.return (Ers_io.query_of_string str)
       in
-      let res = Ers_do.execute ?cache ?rtype: !out_format query in
-      match res with
-        Ers_types.Res_debug s -> prerr_endline s
-      | Ers_types.Res_channel channel ->
-          let str = Ers_io.string_of_channel ~indent: 2 channel in
-          print_string str
-      | Ers_types.Res_ical str ->
-          print_string str
-      | Ers_types.Res_xtmpl tree ->
-          print_string (Xtmpl.string_of_xml tree)
+      let%lwt res = Ers_do.execute log ?rtype: !out_format query in
+      let () =
+        match res with
+          Ers_types.Res_debug s -> prerr_endline s
+        | Ers_types.Res_channel channel ->
+            let str = Ers_io.string_of_channel ~indent: 2 channel in
+            print_string str
+        | Ers_types.Res_ical str ->
+            print_string str
+        | Ers_types.Res_xtmpl tree ->
+            print_string (Xtmpl_rewrite.to_string [tree])
+      in
+      Lwt.return_unit
 ;;
 
-try main ()
+try Lwt_main.run (main ())
 with
   Failure msg
 | Sys_error msg -> prerr_endline msg; exit 1

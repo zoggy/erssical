@@ -27,6 +27,7 @@
 
 open Rss;;
 open Ers_types;;
+open Lwt.Infix
 
 (*c==v=[List.list_diff]=1.0====*)
 let list_diff ?(pred=(=)) l1 l2 =
@@ -88,15 +89,11 @@ let set_item_source src item =
     None -> { item with Rss.item_source = Some src }
   | _ -> item
 
-let get_source ?cache ?(add_event_info=true) = function
-| Channel ch -> (Some ch, [])
+let get_source log ?(add_event_info=true) = function
+| Channel ch -> Lwt.return (Some ch)
 | Url (url, ev) ->
     try
-      let contents =
-        match cache with
-          None -> Ers_curl.get url
-        | Some t -> Ers_cache.get t url
-      in
+      let%lwt contents = Ers_fetch.get log url in
       let (ch, errors) =
         try Ers_io.channel_of_string contents
         with Failure msg -> failwith ((Ers_types.string_of_url url)^": "^msg)
@@ -105,7 +102,7 @@ let get_source ?cache ?(add_event_info=true) = function
         (fun msg -> (Ers_types.string_of_url url)^": "^msg)
           errors
       in
-      let src = { Rss.src_url = url ; src_name = ch.Rss.ch_title } in
+      let src = { Rss.src_url = Ers_types.neturl_of_url url ; src_name = ch.Rss.ch_title } in
       let f_item item =
         let item = set_item_source src item in
         if add_event_info then
@@ -114,31 +111,31 @@ let get_source ?cache ?(add_event_info=true) = function
           item
       in
       let items = List.map f_item ch.Rss.ch_items in
-      (Some { ch with Rss.ch_items = items }, errors)
+      Lwt_list.iter_s (Ers_log.print log) errors >>= fun () ->
+        Lwt.return (Some { ch with Rss.ch_items = items })
     with
-    e ->
+      e ->
         let msg = match e with
             Failure msg -> msg
           | _ -> Printexc.to_string e
         in
-        (None, [msg])
+        Ers_log.print log msg >>= fun () ->
+        Lwt.return_none
 
-let get_source_channels ?cache query =
-  List.map (get_source ?cache) query.q_sources
+let get_source_channels log query =
+  let%lwt l = Lwt_list.map_p (get_source log) query.q_sources in
+  Lwt.return (List.fold_left
+    (fun acc -> function None -> acc | Some x -> x :: acc) [] l)
 ;;
 
-let get_target_channel ?cache query =
+let get_target_channel log query =
   match query.q_target with
-    None -> None
-  | Some source -> 
-      let (ch, errors) = get_source ?cache ~add_event_info: false source in
-      match ch with
-        None -> None
-      | Some ch -> Some (ch, errors)
+    None -> Lwt.return_none
+  | Some source -> get_source log ~add_event_info: false source
 ;;
 
 module UMap = Map.Make
-  (struct type t = Neturl.url let compare = Ers_types.compare_url end)
+  (struct type t = Uri.t let compare = Ers_types.compare_url end)
 module SMap = Ers_types.SMap
 
 let merge_channels ?target channels =
@@ -146,6 +143,7 @@ let merge_channels ?target channels =
     match item.item_link with
       None -> (item :: nolink, map)
     | Some url ->
+        let url = Ers_types.url_of_neturl url in
         try
           ignore(UMap.find url map);
           (nolink, map)
@@ -174,54 +172,37 @@ let merge_channels ?target channels =
   | None, [] -> failwith "No channel to merge"
 ;;
 
-let execute ?cache ?rtype query =
+let execute log ?rtype query =
   let ret_typ = match rtype with None -> query.q_type | Some t -> t in
-  (match ret_typ, query.q_tmpl with
-     Xtmpl, None -> failwith "Missing template in query"
-   | _ -> ()
-  );
-  let target_errors = ref [] in
-  let source_errors = ref [] in
-  try
-    let channels = get_source_channels ?cache query in
-    let (channels, errors) = List.fold_left
-      (fun (acc_ch, acc_errors) (ch, errors) ->
-        match ch with
-          None -> (acc_ch, (List.rev errors) @ acc_errors)
-        | Some ch -> (ch :: acc_ch, (List.rev errors) @ acc_errors)
-      )
-        ([], []) channels
-    in
-    let channels = List.rev channels in
-    source_errors := List.rev errors ;
-    let target = get_target_channel ?cache query in
-    let target =
-      match target with
-        None -> None
-      | Some (target, errors) ->
-        target_errors := errors ;
-        Some target
-    in
-    let channel = merge_channels ?target channels in
-    let channel =
-      match query.q_filter with
-        None -> channel
-      | Some f -> Ers_filter.filter f channel
-    in
-    match ret_typ with
-    | Debug -> Res_debug (String.concat "\n" ("Ok" :: !target_errors @ !source_errors))
-    | Rss -> Res_channel channel
-    | Ical -> Res_ical (Ers_ical.ical_of_channel channel)
-    | Xtmpl ->
-        match query.q_tmpl with
-          None -> assert false
-        | Some tmpl -> Res_xtmpl (Ers_xtmpl.apply_template tmpl channel)
-  with
-    e when ret_typ = Debug ->
-      begin
-        match e with
-          Sys_error s | Failure s ->
-            Res_debug (String.concat "\n" (("Error: "^s) :: !target_errors @ !source_errors))
-        | _ -> Res_debug (Printexc.to_string e)
-      end
+  match ret_typ, query.q_tmpl with
+    Xtmpl, None -> Lwt.fail_with "Missing template in query"
+  | _ ->
+      try%lwt
+        let%lwt channels = get_source_channels log query
+        and target = get_target_channel log query in
+        let channel = merge_channels ?target channels in
+        let channel =
+          match query.q_filter with
+            None -> channel
+          | Some f -> Ers_filter.filter f channel
+        in
+        let t =
+          match ret_typ with
+          | Debug -> Res_debug "Ok"
+          | Rss -> Res_channel channel
+          | Ical -> Res_ical (Ers_ical.ical_of_channel channel)
+          | Xtmpl ->
+              match query.q_tmpl with
+                None -> assert false
+              | Some tmpl -> Res_xtmpl (Ers_xtmpl.apply_template tmpl channel)
+        in
+        Lwt.return t
+      with
+        e ->
+          let t = 
+            match e with
+              Sys_error s | Failure s -> Res_debug ("Error "^s)
+            | _ -> Res_debug (Printexc.to_string e)
+          in
+          Lwt.return t
 ;;

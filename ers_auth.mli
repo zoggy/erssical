@@ -35,4 +35,4 @@ val read_auth : string -> t
 val read_if_mod : t -> t
 
 (** Return whether the given URL is authorized or not. *)
-val url_auth : t -> Neturl.url -> bool
+val url_auth : t -> Uri.t -> bool

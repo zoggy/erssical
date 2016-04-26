@@ -25,6 +25,7 @@
 
 (** *)
 
+module XR = Xtmpl_rewrite
 open Rss
 open Ers_types
 
@@ -362,11 +363,13 @@ let read_filter_opt xmls =
       in
       Some { filter_exp = exp ; filter_max = max }
 
-let rec xtmpl_of_xmlm = function
-  E ((tag, atts), subs) -> 
-    Xtmpl.E (tag, Xtmpl.xmls_of_atts atts, List.map xtmpl_of_xmlm subs)
-| D s -> Xtmpl.D s
-;;
+let rec xr_of_xmltree = function
+| D str -> XR.cdata str
+| E ((tag, atts), subs) ->
+    let atts = Xtmpl_rewrite.atts_of_list
+      (List.map (fun (name, v) -> (name, Xtmpl_rewrite.from_string v)) atts)
+    in
+    XR.node tag ~atts (List.map xr_of_xmltree subs)
 
 let read_template_opt xmls =
   match get_elt "template" xmls with
@@ -380,8 +383,10 @@ let read_template_opt xmls =
           [] -> ("","div")
         | (_, t) :: _ -> ("",t)
       in
-      let subs = List.map xtmpl_of_xmlm subs in
-      Some (Xtmpl.E (tag, Xtmpl.xmls_of_atts other_atts, subs))
+      let atts = Xtmpl_rewrite.atts_of_list
+        (List.map (fun (name, v) -> (name, [Xtmpl_rewrite.cdata v])) other_atts)
+      in
+      Some (Xtmpl_rewrite.node tag ~atts (List.map xr_of_xmltree subs))
 ;;
 
 let query_of_xml xml =

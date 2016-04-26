@@ -31,14 +31,14 @@
   @return a list of pairs [(channel, errors)], where [errors] is the list
   of non-fatal errors encountered while parsing the channel XML.
 *)
-val get_source_channels : ?cache: Ers_cache.t ->
-  Ers_types.query -> (Ers_types.channel option * string list) list
+val get_source_channels : Ers_log.t ->
+  Ers_types.query -> Ers_types.channel list Lwt.t
 
 (** Same as {!get_source_channels} but return the optional target of the query. *)
-val get_target_channel : ?cache: Ers_cache.t ->
-  Ers_types.query -> (Ers_types.channel * string list) option
+val get_target_channel : Ers_log.t ->
+  Ers_types.query -> Ers_types.channel option Lwt.t
 
-module UMap : Map.S with type key = Neturl.url
+module UMap : Map.S with type key = Uri.t
 
 (** [merge_channels ?target sources] merges the given source channels,
   including the optional [target] channel.
@@ -60,6 +60,6 @@ val merge_channels :
  @raise Failure in case of error.
 *)
 val execute :
-  ?cache: Ers_cache.t ->
+  Ers_log.t ->
   ?rtype:Ers_types.query_return_type ->
-  Ers_types.query -> Ers_types.query_result
+  Ers_types.query -> Ers_types.query_result Lwt.t

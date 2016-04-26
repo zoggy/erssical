@@ -27,6 +27,7 @@
 
 type t
 
-val mk_log : string -> t
-val close : t -> unit
-val print : t -> string -> unit
+val stdout : unit -> t
+val of_file : string -> t Lwt.t
+val close : t -> unit Lwt.t
+val print : t -> string -> unit Lwt.t

@@ -27,10 +27,9 @@
 VERSION=0.1
 
 # do not forget to change in META file too
-PACKAGES=rss,str,curl,xtmpl
-HTTPPACKAGES=nethttpd
+PACKAGES=rss,str,cohttp.lwt,xtmpl,lwt.ppx,lwt.unix,uri,lru-cache
 
-OF_FLAGS=-package $(PACKAGES),$(HTTPPACKAGES)
+OF_FLAGS=-package $(PACKAGES)
 OCAMLFIND=ocamlfind
 OCAML_COMPFLAGS= -annot -rectypes
 OCAMLC=$(OCAMLFIND) ocamlc $(OF_FLAGS) $(OCAML_COMPFLAGS)
@@ -52,13 +51,12 @@ opt: erssical.cmxa erssical.cmxs $(EXE) $(HTTPSERVER)
 
 CMOFILES= \
 	ers_types.cmo \
-	ers_curl.cmo \
+	ers_log.cmo \
 	ers_io.cmo \
+	ers_fetch.cmo \
 	ers_ical.cmo \
 	ers_filter.cmo \
-	ers_cache.cmo \
 	ers_auth.cmo \
-	ers_log.cmo \
 	ers_xtmpl.cmo \
 	ers_do.cmo
 

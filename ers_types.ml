@@ -26,13 +26,22 @@
 (** *)
 
 let url_of_string s =
+  try Uri.of_string s
+  with _ ->
+    failwith (Printf.sprintf "Bad URL %S" s)
+;;
+let string_of_url = Uri.to_string
+
+let string_of_neturl = Neturl.string_of_url
+let compare_url u1 u2 = String.compare (string_of_url u1) (string_of_url u2)
+
+let neturl_of_url t =
+  let s = string_of_url t in
   try Neturl.parse_url ~enable_fragment: true ~accept_8bits: true s
   with Neturl.Malformed_URL ->
-    failwith (Printf.sprintf "Malformed URL %S" s)
-;;
-let string_of_url = Neturl.string_of_url;;
+      failwith (Printf.sprintf "Malformed URL %S" s)
 
-let compare_url u1 u2 = String.compare (string_of_url u1) (string_of_url u2)
+let url_of_neturl t = url_of_string (string_of_neturl t)
 
 let base_url = url_of_string "http://zoggy.github.io/erssical/doc-event.html#"
 
@@ -43,12 +52,12 @@ type event_level = Beginner | Confirmed | Expert
 type event_type = Conference | Seminar | Course | Workshop | Dojo | Other_type of string
 
 type location =
-  { loc_href : Neturl.url option ;
+  { loc_href : Uri.t option ;
     loc_name : string ;
   }
 
 type event = {
-    ev_link : Neturl.url option ;
+    ev_link : Uri.t option ;
     ev_level : event_level option ;
     ev_type : event_type option ;
     ev_keywords : string list ;
@@ -87,7 +96,7 @@ type filter = {
     }
 ;;
 
-type source = Url of Neturl.url * event | Channel of channel
+type source = Url of Uri.t * event | Channel of channel
 
 type query_return_type = Rss | Ical | Debug | Xtmpl
 
@@ -95,14 +104,14 @@ type query_result =
   | Res_channel of channel
   | Res_ical of string
   | Res_debug of string
-  | Res_xtmpl of Xtmpl.tree
+  | Res_xtmpl of Xtmpl_rewrite.tree
 
 type query =
   { q_type : query_return_type ;
     q_sources : source list ; (** list of source RSS feeds *)
     q_target : source option ;
     q_filter : filter option ;
-    q_tmpl : Xtmpl.tree option ;
+    q_tmpl : Xtmpl_rewrite.tree option ;
   }
 
 

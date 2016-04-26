@@ -23,22 +23,14 @@
 (*                                                                            *)
 (******************************************************************************)
 
-(** Caching fetched RSS channels. *)
-
-type t
-
-(** Create a cache from the given directory name. Raise [Failure] if the
-  cache could not be created. *)
-val mk_cache : string -> t
-
-(** The function called to print error messages. Default is {!prerr_endline}. *)
-val print_error : (string -> unit) ref
+(** Fetching URLs with CoHTTP. *)
 
 (** Default time to live of cached RSS channels, in minutes.
   Used when a cached RSS channel does no specify a ttl. Default is 60 minutes. *)
-val default_ttl : int ref
+val default_ttl : float ref
 
-(** Fetch the given URL of RSS channel, first looking in cache and fetching
-  only if time to live has expired. *)
-val get : t -> Neturl.url -> string
+(** @raise Failure in case of error. *)
+val get : Ers_log.t -> Uri.t -> string Lwt.t
 
+(** @raise Failure in case of error. *)
+val get_channel : Ers_log.t -> Uri.t -> Ers_types.channel Lwt.t

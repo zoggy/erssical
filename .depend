@@ -1,39 +1,32 @@
 ers_auth.cmo : ers_types.cmi ers_auth.cmi
 ers_auth.cmx : ers_types.cmx ers_auth.cmi
-ers_cache.cmo : ers_types.cmi ers_io.cmi ers_curl.cmi ers_cache.cmi
-ers_cache.cmx : ers_types.cmx ers_io.cmx ers_curl.cmx ers_cache.cmi
-ers_curl.cmo : ers_types.cmi ers_curl.cmi
-ers_curl.cmx : ers_types.cmx ers_curl.cmi
-ers_do.cmo : ers_xtmpl.cmi ers_types.cmi ers_io.cmi ers_ical.cmi \
-    ers_filter.cmi ers_curl.cmi ers_cache.cmi ers_do.cmi
-ers_do.cmx : ers_xtmpl.cmx ers_types.cmx ers_io.cmx ers_ical.cmx \
-    ers_filter.cmx ers_curl.cmx ers_cache.cmx ers_do.cmi
+ers_do.cmo : ers_types.cmi ers_log.cmi ers_do.cmi
+ers_do.cmx : ers_types.cmx ers_log.cmx ers_do.cmi
+ers_fetch.cmo : ers_types.cmi ers_fetch.cmi
+ers_fetch.cmx : ers_types.cmx ers_fetch.cmi
 ers_filter.cmo : ers_types.cmi ers_io.cmi ers_filter.cmi
 ers_filter.cmx : ers_types.cmx ers_io.cmx ers_filter.cmi
-ers_http.cmo : ers_types.cmi ers_log.cmi ers_io.cmi ers_do.cmi ers_curl.cmi \
-    ers_cache.cmi ers_auth.cmi
-ers_http.cmx : ers_types.cmx ers_log.cmx ers_io.cmx ers_do.cmx ers_curl.cmx \
-    ers_cache.cmx ers_auth.cmx
+ers_http.cmo : ers_types.cmi ers_log.cmi ers_io.cmi ers_fetch.cmi \
+    ers_auth.cmi
+ers_http.cmx : ers_types.cmx ers_log.cmx ers_io.cmx ers_fetch.cmx \
+    ers_auth.cmx
 ers_ical.cmo : ers_types.cmi ers_io.cmi ers_ical.cmi
 ers_ical.cmx : ers_types.cmx ers_io.cmx ers_ical.cmi
 ers_io.cmo : ers_types.cmi ers_io.cmi
 ers_io.cmx : ers_types.cmx ers_io.cmi
 ers_log.cmo : ers_log.cmi
 ers_log.cmx : ers_log.cmi
-ers_main.cmo : ers_types.cmi ers_io.cmi ers_do.cmi ers_curl.cmi \
-    ers_cache.cmi
-ers_main.cmx : ers_types.cmx ers_io.cmx ers_do.cmx ers_curl.cmx \
-    ers_cache.cmx
-ers_test.cmo : ers_types.cmi ers_io.cmi ers_do.cmi
-ers_test.cmx : ers_types.cmx ers_io.cmx ers_do.cmx
+ers_main.cmo : ers_types.cmi ers_log.cmi ers_fetch.cmi
+ers_main.cmx : ers_types.cmx ers_log.cmx ers_fetch.cmx
+ers_test.cmo : ers_io.cmi
+ers_test.cmx : ers_io.cmx
 ers_types.cmo : ers_types.cmi
 ers_types.cmx : ers_types.cmi
 ers_xtmpl.cmo : ers_types.cmi ers_xtmpl.cmi
 ers_xtmpl.cmx : ers_types.cmx ers_xtmpl.cmi
 ers_auth.cmi :
-ers_cache.cmi :
-ers_curl.cmi :
-ers_do.cmi : ers_types.cmi ers_cache.cmi
+ers_do.cmi : ers_types.cmi ers_log.cmi
+ers_fetch.cmi : ers_types.cmi ers_log.cmi
 ers_filter.cmi : ers_types.cmi
 ers_ical.cmi : ers_types.cmi
 ers_io.cmi : ers_types.cmi

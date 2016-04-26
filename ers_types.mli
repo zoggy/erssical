@@ -30,14 +30,18 @@ module SMap : Map.S with type key = string
 (** {2 Using URLs} *)
 
 (** @raise Failure in case of parse error. *)
-val url_of_string : string -> Neturl.url
+val url_of_string : string -> Uri.t
 
-val string_of_url : Neturl.url -> string
+val string_of_url : Uri.t -> string
+val string_of_neturl : Neturl.url -> string
 
-val compare_url : Neturl.url -> Neturl.url -> int
+val neturl_of_url : Uri.t -> Neturl.url
+val url_of_neturl : Neturl.url -> Uri.t
+
+val compare_url : Uri.t -> Uri.t -> int
 
 (** The base URL used for namespace of event fields in RSS channels. *)
-val base_url : Neturl.url
+val base_url : Uri.t
 
 (** {2 Events}
 
@@ -48,9 +52,9 @@ An event is represented by additional information in nodes under the [<item>]
 
 type event_level = Beginner | Confirmed | Expert
 type event_type = Conference | Seminar | Course | Workshop | Dojo | Other_type of string
-type location = { loc_href : Neturl.url option; loc_name : string; }
+type location = { loc_href : Uri.t option; loc_name : string; }
 type event = {
-  ev_link : Neturl.url option ;
+  ev_link : Uri.t option ;
   ev_level : event_level option;
   ev_type : event_type option;
   ev_keywords : string list;
@@ -63,7 +67,7 @@ type event = {
 }
 
 val event :
-  ?link: Neturl.url ->
+  ?link: Uri.t ->
   ?level:event_level ->
   ?typ:event_type ->
   ?keywords:string list ->
@@ -131,7 +135,7 @@ The structure to compute is indicated by the "type" attribute of the
   In the latter case, the channel will be fetched
   from this URL (using Curl library).
 *)
-type source = Url of Neturl.url * event | Channel of channel
+type source = Url of Uri.t * event | Channel of channel
 
 (** A query can be asked to return a new channel, a calendar or debug
   information, i.e. text information, for example errors encountered while
@@ -145,12 +149,12 @@ type query_result =
     Res_channel of channel
   | Res_ical of string
   | Res_debug of string
-  | Res_xtmpl of Xtmpl.tree
+  | Res_xtmpl of Xtmpl_rewrite.tree
 
 type query = {
   q_type : query_return_type;
   q_sources : source list;
   q_target : source option;
   q_filter : filter option;
-  q_tmpl : Xtmpl.tree option ;
+  q_tmpl : Xtmpl_rewrite.tree option ;
 }

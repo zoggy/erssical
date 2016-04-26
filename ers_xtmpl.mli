@@ -25,4 +25,4 @@
 
 (** Applying items on Xtmpl templates. *)
 
-val apply_template : Xtmpl.tree -> Ers_types.channel -> Xtmpl.tree
+val apply_template : Xtmpl_rewrite.tree -> Ers_types.channel -> Xtmpl_rewrite.tree
