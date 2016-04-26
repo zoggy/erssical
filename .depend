@@ -1,7 +1,7 @@
 ers_auth.cmo : ers_types.cmi ers_auth.cmi
 ers_auth.cmx : ers_types.cmx ers_auth.cmi
-ers_do.cmo : ers_types.cmi ers_log.cmi ers_do.cmi
-ers_do.cmx : ers_types.cmx ers_log.cmx ers_do.cmi
+ers_do.cmo : ers_types.cmi ers_do.cmi
+ers_do.cmx : ers_types.cmx ers_do.cmi
 ers_fetch.cmo : ers_types.cmi ers_fetch.cmi
 ers_fetch.cmx : ers_types.cmx ers_fetch.cmi
 ers_filter.cmo : ers_types.cmi ers_io.cmi ers_filter.cmi

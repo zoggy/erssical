@@ -45,14 +45,19 @@ let (cache : v Cache.t) = Cache.init ~size: 100
 let default_ttl = ref 60.
 
 let fetch url =
-  Client.get url >>= fun (resp, body) ->
-  let code = resp |> Response.status |> Code.code_of_status in
-  if code >= 200 && code < 300 then
-    body |> Cohttp_lwt_body.to_string
-  else
-    body |> Cohttp_lwt_body.to_string >>= fun msg ->
-      Lwt.fail_with (Printf.sprintf "%s: Error code %d\n%s"
-       (Ers_types.string_of_url url) code msg)
+  try%lwt
+    Lwt_unix.with_timeout 5.0 (fun () -> Client.get url)
+      >>= fun (resp, body) ->
+        let code = resp |> Response.status |> Code.code_of_status in
+        if code >= 200 && code < 300 then
+          body |> Cohttp_lwt_body.to_string
+        else
+          body |> Cohttp_lwt_body.to_string >>= fun msg ->
+            Lwt.fail_with (Printf.sprintf "%s: Error code %d\n%s"
+             (Ers_types.string_of_url url) code msg)
+  with
+    Lwt_unix.Timeout ->
+      Lwt.fail_with (Printf.sprintf "%s: Timeout" (Ers_types.string_of_url url))
 
 let get_channel log url =
   let%lwt str = fetch url in

@@ -92,7 +92,7 @@ let set_item_source src item =
 let get_source log ?(add_event_info=true) = function
 | Channel ch -> Lwt.return (Some ch)
 | Url (url, ev) ->
-    try
+    try%lwt
       let%lwt contents = Ers_fetch.get log url in
       let (ch, errors) =
         try Ers_io.channel_of_string contents
@@ -199,7 +199,7 @@ let execute log ?rtype query =
         Lwt.return t
       with
         e ->
-          let t = 
+          let t =
             match e with
               Sys_error s | Failure s -> Res_debug ("Error "^s)
             | _ -> Res_debug (Printexc.to_string e)
