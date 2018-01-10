@@ -40,7 +40,7 @@ type v = {
     mutable timestamp: float ;
     mutable content: Ers_types.channel Lwt.t;
   }
-let (cache : v Cache.t) = Cache.init ~size: 100
+let (cache : v Cache.t) = Cache.init ?validate:None ~size: 100
 
 let default_ttl = ref 60.
 
