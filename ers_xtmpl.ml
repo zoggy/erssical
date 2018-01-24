@@ -85,5 +85,7 @@ let apply_template tmpl channel =
       in
       let xmls = List.map f channel.ch_items in
       XR.node name ~atts (List.flatten xmls)
-  | XR.D _ -> assert false
+  | XR.D _
+  | XR.C _
+  | XR.PI _ -> assert false (* FIXME: use a better exception, with a message *)
 ;;
