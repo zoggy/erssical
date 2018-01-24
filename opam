@@ -1,0 +1,23 @@
+opam-version: "1"
+maintainer: "zoggy@bat8.org"
+authors: ["Maxence Guesdon"]
+homepage: "http://zoggy.github.io/erssical/"
+license: "GNU Lesser General Public License version 3"
+doc: ["http://zoggy.github.io/erssical/doc.html"]
+tags: [
+  "rss"
+  "xml"
+  "ical"
+  "http"
+]
+build: make
+remove: [["ocamlfind" "remove" "erssical"]]
+depends: [
+  "ocamlfind"
+  "xmlm"
+  "xtmpl" {>= "0.16"}
+  "ocamlrss" {>= "2.2.1"}
+  "lru-cache" {>= "0.3"}
+  "cohttp-lwt-unix" {>= "1.0.2"}
+]
+install: [make "BINDIR=%{bin}%" "install"]

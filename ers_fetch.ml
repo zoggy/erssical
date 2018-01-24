@@ -50,9 +50,9 @@ let fetch url =
       >>= fun (resp, body) ->
         let code = resp |> Response.status |> Code.code_of_status in
         if code >= 200 && code < 300 then
-          body |> Cohttp_lwt_body.to_string
+          body |> Cohttp_lwt__Body.to_string
         else
-          body |> Cohttp_lwt_body.to_string >>= fun msg ->
+          body |> Cohttp_lwt__Body.to_string >>= fun msg ->
             Lwt.fail_with (Printf.sprintf "%s: Error code %d\n%s"
              (Ers_types.string_of_url url) code msg)
   with

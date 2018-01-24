@@ -228,7 +228,7 @@ let main () =
       let uri = req |> Request.uri in
       let meth = req |> Request.meth |> Code.string_of_method in
       let headers = req |> Request.headers |> Header.to_string in
-      body |> Cohttp_lwt_body.to_string >>=
+      body |> Cohttp_lwt__Body.to_string >>=
         fun body -> handler param uri meth headers body
         >>= (fun (status, headers, body) ->
            Server.respond_string ~status ~headers ~body ())
@@ -237,7 +237,7 @@ let main () =
     let config = S.make ~callback ~conn_closed () in
     Conduit_lwt_unix.init ~src:host () >>=
       fun ctx ->
-        let ctx = Cohttp_lwt_unix_net.init ~ctx () in
+        let ctx = Cohttp_lwt_unix__Net.init ~ctx () in
         let mode = `TCP (`Port !port) in
         S.create ~ctx ~mode config
   in
